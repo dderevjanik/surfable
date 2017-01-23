@@ -23,6 +23,8 @@
   ],
   "permissions": [
     "activeTab",
+    "notifications",
+    "bookmarks",
     "https://ajax.googleapis.com/"
   ]
 }

@@ -1,130 +1,63 @@
-type PressedKeysMap = {[key: string]: boolean}
+import { ITextCommand } from './interfaces/ITextCommand';
+import { PressedKeysMap } from './Types';
+import { keyMap } from './data/KeyMap';
+import { store } from './redux/store';
+import { panelClose, panelOpen } from './redux/Actions'
+import { render } from './Index.tsx';
 
-interface ITextCommand {
-    desc: string;
-    text: string;
-};
+render();
 
-interface IAppState {
-    config: {
-        maxCommands: number;
-    },
-    quickpanel: {
-        opened: boolean;
-        offset: number;
+const showLinks = () => {
+    console.log('showiiiing links');
+    const createHint = () => {
+        const hint = document.createElement('div');
+        hint.className = 'surfable_hint';
+        hint.innerText = 'LINKA';
+        return hint;
+    }
+    const links = document.querySelectorAll('a');
+    for(let i = 0; i < links.length; i++) {
+        const link = links[i];
+        link.appendChild(createHint());
     }
 };
 
 const commands: ITextCommand[] = [
-    { text: 'Quick Print', desc: 'Print current page' },
-    { text: 'Print', desc: 'Print current page, setup' },
-    { text: 'Find', desc: 'Find using regex' }
+    { text: 'Show links', desc: 'Show all links on page', func: showLinks },
+    { text: 'Quick Print', desc: 'Print current page', func: () => null },
+    { text: 'Print', desc: 'Print current page, setup', func: () => null },
+    { text: 'Bookmarks', desc: 'Show bookmarks', func: () => null },
+    { text: 'Find', desc: 'Find using regex', func: () => null }
 ];
-
-const appState: IAppState = {
-    config: {
-        maxCommands: 7
-    },
-    quickpanel: {
-        opened: false,
-        offset: 0
-    }
-};
-
-const keyMap = {
-    esc: 27,
-    f: 70,
-    p: 80,
-    ctrl: 17,
-    shift: 16,
-    slash: 191,
-    left: 37,
-    up: 38,
-    right: 39,
-    down: 40
-};
 
 const pressedKeys: PressedKeysMap = {};
 
+const processEvent = (event: KeyboardEvent) => {
+    if (!((document.activeElement.tagName === 'BODY') || (document.activeElement.id === 'surfable_input'))) {
+        return;
+    }
+    switch(event.keyCode) {
+        case keyMap.p: {
+            console.log('dispatching open');
+            store.dispatch(panelOpen());
+            break;
+        }
+        case keyMap.esc: {
+            console.log('dispatching close');
+            store.dispatch(panelClose());
+            break;
+        }
+    }
+};
+
+
+document.onkeypress = (e) => {
+    processEvent(e);
+};
+
 document.onkeydown = (e) => {
-    pressedKeys[e.keyCode] = (e.type === 'keydown');
-    processEvent(pressedKeys);
-};
-
-document.onkeyup = (e) => {
-    pressedKeys[e.keyCode] = !(e.type === 'keyup');
-    processEvent(pressedKeys);
-};
-
-const createCommand = (name: string, description: string, active: boolean) => `
-    <li ${ active ? 'class="surfable_command_hover"' : ''}>
-        <span>${ name }</span>
-        <small>${ description }</small>
-    </li>
-`;
-
-const createCommandsList = (commands, hoverIndex) => `
-    <ul>
-        ${
-            commands.map((command, i) =>
-                createCommand(command.text, command.desc, (i === hoverIndex))).join('')
-        }
-    </ul>
-`;
-
-const createQuickPanel = () => {
-    const quickPanel = document.createElement('div');
-    quickPanel.id = "surfable";
-    quickPanel.innerHTML = `
-        <div class="surfable_quickpanel">
-            <div class="surfable_searchbox">
-                <input id="surfable_input" type="text" value="" placeholder="type '?' to get help"/>
-            </div>
-            <div class="surfable_commands">
-               ${ createCommandsList(commands, appState.quickpanel.offset) }
-            </div>
-        </div>
-    `;
-    return quickPanel;
+    // It's not possible to catch arrow keys with 'onkeypress' event
+    if ((e.keyCode >= 37) && (e.keyCode <= 40) || (e.keyCode == keyMap.esc)) {
+        processEvent(e);
+    }
 }
-
-const rerender = () => {
-    const oldEl = document.getElementById('surfable_input');
-    const newEl = createQuickPanel();
-    oldEl.parentNode.removeChild(oldEl);
-    document.body.appendChild(newEl);
-
-};
-
-const openQuickPanel = () => {
-    document.body.appendChild(createQuickPanel());
-    const quickInput = document.getElementById("surfable_input");
-    quickInput.focus();
-};
-
-const closeQuickPanel = () => {
-    const quickPanel = document.querySelector('.surfable_quickpanel');
-    quickPanel.parentNode.removeChild(quickPanel);
-};
-
-const processEvent = (pressedKeysMap: PressedKeysMap) => {
-    console.log(pressedKeys);
-    if (pressedKeysMap[keyMap.p] && !appState.quickpanel.opened) {
-        appState.quickpanel.opened = true;
-        openQuickPanel();
-    }
-    if (appState.quickpanel.opened) {
-        if (pressedKeysMap[keyMap.esc]) {
-            appState.quickpanel.opened = false;
-            closeQuickPanel();
-        }
-        if (pressedKeysMap[keyMap.up]) {
-            appState.quickpanel.offset -= 1;
-            rerender();
-        }
-        if (pressedKeysMap[keyMap.down]) {
-            appState.quickpanel.offset += 1;
-            rerender();
-        }
-    }
-};
