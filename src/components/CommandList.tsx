@@ -12,6 +12,7 @@ export const CommandList = (props: IProps)  => (
         {
             props.commands.map((command, i) =>
                 <Command
+                    key={i}
                     name={command.text}
                     desc={command.desc}
                     active={(props.activeInd === i) ? true : false}

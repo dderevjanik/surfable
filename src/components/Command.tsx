@@ -7,7 +7,7 @@ interface IProps {
 };
 
 export const Command = (props: IProps) => (
-    <li className={ props.active ? 'surfable_command_hover' : ''}>
+    <li className={ props.active ? 'command_highlight' : ''}>
         <span>{ props.name }</span>
         <small>{ props.desc }</small>
     </li>

@@ -5,7 +5,7 @@
     z-index: 9999;
 }
 
-.surfable_quickpanel {
+.quickpanel {
     background-color: #252526;
     border-radius: 0px 0px 3px 3px;
     box-shadow: 0px 3px 5px dimgrey;
@@ -15,11 +15,11 @@
     width: 40%;
 }
 
-.surfable_searchbox {
+.searchbox {
     padding: 4px 6px;
 }
 
-#surfable_input {
+#search_input {
     background-color: #3C3C3C;
     border: none;
     color: white;
@@ -27,27 +27,31 @@
     width: 100%;
 }
 
-.surfable_commands > ul {
+.commands > ul {
     list-style: none;
     margin-top: 3px;
 }
 
-.surfable_commands > ul > li {
+.commands > ul > li {
     cursor: pointer;
     color: #CCCCCC;
     padding: 2px 8px;
     text-align: left;
 }
 
-.surfable_commands > ul > li > span {
+.commands > ul > li:hover:not(.surfable_command_hover) {
+    background-color: #2A2D2E;
+}
+
+.commands > ul > li > span {
     text-align: left;
 }
 
-.surfable_commands > ul > li > small {
+.commands > ul > li > small {
     float: right;
 }
 
-.surfable_command_hover {
+.command_highlight {
     background-color: #073655;
 }
 

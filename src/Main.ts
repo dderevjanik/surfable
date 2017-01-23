@@ -2,7 +2,7 @@ import { ITextCommand } from './interfaces/ITextCommand';
 import { PressedKeysMap } from './Types';
 import { keyMap } from './data/KeyMap';
 import { store } from './redux/store';
-import { panelClose, panelOpen } from './redux/Reducers/Actions'
+import { panelClose, panelOpen, panelUp, panelDown, executeCommand } from './redux/Reducers/Actions'
 import { render } from './Index';
 
 render();
@@ -22,14 +22,6 @@ const showLinks = () => {
     }
 };
 
-const commands: ITextCommand[] = [
-    { text: 'Show links', desc: 'Show all links on page', func: showLinks },
-    { text: 'Quick Print', desc: 'Print current page', func: () => null },
-    { text: 'Print', desc: 'Print current page, setup', func: () => null },
-    { text: 'Bookmarks', desc: 'Show bookmarks', func: () => null },
-    { text: 'Find', desc: 'Find using regex', func: () => null }
-];
-
 const pressedKeys: PressedKeysMap = {};
 
 const processEvent = (event: KeyboardEvent) => {
@@ -45,6 +37,21 @@ const processEvent = (event: KeyboardEvent) => {
         case keyMap.esc: {
             console.log('dispatching close');
             store.dispatch(panelClose());
+            break;
+        }
+        case keyMap.up: {
+            console.log('dispatching up');
+            store.dispatch(panelUp());
+            break;
+        }
+        case keyMap.down: {
+            console.log('dispatching down');
+            store.dispatch(panelDown());
+            break;
+        }
+        case keyMap.enter: {
+            console.log('dispatching execute command');
+            store.dispatch(executeCommand((store.getState() as {quickpanel: {offset: number}}).quickpanel.offset));
             break;
         }
     }

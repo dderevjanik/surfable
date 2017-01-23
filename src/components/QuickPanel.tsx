@@ -11,11 +11,11 @@ interface IProps {
 };
 
 export const QuickPanelComponent = (props: IProps) => (
-    <div className={`surfable_quickpanel ${props.opened ? '' : 'hidden'}`}>
-        <div className="surfable_searchbox">
-            <input id="surfable_input" type="text" value="" placeholder="type '?' to get help"/>
+    <div className={`quickpanel ${props.opened ? '' : 'hidden'}`}>
+        <div className="searchbox">
+            <input id="search_input" type="text" value="" placeholder="type '?' to get help"/>
         </div>
-        <div className="surfable_commands">
+        <div className="commands">
             <CommandList commands={props.commands} activeInd={props.activeInd}/>
         </div>
     </div>

@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
+  "author": "Daniel Derevjanik",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack --progress --colors --watch",
-    "build": "webpack"
+    "dev": "webpack --colors --watch",
+    "dev-back": "webpack --config webpack.config.back.js --watch"
   },
-  "author": "",
   "license": "ISC",
   "dependencies": {
     "fuse.js": "^2.6.1",
