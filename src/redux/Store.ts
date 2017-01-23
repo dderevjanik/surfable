@@ -1,5 +1,5 @@
 import { createStore } from 'redux';
-import { appReducer } from './AppReducer';
+import { appReducer } from './Reducers/AppReducer';
 import { initState } from './InitState';
 
-export let store = createStore(appReducer);
+export const store = createStore(appReducer, initState);

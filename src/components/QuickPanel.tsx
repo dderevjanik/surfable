@@ -23,8 +23,8 @@ export const QuickPanelComponent = (props: IProps) => (
 
 export const QuickPanel = connect(
     (state: IAppState) => ({
-        activeInd: state.quickpanel.offset,
-        commands: state.commands,
-        opened: state.quickpanel.opened
+            activeInd: state.quickpanel.offset,
+            commands: state.commands,
+            opened: state.quickpanel.opened
     })
 )(QuickPanelComponent);

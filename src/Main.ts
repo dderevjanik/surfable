@@ -2,8 +2,8 @@ import { ITextCommand } from './interfaces/ITextCommand';
 import { PressedKeysMap } from './Types';
 import { keyMap } from './data/KeyMap';
 import { store } from './redux/store';
-import { panelClose, panelOpen } from './redux/Actions'
-import { render } from './Index.tsx';
+import { panelClose, panelOpen } from './redux/Reducers/Actions'
+import { render } from './Index';
 
 render();
 
