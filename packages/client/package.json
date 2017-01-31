@@ -1,0 +1,29 @@
+{
+  "name": "surfable",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "author": "Daniel Derevjanik",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack --colors --watch"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "fuse.js": "^2.6.1",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "redux": "^3.6.0",
+    "redux-form": "^6.4.3"
+  },
+  "devDependencies": {
+    "@types/react": "^15.0.1",
+    "@types/react-dom": "^0.14.20",
+    "@types/react-redux": "^4.4.35",
+    "@types/redux": "^3.6.0",
+    "ts-loader": "^2.0.0",
+    "typescript": "^2.1.5",
+    "webpack": "^1.14.0",
+    "webpack-dev-server": "^1.16.2"
+  }
+}

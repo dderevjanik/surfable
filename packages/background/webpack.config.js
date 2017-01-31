@@ -2,13 +2,13 @@ const webpack = require('webpack'),
     path = require('path');
 
 module.exports = {
-    entry: ['./src/background/Main.ts'],
+    entry: ['./src/Main.ts'],
     target: 'web',
     resolve: {
         extensions: ['', '.webpack.js', '.ts']
     },
     output: {
-        path: path.resolve(__dirname + '/dist'),
+        path: path.resolve('../../dist'),
         filename: 'background.js',
     },
     plugins: [

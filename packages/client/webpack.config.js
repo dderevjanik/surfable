@@ -8,7 +8,7 @@ module.exports = {
         extensions: ['', '.webpack.js', '.web.js', '.ts', '.js', '.tsx']
     },
     output: {
-        path: path.resolve(__dirname + '/dist/content'),
+        path: path.resolve('../../dist/content'),
         filename: 'index.js',
     },
     plugins: [
