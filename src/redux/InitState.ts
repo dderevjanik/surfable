@@ -8,6 +8,7 @@ export const initState: IAppState = {
     },
     quickpanel: {
         opened: false,
-        offset: 0
+        offset: 0,
+        inputVal: ''
     }
 };

@@ -1,4 +1,5 @@
 export const keyMap = {
+    backspace: 8,
     enter: 13,
     esc: 27,
     f: 70,

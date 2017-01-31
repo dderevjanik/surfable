@@ -1,4 +1,7 @@
-import { PANEL_OPEN, PANEL_CLOSE, PANEL_DOWN, PANEL_UP, PANEL_EXECUTE_COMMAND } from './ActionsList';
+import {
+    PANEL_OPEN, PANEL_CLOSE, PANEL_DOWN, PANEL_UP,
+    PANEL_EXECUTE_COMMAND, PANEL_KEYPRESS
+} from './ActionsList';
 
 export const panelClose = () => ({
     type: PANEL_CLOSE
@@ -14,6 +17,11 @@ export const panelUp = () => ({
 
 export const panelDown = () => ({
     type: PANEL_DOWN
+});
+
+export const keyPress = (char: string) => ({
+    type: PANEL_KEYPRESS,
+    char: char
 });
 
 export const executeCommand = (commandIndex: number) => ({

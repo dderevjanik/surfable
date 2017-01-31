@@ -1,10 +1,11 @@
 {
   "manifest_version": 2,
 
-  "name": "Getting started example",
+  "name": "Surfable",
   "description": "This extension shows a Google Image search result for the current page",
   "version": "1.0",
   "author": "Daniel Derevjanik",
+  "offline_enabled": true,
   "browser_action": {
     "default_icon": "icon.png",
     "default_popup": "popup.html"
@@ -28,6 +29,7 @@
       ]
   },
   "permissions": [
+    "browsingData",
     "tabs",
     "activeTab",
     "notifications",

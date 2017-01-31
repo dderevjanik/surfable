@@ -1,4 +1,4 @@
-import { PANEL_OPEN, PANEL_CLOSE, PANEL_UP, PANEL_DOWN, PANEL_EXECUTE_COMMAND } from './../ActionsList';
+import { PANEL_OPEN, PANEL_CLOSE, PANEL_UP, PANEL_DOWN, PANEL_EXECUTE_COMMAND, PANEL_KEYPRESS } from './../ActionsList';
 import { IPanel } from './../../interfaces/IPanel';
 import { initState } from './../../InitState';
 
@@ -17,20 +17,19 @@ export const panelReducer = (state: IPanel = initState.quickpanel, action): IPan
             }
         }
         case PANEL_OPEN: {
-            setTimeout(() => {
-                if (!state.opened) {
-                    const searchInput = document.getElementById('surfable_input');
-                    if (searchInput) {
-                        searchInput.focus();
-                    }
-                };
-            }, 100);
+            const searchInput = document.getElementById('search_input');
+            console.log(searchInput);
+            if (searchInput) {
+                searchInput.focus();
+            }
             return {
                 ...state,
+                inputVal: '',
                 opened: true
             };
         }
         case PANEL_CLOSE: {
+            document.body.focus();
             return {
                 ...state,
                 opened: false
@@ -40,6 +39,12 @@ export const panelReducer = (state: IPanel = initState.quickpanel, action): IPan
             return {
                 ...state,
                 opened: false
+            }
+        }
+        case PANEL_KEYPRESS: {
+            return {
+                ...state,
+                inputVal: (state.inputVal + action.char)
             }
         }
         default: {

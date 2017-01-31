@@ -5,6 +5,7 @@ import { ITextCommand } from './../interfaces/ITextCommand';
 interface IProps {
     commands: ITextCommand[];
     activeInd: number;
+    onCommandClick: (commandInd: number) => null;
 };
 
 export const CommandList = (props: IProps)  => (
@@ -12,10 +13,12 @@ export const CommandList = (props: IProps)  => (
         {
             props.commands.map((command, i) =>
                 <Command
+                    active={(props.activeInd === i) ? true : false}
+                    commandInd={i}
+                    desc={command.desc}
                     key={i}
                     name={command.text}
-                    desc={command.desc}
-                    active={(props.activeInd === i) ? true : false}
+                    onCommandClick={props.onCommandClick}
                 />
             )
         }

@@ -1,11 +1,14 @@
-#surfable {
+div#surfable {
+    all: initial;
     position: fixed;
     top: 0;
     width: 100%;
     z-index: 9999;
 }
 
-.quickpanel {
+div.quickpanel {
+    all: initial;
+    display: block;
     background-color: #252526;
     border-radius: 0px 0px 3px 3px;
     box-shadow: 0px 3px 5px dimgrey;
@@ -15,11 +18,14 @@
     width: 40%;
 }
 
-.searchbox {
-    padding: 4px 6px;
+div.searchbox {
+    padding: 5px 6px;
 }
 
-#search_input {
+input#search_input {
+    all: initial;
+    font-size: 14px;
+    box-sizing: border-box;
     background-color: #3C3C3C;
     border: none;
     color: white;
@@ -27,62 +33,55 @@
     width: 100%;
 }
 
-.commands > ul {
+div.commands > ul {
+    all: initial;
+    font-size: 14px;
+    padding: 0px;
     list-style: none;
     margin-top: 3px;
 }
 
-.commands > ul > li {
+div.commands > ul > li {
+    all: initial;
+    font-size: inherit;
+    display: block;
+    box-sizing: border-box;
     cursor: pointer;
     color: #CCCCCC;
     padding: 2px 8px;
     text-align: left;
 }
 
-.commands > ul > li:hover:not(.surfable_command_hover) {
-    background-color: #2A2D2E;
-}
-
-.commands > ul > li > span {
+div.commands > ul > li > span {
+    all: initial;
+    cursor: inherit;
+    color: inherit;
+    font-size: inherit;
     text-align: left;
 }
 
-.commands > ul > li > small {
+div.commands > ul > li > small {
+    all: initial;
+    cursor: inherit;
+    font-size:  13px;
+    color: inherit;
     float: right;
 }
 
+/* helpers */
+div.commands > ul > li:hover:not(.command_highlight) {
+    background-color: #2A2D2E;
+    font-size: 14px;
+}
+
 .command_highlight {
-    background-color: #073655;
+    background-color: #073655 !important;
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
-/*
-.surfable_quickpanel {
-    position: fixed;
-    top: 0;
-    width: 100%;
-};
-
-.surfable_quickpanel_inner {
-    background-color: black;
-    width: 45%;
-    text-align: center;
-    color: white;
-    margin: 0 auto;
-};
-*/
-.surfable_hint {
-    cursor: default;
-    position: absolute;
-    padding: 2px;
-    background-color: black;
-    border: 1px solid darkorange;
-    border-radius: 4px;
-    opacity: 0.8;
-    color: white;
-    font-size: 12px !important;
-    z-index: 9999;
-
+#search_input:focus {
+    outline: 1px solid #174A6C;
+}

@@ -12,3 +12,6 @@ export const PANEL_UP: PANEL_UP = 'PANEL_UP';
 
 export type PANEL_DOWN = 'PANEL_DOWN';
 export const PANEL_DOWN: PANEL_DOWN = 'PANEL_DOWN';
+
+export type PANEL_KEYPRESS = 'PANEL_KEYPRESS';
+export const PANEL_KEYPRESS: PANEL_KEYPRESS = 'PANEL_KEYPRESS';
