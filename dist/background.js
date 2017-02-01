@@ -52,7 +52,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Message = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./../../common/actions/All\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var Message = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"surfable-common/actions/All\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 	chrome.runtime.onMessage.addListener(function (message, sender) {
 	    switch (message.type) {
 	        case Message.TAB_CLOSE: {
