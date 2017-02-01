@@ -49,21 +49,26 @@
 
 /***/ },
 /* 1 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var Message = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./../../common/actions/All\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 	chrome.runtime.onMessage.addListener(function (message, sender) {
 	    switch (message.type) {
-	        case 'TAB_CLOSE': {
+	        case Message.TAB_CLOSE: {
 	            chrome.tabs.remove(sender.tab.id);
 	            break;
 	        }
-	        case 'TAB_NEW': {
+	        case Message.TAB_NEW: {
 	            chrome.tabs.create({});
 	            break;
 	        }
-	        case 'BOOKMARK_ADD': {
+	        case Message.BOOKMARK_ADD: {
 	            chrome.bookmarks.create({ title: sender.tab.title, url: sender.url });
+	            break;
+	        }
+	        case Message.BOOKMARK_ADD_AS: {
+	            chrome.bookmarks.create({ title: message.title, url: sender.url });
 	            break;
 	        }
 	    }

@@ -3,9 +3,7 @@ import { IBookmarkAddAs } from './BookmarkAddAs';
 import { ITabClose } from './TabClose';
 import { ITabNew } from './TabNew';
 
-export type Type =
-    IBookmarkAdd | IBookmarkAddAs |
-    ITabNew | ITabClose;
+export type Type = IBookmarkAdd | IBookmarkAddAs | ITabNew | ITabClose;
 
 export { BOOKMARK_ADD } from './BookmarkAdd';
 export { BOOKMARK_ADD_AS } from './BookmarkAddAs';

@@ -1,5 +1,5 @@
 import { IChrome } from './interfaces/IChrome';
-import * as Message from './../../common/actions/All';
+import * as Message from 'surfable-common/actions/All';
 
 declare const chrome: IChrome;
 
