@@ -1,5 +1,10 @@
 {
+  "name": "surfable",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Daniel Derevjanik",
+  "scripts": {},
   "devDependencies": {
-    "lerna": "2.0.0-beta.32"
+    "lerna": "2.0.0-beta.34"
   }
 }

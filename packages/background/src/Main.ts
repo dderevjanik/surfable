@@ -1,19 +1,24 @@
 import { IChrome } from './interfaces/IChrome';
+import * as Message from './../../common/actions/All';
 
 declare const chrome: IChrome;
 
-chrome.runtime.onMessage.addListener((message, sender) => {
+chrome.runtime.onMessage.addListener((message: Message.Type, sender) => {
     switch(message.type) {
-        case 'TAB_CLOSE': {
+        case Message.TAB_CLOSE: {
             chrome.tabs.remove(sender.tab.id);
             break;
         }
-        case 'TAB_NEW': {
+        case Message.TAB_NEW: {
             chrome.tabs.create({});
             break;
         }
-        case 'BOOKMARK_ADD' : {
+        case Message.BOOKMARK_ADD : {
             chrome.bookmarks.create({title: sender.tab.title, url: sender.url});
+            break;
+        }
+        case Message.BOOKMARK_ADD_AS : {
+            chrome.bookmarks.create({title: message.title, url: sender.url});
             break;
         }
     }
