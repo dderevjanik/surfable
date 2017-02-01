@@ -22,9 +22,10 @@ module.exports = {
             {
                 test: /\.tsx?$/,
                 loader: 'ts-loader?configFileName=tsconfig.json',
-                exclude: ['node_modules', 'dist', 'example'],
+                exclude: ['dist', 'example'],
                 include: [
-                    path.resolve(__dirname, 'src')
+                    path.resolve(__dirname, 'src'),
+                    path.resolve(__dirname, '../common'),
                 ],
             }
         ]

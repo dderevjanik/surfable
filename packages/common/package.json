@@ -3,9 +3,13 @@
   "version": "0.0.1",
   "description": "",
   "author": "Daniel Derevjanik",
+  "main": "src/actions/all",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "ISC",
-  "devDependencies": {}
+  "devDependencies": {
+    "ts-loader": "^2.0.0",
+    "typescript": "^2.1.5"
+  }
 }

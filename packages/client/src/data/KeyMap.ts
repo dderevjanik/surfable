@@ -1,3 +1,6 @@
+/**
+ * Used to recognize keyevent from user
+ */
 export const keyMap = {
     backspace: 8,
     enter: 13,

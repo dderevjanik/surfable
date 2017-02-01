@@ -1,23 +1,27 @@
 import { IChrome } from './interfaces/IChrome';
-import * as Message from 'surfable-common/actions/All';
+import { Type, TAB_CLOSE, TAB_NEW, BOOKMARK_ADD, BOOKMARK_ADD_AS } from 'surfable-common/src/actions/All';
 
 declare const chrome: IChrome;
 
-chrome.runtime.onMessage.addListener((message: Message.Type, sender) => {
+chrome.runtime.onMessage.addListener((message: Type, sender) => {
     switch(message.type) {
-        case Message.TAB_CLOSE: {
+        case TAB_CLOSE: {
             chrome.tabs.remove(sender.tab.id);
             break;
         }
-        case Message.TAB_NEW: {
-            chrome.tabs.create({});
+        case TAB_NEW: {
+            if (message.url.length > 0) {
+                chrome.tabs.create({ url: message.url });
+            } else {
+                chrome.tabs.create({});
+            }
             break;
         }
-        case Message.BOOKMARK_ADD : {
+        case BOOKMARK_ADD : {
             chrome.bookmarks.create({title: sender.tab.title, url: sender.url});
             break;
         }
-        case Message.BOOKMARK_ADD_AS : {
+        case BOOKMARK_ADD_AS : {
             chrome.bookmarks.create({title: message.title, url: sender.url});
             break;
         }

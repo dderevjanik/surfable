@@ -5,7 +5,7 @@ module.exports = {
     entry: ['./src/Main.ts'],
     target: 'web',
     resolve: {
-        extensions: ['', '.webpack.js', '.ts']
+        extensions: ['', '.webpack.js', '.web.js', '.ts', '.js', '.tsx']
     },
     output: {
         path: path.resolve('../../dist'),
@@ -20,11 +20,12 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.tsx?$/,
+                test: /\.ts?$/,
                 loader: 'ts-loader?configFileName=tsconfig.json',
-                exclude: ['node_modules', 'dist', 'example'],
+                exclude: ['dist', 'example'],
                 include: [
-                    path.resolve(__dirname, 'src')
+                    path.resolve(__dirname, 'src'),
+                    path.resolve(__dirname, './../common')
                 ],
             }
         ]
