@@ -7,6 +7,9 @@ export interface IBookmarkAdd extends IAction {
     type: BOOKMARK_ADD
 };
 
+/**
+ * Add current page to bookmarks
+ */
 export const bookmarkAdd = (): IBookmarkAdd => ({
     type: BOOKMARK_ADD
 });

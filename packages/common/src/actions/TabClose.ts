@@ -7,6 +7,9 @@ export interface ITabClose extends IAction {
     type: TAB_CLOSE
 };
 
+/**
+ * Close current page
+ */
 export const tabClose = (): ITabClose => ({
     type: TAB_CLOSE,
 });

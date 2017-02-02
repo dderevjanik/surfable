@@ -8,6 +8,10 @@ export interface ITabNew extends IAction {
     url: string;
 };
 
+/**
+ * Open a new tab with specific url.
+ * @param {string} url - url to open. When empty, it'll open a blank page
+ */
 export const tabNew = (url: string): ITabNew => ({
     type: TAB_NEW,
     url: url
