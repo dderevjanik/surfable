@@ -1,6 +1,6 @@
 export interface ITextCommand {
-    desc: string;
-    cat: string;
-    text: string;
-    func: () => void;
+    readonly desc: string;
+    readonly cat: string;
+    readonly text: string;
+    readonly func: () => void;
 }

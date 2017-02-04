@@ -3,11 +3,11 @@ import { ICallback } from './ICallback';
 import { ITabs } from './ITabs';
 
 export interface IChrome {
-    tabs: ITabs;
-    bookmarks: IBookmarks;
-    runtime: {
-        onMessage: {
-            addListener: (callback: ICallback) => void
+    readonly tabs: ITabs;
+    readonly bookmarks: IBookmarks;
+    readonly runtime: {
+        readonly onMessage: {
+            readonly addListener: (callback: ICallback) => void
         }
     };
 };

@@ -1,3 +1,3 @@
 export interface IMessage {
-    type: string;
+    readonly type: string;
 }

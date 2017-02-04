@@ -71,7 +71,9 @@
 	            break;
 	        }
 	        case All_1.BOOKMARK_ADD: {
-	            console.log(sender);
+	            chrome.tabs.query({ active: true }, function (payload) {
+	                chrome.tabs.remove(payload[0].id);
+	            });
 	            chrome.bookmarks.create({ title: sender.tab.title, url: sender.url });
 	            break;
 	        }

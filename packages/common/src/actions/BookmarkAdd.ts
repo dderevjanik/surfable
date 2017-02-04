@@ -4,7 +4,7 @@ export type BOOKMARK_ADD = 'BOOKMARK_ADD';
 export const BOOKMARK_ADD: BOOKMARK_ADD = 'BOOKMARK_ADD';
 
 export interface IBookmarkAdd extends IAction {
-    type: BOOKMARK_ADD
+    readonly type: BOOKMARK_ADD
 };
 
 /**

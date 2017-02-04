@@ -1,29 +1,5 @@
 import { IMessage } from './IMessage';
-
-interface IMutedInfo {
-    muted: boolean;
-}
-
-interface ITab {
-    active: boolean;
-    audible: boolean;
-    autoDiscardable: boolean;
-    discarded: boolean;
-    favIconUrl: string;
-    height: number;
-    highlighted: boolean;
-    id: number;
-    incognito: boolean;
-    index: number;
-    mutedInfo: IMutedInfo;
-    pinned: boolean;
-    selected: boolean;
-    status: string;
-    title: string;
-    url: string;
-    width : number;
-    windowId : number;
-}
+import { ITab } from './ITab';
 
 interface ISender {
     frameId: number;

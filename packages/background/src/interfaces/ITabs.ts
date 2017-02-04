@@ -2,7 +2,7 @@ import { ICallback } from './ICallback';
 import { ITab } from './ITab';
 
 export interface IQueryOptions {
-    active: boolean;
+    readonly active: boolean;
 };
 
 export interface ITabs {

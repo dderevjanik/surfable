@@ -1,3 +1,3 @@
 export interface IConfig {
-    maxCommands: number;
+    readonly maxCommands: number;
 }

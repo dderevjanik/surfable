@@ -1,8 +1,8 @@
 import { ICommands } from './ICommands';
 
 export interface IPanel {
-    commands: ICommands;
-    opened: boolean;
-    offset: number;
-    inputVal: string;
+    readonly commands: ICommands;
+    readonly opened: boolean;
+    readonly offset: number;
+    readonly inputVal: string;
 };

@@ -1,4 +1,4 @@
 export interface ICommand {
-    onCancell: string;
-    onEnter: string;
+    readonly onCancell: string;
+    readonly onEnter: string;
 }
