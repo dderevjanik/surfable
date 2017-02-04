@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { Command } from './Command';
-import { ITextCommand } from './../interfaces/ITextCommand';
+import { Command } from './../Command/Command';
+import { ITextCommand } from './../../interfaces/ITextCommand';
+import { ulS } from './CommandList.style';
 
 interface IProps {
     commands: ITextCommand[];
@@ -9,7 +10,7 @@ interface IProps {
 };
 
 export const CommandList = (props: IProps)  => (
-    <ul>
+    <ul className={ ulS }>
         {
             props.commands.map((command, i) =>
                 <Command

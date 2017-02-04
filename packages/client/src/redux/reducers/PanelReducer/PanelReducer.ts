@@ -4,6 +4,11 @@ import { initState } from './../../InitState';
 
 export const panelReducer = (state: IPanel = initState.quickpanel, action): IPanel => {
     switch(action.type) {
+        case PANEL_EXECUTE_COMMAND: {
+            console.log(state.commands[state.offset]);
+            state.commands[state.offset].func();
+            return state;
+        }
         case PANEL_UP: {
             return {
                 ...state,
@@ -18,7 +23,6 @@ export const panelReducer = (state: IPanel = initState.quickpanel, action): IPan
         }
         case PANEL_OPEN: {
             const searchInput = document.getElementById('search_input');
-            console.log(searchInput);
             if (searchInput) {
                 searchInput.focus();
             }

@@ -8,8 +8,8 @@ module.exports = {
         extensions: ['', '.webpack.js', '.web.js', '.ts', '.js', '.tsx']
     },
     output: {
-        path: path.resolve('../../dist/content'),
-        filename: 'index.js',
+        path: path.resolve('../../dist'),
+        filename: 'popup.js',
     },
     plugins: [
         // new webpack.optimize.UglifyJsPlugin(),

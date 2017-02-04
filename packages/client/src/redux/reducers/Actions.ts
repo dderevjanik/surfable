@@ -24,7 +24,6 @@ export const keyPress = (char: string) => ({
     char: char
 });
 
-export const executeCommand = (commandIndex: number) => ({
-    type: PANEL_EXECUTE_COMMAND,
-    commandInd: commandIndex
+export const executeCommand = () => ({
+    type: PANEL_EXECUTE_COMMAND
 })

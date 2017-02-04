@@ -6,7 +6,9 @@ declare const chrome: IChrome;
 chrome.runtime.onMessage.addListener((message: Type, sender) => {
     switch(message.type) {
         case TAB_CLOSE: {
-            chrome.tabs.remove(sender.tab.id);
+            chrome.tabs.query({active: true}, (payload) => {
+                chrome.tabs.remove(payload[0].id);
+            });
             break;
         }
         case TAB_NEW: {
@@ -18,6 +20,7 @@ chrome.runtime.onMessage.addListener((message: Type, sender) => {
             break;
         }
         case BOOKMARK_ADD : {
+            console.log(sender);
             chrome.bookmarks.create({title: sender.tab.title, url: sender.url});
             break;
         }

@@ -56,7 +56,9 @@
 	chrome.runtime.onMessage.addListener(function (message, sender) {
 	    switch (message.type) {
 	        case All_1.TAB_CLOSE: {
-	            chrome.tabs.remove(sender.tab.id);
+	            chrome.tabs.query({ active: true }, function (payload) {
+	                chrome.tabs.remove(payload[0].id);
+	            });
 	            break;
 	        }
 	        case All_1.TAB_NEW: {
@@ -69,6 +71,7 @@
 	            break;
 	        }
 	        case All_1.BOOKMARK_ADD: {
+	            console.log(sender);
 	            chrome.bookmarks.create({ title: sender.tab.title, url: sender.url });
 	            break;
 	        }
@@ -102,6 +105,9 @@
 	"use strict";
 	exports.BOOKMARK_ADD = 'BOOKMARK_ADD';
 	;
+	/**
+	 * Add current page to bookmarks
+	 */
 	exports.bookmarkAdd = function () { return ({
 	    type: exports.BOOKMARK_ADD
 	}); };
@@ -127,6 +133,9 @@
 	"use strict";
 	exports.TAB_CLOSE = 'TAB_CLOSE';
 	;
+	/**
+	 * Close current page
+	 */
 	exports.tabClose = function () { return ({
 	    type: exports.TAB_CLOSE,
 	}); };
@@ -139,6 +148,10 @@
 	"use strict";
 	exports.TAB_NEW = 'TAB_NEW';
 	;
+	/**
+	 * Open a new tab with specific url.
+	 * @param {string} url - url to open. When empty, it'll open a blank page
+	 */
 	exports.tabNew = function (url) { return ({
 	    type: exports.TAB_NEW,
 	    url: url
