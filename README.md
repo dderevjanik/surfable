@@ -21,8 +21,12 @@ lerna bootstrap
 Lerna bootstrap will make `npm install` for you in every subrepository and it'll
 also create symlinks for shared dependencies.
 
-### Client
-
 ### Background
+
+This is main heart of Surfable app.
+
+### Popup
+
+### Client
 
 ### Common

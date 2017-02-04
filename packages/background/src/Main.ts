@@ -21,9 +21,10 @@ chrome.runtime.onMessage.addListener((message: Type, sender) => {
         }
         case BOOKMARK_ADD : {
             chrome.tabs.query({active: true}, (payload) => {
-                chrome.tabs.remove(payload[0].id);
+                const activeTab = payload[0];
+                chrome.bookmarks.create({title: activeTab.title, url: activeTab.url});
             });
-            chrome.bookmarks.create({title: sender.tab.title, url: sender.url});
+
             break;
         }
         case BOOKMARK_ADD_AS : {

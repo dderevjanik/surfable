@@ -10,15 +10,25 @@ export const panelReducer = (state: IPanel = initState.quickpanel, action): IPan
             return state;
         }
         case PANEL_UP: {
-            return {
-                ...state,
-                offset: (state.offset - 1)
+            const nextOffset = (state.offset - 1);
+            if (nextOffset < 0) {
+                return state;
+            } else {
+                return {
+                    ...state,
+                    offset: nextOffset
+                }
             }
         }
         case PANEL_DOWN: {
-            return {
-                ...state,
-                offset: (state.offset + 1)
+            const nextOffset = (state.offset + 1);
+            if (nextOffset >= state.commands.length) {
+                return state;
+            } else {
+                return {
+                    ...state,
+                    offset: nextOffset
+                }
             }
         }
         case PANEL_OPEN: {

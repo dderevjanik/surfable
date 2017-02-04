@@ -17583,10 +17583,22 @@
 	            return state;
 	        }
 	        case ActionsList_1.PANEL_UP: {
-	            return __assign({}, state, { offset: (state.offset - 1) });
+	            var nextOffset = (state.offset - 1);
+	            if (nextOffset < 0) {
+	                return state;
+	            }
+	            else {
+	                return __assign({}, state, { offset: nextOffset });
+	            }
 	        }
 	        case ActionsList_1.PANEL_DOWN: {
-	            return __assign({}, state, { offset: (state.offset + 1) });
+	            var nextOffset = (state.offset + 1);
+	            if (nextOffset >= state.commands.length) {
+	                return state;
+	            }
+	            else {
+	                return __assign({}, state, { offset: nextOffset });
+	            }
 	        }
 	        case ActionsList_1.PANEL_OPEN: {
 	            var searchInput = document.getElementById('search_input');
@@ -36023,13 +36035,34 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
 	var React = __webpack_require__(173);
 	var redux_form_1 = __webpack_require__(27);
 	var SearchInput_style_1 = __webpack_require__(461);
-	exports.SearchInputComponent = function () { return (React.createElement("input", { className: SearchInput_style_1.searchInputS, type: "text", placeholder: "type '?' to get help" })); };
+	var SearchInputComponent = (function (_super) {
+	    __extends(SearchInputComponent, _super);
+	    function SearchInputComponent() {
+	        var _this = _super !== null && _super.apply(this, arguments) || this;
+	        _this.searchInput = null;
+	        return _this;
+	    }
+	    SearchInputComponent.prototype.componentDidMount = function () {
+	        this.searchInput.focus();
+	    };
+	    SearchInputComponent.prototype.render = function () {
+	        var _this = this;
+	        return (React.createElement("input", { ref: function (input) { _this.searchInput = input; }, className: SearchInput_style_1.searchInputS, type: "text", placeholder: "type '?' to get help" }));
+	    };
+	    return SearchInputComponent;
+	}(React.Component));
+	;
 	exports.SearchInput = redux_form_1.reduxForm({
 	    form: 'search'
-	})(exports.SearchInputComponent);
+	})(SearchInputComponent);
 
 
 /***/ },

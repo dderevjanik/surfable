@@ -11,8 +11,8 @@ interface IProps {
 };
 
 export const Command = (props: IProps) => (
-    <li className={ `${ commandS } + ${ props.active ? commandHighlightS : ''}` } onClick={() => props.onCommandClick(props.commandInd)}>
-        <span className={ categoryS }>{ `${props.category}: ${props.name}` }</span>
-        <small className={ descS }>{ props.desc }</small>
+    <li className={ `${commandS} + ${props.active ? commandHighlightS : ''}` } onClick={() => props.onCommandClick(props.commandInd)}>
+        <span className={categoryS}>{`${props.category}: ${props.name}`}</span>
+        <small className={descS}>{props.desc}</small>
     </li>
 );
