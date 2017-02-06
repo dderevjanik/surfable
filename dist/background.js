@@ -81,6 +81,9 @@
 	            chrome.bookmarks.create({ title: message.title, url: sender.url });
 	            break;
 	        }
+	        case All_1.CAPTURE: {
+	            break;
+	        }
 	    }
 	});
 
@@ -98,6 +101,10 @@
 	exports.TAB_CLOSE = TabClose_1.TAB_CLOSE;
 	var TabNew_1 = __webpack_require__(6);
 	exports.TAB_NEW = TabNew_1.TAB_NEW;
+	var Zoom_1 = __webpack_require__(7);
+	exports.ZOOM = Zoom_1.ZOOM;
+	var Capture_1 = __webpack_require__(8);
+	exports.CAPTURE = Capture_1.CAPTURE;
 
 
 /***/ },
@@ -157,6 +164,35 @@
 	exports.tabNew = function (url) { return ({
 	    type: exports.TAB_NEW,
 	    url: url
+	}); };
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.ZOOM = 'ZOOM';
+	;
+	/**
+	 * Add current page to bookmarks
+	 */
+	exports.Zoom = function (zoomType) { return ({
+	    type: exports.ZOOM,
+	    zoomType: zoomType
+	}); };
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.CAPTURE = 'CAPTURE';
+	;
+	exports.capture = function (captureType) { return ({
+	    type: exports.CAPTURE,
+	    captureType: captureType
 	}); };
 
 

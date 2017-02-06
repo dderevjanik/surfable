@@ -21,6 +21,7 @@ export const CommandList = (props: IProps)  => (
                     key={i}
                     name={command.text}
                     onCommandClick={props.onCommandClick}
+                    partialText={command.pText}
                 />
             )
         }

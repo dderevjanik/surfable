@@ -6,6 +6,7 @@ export const initState: IAppState = {
         maxCommands: 7
     },
     quickpanel: {
+        allCommands: commands,
         commands: commands,
         opened: false,
         offset: 0,

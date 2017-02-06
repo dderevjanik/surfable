@@ -22,9 +22,14 @@ export const commandHighlightS = style({
     }
 });
 
-export const categoryS = style({
+export const textS = style({
     textAlign: 'left'
 });
+
+export const highlightS = style({
+    color: '#0096FA',
+    fontWeight: 'bold'
+})
 
 export const descS = style({
     fontSize: '13px',

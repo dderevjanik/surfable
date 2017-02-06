@@ -2,7 +2,12 @@ import * as React from 'react';
 import { reduxForm } from 'redux-form';
 import { searchInputS } from './SearchInput.style';
 
-class SearchInputComponent extends React.Component<{}, {}>{
+interface IProps {
+    value: string;
+    onSearchChange: (value: string) => void;
+};
+
+export class SearchInput extends React.Component<IProps, {}>{
 
     searchInput: HTMLInputElement = null;
 
@@ -13,15 +18,13 @@ class SearchInputComponent extends React.Component<{}, {}>{
     render() {
         return (
             <input
-                ref={(input) => {this.searchInput = input}}
+                ref={(input) => { this.searchInput = input }}
                 className={ searchInputS }
                 type="text"
+                onChange={(e) => this.props.onSearchChange(e.target.value)}
                 placeholder="type '?' to get help"
+                value={this.props.value}
             />
         );
     }
 };
-
-export const SearchInput = reduxForm({
-    form: 'search'
-})(SearchInputComponent);

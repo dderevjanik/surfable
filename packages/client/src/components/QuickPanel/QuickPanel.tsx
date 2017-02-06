@@ -5,6 +5,7 @@ import { SearchInput } from './../SearchInput/SearchInput';
 import { IAppState } from './../../interfaces/IAppState';
 import { ITextCommand } from './../../interfaces/ITextCommand';
 import { executeCommand } from './../../redux/reducers/Actions';
+import { searchChange } from './../../redux/reducers/Actions';
 import { quickPanelS, searchBoxS } from './QuickPanel.style';
 
 interface IProps {
@@ -13,16 +14,17 @@ interface IProps {
     opened: boolean;
     inputVal: string;
     onCommandClick: () => null;
+    onSearchChange: (newValue: string) => null;
 };
 
 export const QuickPanelComponent = (props: IProps) => (
     <div className={ quickPanelS }>
         <div className={ searchBoxS }>
-            <SearchInput/>
+            <SearchInput value={ props.inputVal } onSearchChange={ props.onSearchChange }/>
         </div>
         <div>
             <CommandList commands={ props.commands } activeInd={props.activeInd} onCommandClick={props.onCommandClick}/>
-        </div>
+    </div>
     </div>
 );
 
@@ -34,6 +36,7 @@ export const QuickPanel = connect(
             opened: state.quickpanel.opened
     }),
     (dispatch) => ({
-        onCommandClick: () => dispatch(executeCommand())
+        onCommandClick: () => dispatch(executeCommand()),
+        onSearchChange: (value: string) => dispatch(searchChange(value))
     })
 )(QuickPanelComponent);

@@ -28,8 +28,17 @@
           "background.js"
       ]
   },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F",
+        "mac": "MacCtrl+Shift+F"
+      }
+    }
+  },
   "permissions": [
     "browsingData",
+    "desktopCapture",
     "tabs",
     "activeTab",
     "notifications",

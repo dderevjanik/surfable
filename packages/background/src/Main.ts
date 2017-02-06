@@ -1,5 +1,5 @@
 import { IChrome } from './interfaces/IChrome';
-import { Type, TAB_CLOSE, TAB_NEW, BOOKMARK_ADD, BOOKMARK_ADD_AS } from 'surfable-common/src/actions/All';
+import { Type, TAB_CLOSE, TAB_NEW, BOOKMARK_ADD, BOOKMARK_ADD_AS, CAPTURE } from 'surfable-common/src/actions/All';
 
 declare const chrome: IChrome;
 
@@ -29,6 +29,9 @@ chrome.runtime.onMessage.addListener((message: Type, sender) => {
         }
         case BOOKMARK_ADD_AS : {
             chrome.bookmarks.create({title: message.title, url: sender.url});
+            break;
+        }
+        case CAPTURE: {
             break;
         }
     }
