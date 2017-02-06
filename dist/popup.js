@@ -17655,18 +17655,6 @@
 	};
 	var ActionsList_1 = __webpack_require__(304);
 	var InitState_1 = __webpack_require__(281);
-	var fuzyOptions = {
-	    shouldSort: true,
-	    threshold: 0.6,
-	    location: 0,
-	    distance: 100,
-	    maxPatternLength: 32,
-	    minMatchCharLength: 1,
-	    keys: [
-	        "cat",
-	        "text"
-	    ]
-	};
 	var notFoundCommand = {
 	    cat: '',
 	    desc: '',

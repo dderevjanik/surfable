@@ -2,20 +2,6 @@ import { PANEL_OPEN, PANEL_CLOSE, PANEL_UP, PANEL_DOWN, PANEL_EXECUTE_COMMAND, P
 import { IPanel } from './../../interfaces/IPanel';
 import { ITextCommand } from './../../../interfaces/ITextCommand';
 import { initState } from './../../InitState';
-import * as Fuse from 'fuse.js';
-
-const fuzyOptions = {
-    shouldSort: true,
-    threshold: 0.6,
-    location: 0,
-    distance: 100,
-    maxPatternLength: 32,
-    minMatchCharLength: 1,
-    keys: [
-        "cat",
-        "text"
-    ]
-};
 
 const notFoundCommand: ITextCommand = {
     cat: '',
