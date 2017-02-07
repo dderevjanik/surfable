@@ -81,6 +81,32 @@
 	            chrome.bookmarks.create({ title: message.title, url: sender.url });
 	            break;
 	        }
+	        case All_1.TAB_RELOAD: {
+	            chrome.tabs.query({ active: true }, function (payload) {
+	                chrome.tabs.reload(payload[0].id);
+	            });
+	        }
+	        case All_1.TAB_DUPLICATE: {
+	            chrome.tabs.query({ active: true }, function (payload) {
+	                chrome.tabs.duplicate(payload[0].id);
+	            });
+	        }
+	        case All_1.ZOOM: {
+	            chrome.tabs.query({ active: true }, function (payload) {
+	                switch (message.zoomType) {
+	                    case 0 /* IN */: {
+	                        chrome.tabs.setZoom(payload[0].id, 1.2);
+	                    }
+	                    case 1 /* OUT */: {
+	                        chrome.tabs.setZoom(payload[0].id, 0.8);
+	                    }
+	                    case 2 /* RESET */: {
+	                        chrome.tabs.setZoom(payload[0].id, 1.0);
+	                    }
+	                }
+	                chrome.tabs.setZoom(payload[0].id, 1.2);
+	            });
+	        }
 	        case All_1.CAPTURE: {
 	            break;
 	        }
@@ -105,6 +131,10 @@
 	exports.ZOOM = Zoom_1.ZOOM;
 	var Capture_1 = __webpack_require__(8);
 	exports.CAPTURE = Capture_1.CAPTURE;
+	var TabReload_1 = __webpack_require__(9);
+	exports.TAB_RELOAD = TabReload_1.TAB_RELOAD;
+	var TabDuplicate_1 = __webpack_require__(10);
+	exports.TAB_DUPLICATE = TabDuplicate_1.TAB_DUPLICATE;
 
 
 /***/ },
@@ -193,6 +223,36 @@
 	exports.capture = function (captureType) { return ({
 	    type: exports.CAPTURE,
 	    captureType: captureType
+	}); };
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.TAB_RELOAD = 'TAB_RELOAD';
+	;
+	/**
+	 * Close current page
+	 */
+	exports.tabReload = function () { return ({
+	    type: exports.TAB_RELOAD,
+	}); };
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.TAB_DUPLICATE = 'TAB_DUPLICATE';
+	;
+	/**
+	 * Close current page
+	 */
+	exports.tabDuplicate = function () { return ({
+	    type: exports.TAB_DUPLICATE,
 	}); };
 
 

@@ -4,24 +4,12 @@
   "name": "Surfable",
   "description": "This extension shows a Google Image search result for the current page",
   "version": "1.0",
-  "author": "Daniel Derevjanik",
+  "author": "Daniel Derevjanik <daniel.derevjanik@gmail.com>",
   "offline_enabled": true,
   "browser_action": {
     "default_icon": "icon.png",
     "default_popup": "popup.html"
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "match_about_blank": true,
-      "js": [
-        "content/index.js"
-      ],
-      "css": [
-        "content/style.css"
-      ]
-    }
-  ],
   "background": {
       "persistant": false,
       "scripts": [

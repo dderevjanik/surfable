@@ -4,8 +4,10 @@ import { ITabClose } from './TabClose';
 import { ITabNew } from './TabNew';
 import { IZoom } from './Zoom';
 import { ICapture } from './Capture';
+import { ITabReload } from './TabReload';
+import { ITabDuplicate } from './TabDuplicate';
 
-export type Type = IBookmarkAdd | IBookmarkAddAs | ITabNew | ITabClose | IZoom | ICapture;
+export type Type = IBookmarkAdd | IBookmarkAddAs | ITabNew | ITabClose | IZoom | ICapture | ITabReload | ITabDuplicate;
 
 export { BOOKMARK_ADD } from './BookmarkAdd';
 export { BOOKMARK_ADD_AS } from './BookmarkAddAs';
@@ -13,3 +15,5 @@ export { TAB_CLOSE } from './TabClose';
 export { TAB_NEW } from './TabNew';
 export { ZOOM } from './Zoom';
 export { CAPTURE } from './Capture';
+export { TAB_RELOAD } from './TabReload';
+export { TAB_DUPLICATE } from './TabDuplicate';

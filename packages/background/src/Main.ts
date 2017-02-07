@@ -1,5 +1,6 @@
 import { IChrome } from './interfaces/IChrome';
-import { Type, TAB_CLOSE, TAB_NEW, BOOKMARK_ADD, BOOKMARK_ADD_AS, CAPTURE } from 'surfable-common/src/actions/All';
+import { Type, ZOOM, TAB_DUPLICATE, TAB_RELOAD, TAB_CLOSE, TAB_NEW, BOOKMARK_ADD, BOOKMARK_ADD_AS, CAPTURE } from 'surfable-common/src/actions/All';
+import { EZoomType } from 'surfable-common/src/enums/EZoomType';
 
 declare const chrome: IChrome;
 
@@ -30,6 +31,32 @@ chrome.runtime.onMessage.addListener((message: Type, sender) => {
         case BOOKMARK_ADD_AS : {
             chrome.bookmarks.create({title: message.title, url: sender.url});
             break;
+        }
+        case TAB_RELOAD: {
+            chrome.tabs.query({active: true}, (payload) => {
+                chrome.tabs.reload(payload[0].id);
+            });
+        }
+        case TAB_DUPLICATE: {
+            chrome.tabs.query({active: true}, (payload) => {
+                chrome.tabs.duplicate(payload[0].id);
+            });
+        }
+        case ZOOM: {
+            chrome.tabs.query({active: true}, (payload) => {
+                switch(message.zoomType) {
+                    case EZoomType.IN: {
+                        chrome.tabs.setZoom(payload[0].id, 1.2);
+                    }
+                    case EZoomType.OUT: {
+                        chrome.tabs.setZoom(payload[0].id, 0.8);
+                    }
+                    case EZoomType.RESET: {
+                        chrome.tabs.setZoom(payload[0].id, 1.0);
+                    }
+                }
+                chrome.tabs.setZoom(payload[0].id, 1.2);
+            });
         }
         case CAPTURE: {
             break;
