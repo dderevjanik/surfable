@@ -4,5 +4,6 @@ export const ulS = style({
     fontSize: '14px',
     padding: '0px',
     listStyle: 'none',
-    marginTop: '3px'
+    marginTop: '3px',
+    marginBottom: '0px'
 });

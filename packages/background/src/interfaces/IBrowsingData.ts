@@ -1,3 +1,3 @@
 export interface IBrowsingData {
-    readonly removeCookies: () => void;
+	readonly removeCookies: () => void;
 }
