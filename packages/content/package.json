@@ -1,25 +1,16 @@
 {
-  "name": "surfable-client",
+  "name": "surfable-content",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "main.js",
   "author": "Daniel Derevjanik",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack --colors --watch"
   },
   "license": "ISC",
-  "dependencies": {
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
-    "redux": "^3.6.0",
-    "typestyle": "^1.0.0"
-  },
+  "dependencies": { },
   "devDependencies": {
-    "@types/react": "^15.0.1",
-    "@types/react-dom": "^0.14.20",
-    "@types/react-redux": "^4.4.35",
-    "@types/redux": "^3.6.0",
     "ts-loader": "^2.0.0",
     "tslint": "^4.4.2",
     "tslint-config-xo": "^1.1.0",

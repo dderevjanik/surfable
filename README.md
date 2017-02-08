@@ -10,10 +10,12 @@ by command pallete from Sublime Text, Atom and VS Code (thank VS Code for design
         - [1.3. Packages](#1-3-packages)
             - [1.3.1. Background](#1-3-1-background)
             - [1.3.2. Popup](#1-3-2-popup)
-            - [1.3.3. Client](#1-3-3-client)
-            - [1.3.4. Common](#1-3-4-common)
+            - [1.3.3. Content](#1-3-3-content)
+            - [1.3.3. Common](#1-3-3-common)
 
 ## 1. Development
+
+To check all TODOs, go to [TODO.md](./TODO.md)
 
 ### 1.1. Overview
 
@@ -63,7 +65,9 @@ popup or client.
 
 Popup is frontend for popup, when user clicks on top-right icon in chrome browser.
 
-#### 1.3.3. Client
+#### 1.3.3. Content
+
+Content is script, which is executed on every page user visits.
 
 #### 1.3.4. Common
 

@@ -17247,15 +17247,15 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Category_1 = __webpack_require__(286);
-	var allCommands = __webpack_require__(283);
+	var Category_1 = __webpack_require__(283);
+	var allCommands = __webpack_require__(284);
 	var sendMessage = function (message) { return chrome.runtime.sendMessage(message, function () { return null; }); };
 	/**
 	 * All possible commands listed in command panel
 	 */
 	exports.commands = [
 	    allCommands.addToBookmarks,
-	    // allCommands.addToBookmarksAs,
+	    // AllCommands.addToBookmarksAs,
 	    allCommands.closeCurrentTab,
 	    { desc: 'Ctrl + R', cat: Category_1.CAT.PAGE, text: 'Reload', func: function () { return sendMessage({ type: 'TAB_RELOAD' }); } },
 	    allCommands.openNewTab,
@@ -17273,10 +17273,28 @@
 
 /***/ },
 /* 283 */
+/***/ function(module, exports) {
+
+	"use strict";
+	/**
+	 * Categories are used to categorize commands to be more easily found in
+	 * command panel
+	 */
+	exports.CAT = {
+	    BOOKMARK: 'Bookmark',
+	    BROWSER: 'Browser',
+	    GOTO: 'Goto',
+	    PAGE: 'Page',
+	    WINDOW: 'Window'
+	};
+
+
+/***/ },
+/* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var AddToBookmarks_1 = __webpack_require__(284);
+	var AddToBookmarks_1 = __webpack_require__(285);
 	exports.addToBookmarks = AddToBookmarks_1.addToBookmarks;
 	var AddToBookmarksAs_1 = __webpack_require__(287);
 	exports.addToBookmarksAs = AddToBookmarksAs_1.addToBookmarksAs;
@@ -17303,12 +17321,12 @@
 
 
 /***/ },
-/* 284 */
+/* 285 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var BookmarkAdd_1 = __webpack_require__(285);
-	var Category_1 = __webpack_require__(286);
+	var BookmarkAdd_1 = __webpack_require__(286);
+	var Category_1 = __webpack_require__(283);
 	/**
 	 * Will send message via chrome runtime to background
 	 */
@@ -17322,7 +17340,7 @@
 
 
 /***/ },
-/* 285 */
+/* 286 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -17337,30 +17355,12 @@
 
 
 /***/ },
-/* 286 */
-/***/ function(module, exports) {
-
-	"use strict";
-	/**
-	 * Categories are used to categorize commands to be more easily found in
-	 * command panel
-	 */
-	exports.CAT = {
-	    BOOKMARK: 'Bookmark',
-	    BROWSER: 'Browser',
-	    GOTO: 'Goto',
-	    PAGE: 'Page',
-	    WINDOW: 'Window'
-	};
-
-
-/***/ },
 /* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var BookmarkAddAs_1 = __webpack_require__(288);
-	var Category_1 = __webpack_require__(286);
+	var Category_1 = __webpack_require__(283);
 	/**
 	 * Will send message via chrome runtime to background
 	 */
@@ -17392,7 +17392,7 @@
 
 	"use strict";
 	var tabClose_1 = __webpack_require__(290);
-	var Category_1 = __webpack_require__(286);
+	var Category_1 = __webpack_require__(283);
 	/**
 	 * Will send message via chrome runtime to background
 	 */
@@ -17426,7 +17426,7 @@
 
 	"use strict";
 	var tabNew_1 = __webpack_require__(292);
-	var Category_1 = __webpack_require__(286);
+	var Category_1 = __webpack_require__(283);
 	/**
 	 * Will send message via chrome runtime to background
 	 */
@@ -17463,7 +17463,7 @@
 	"use strict";
 	var Chrome_1 = __webpack_require__(294);
 	var tabNew_1 = __webpack_require__(292);
-	var Category_1 = __webpack_require__(286);
+	var Category_1 = __webpack_require__(283);
 	/**
 	 * Will send message via chrome runtime to background
 	 */
@@ -17500,7 +17500,7 @@
 	"use strict";
 	var Chrome_1 = __webpack_require__(294);
 	var tabNew_1 = __webpack_require__(292);
-	var Category_1 = __webpack_require__(286);
+	var Category_1 = __webpack_require__(283);
 	/**
 	 * Will send message via chrome runtime to background
 	 */
@@ -17520,7 +17520,7 @@
 	"use strict";
 	var Chrome_1 = __webpack_require__(294);
 	var tabNew_1 = __webpack_require__(292);
-	var Category_1 = __webpack_require__(286);
+	var Category_1 = __webpack_require__(283);
 	/**
 	 * Will send message via chrome runtime to background
 	 */
@@ -17540,7 +17540,7 @@
 	"use strict";
 	var Chrome_1 = __webpack_require__(294);
 	var tabNew_1 = __webpack_require__(292);
-	var Category_1 = __webpack_require__(286);
+	var Category_1 = __webpack_require__(283);
 	/**
 	 * Will send message via chrome runtime to background
 	 */
@@ -17560,7 +17560,7 @@
 	"use strict";
 	var Chrome_1 = __webpack_require__(294);
 	var tabNew_1 = __webpack_require__(292);
-	var Category_1 = __webpack_require__(286);
+	var Category_1 = __webpack_require__(283);
 	/**
 	 * Will send message via chrome runtime to background
 	 */
@@ -17579,7 +17579,7 @@
 
 	"use strict";
 	var Zoom_1 = __webpack_require__(300);
-	var Category_1 = __webpack_require__(286);
+	var Category_1 = __webpack_require__(283);
 	/**
 	 * Zoom in current page
 	 */
@@ -17614,7 +17614,7 @@
 
 	"use strict";
 	var Zoom_1 = __webpack_require__(300);
-	var Category_1 = __webpack_require__(286);
+	var Category_1 = __webpack_require__(283);
 	/**
 	 * Zoom out current page
 	 */
@@ -17633,7 +17633,7 @@
 
 	"use strict";
 	var Zoom_1 = __webpack_require__(300);
-	var Category_1 = __webpack_require__(286);
+	var Category_1 = __webpack_require__(283);
 	/**
 	 * Zoom out current page
 	 */
