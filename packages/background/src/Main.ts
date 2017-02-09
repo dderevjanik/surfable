@@ -45,7 +45,10 @@ chrome.runtime.onMessage.addListener((message: Type, sender, sendResponse) => {
 			break;
 		}
 		case ZOOM: {
+			console.log('vvvv');
+			console.log(message);
 			chrome.tabs.query({active: true}, (payload) => {
+				chrome.tabs.getZoom(payload[0].id, (zoom) => console.log(zoom));
 				switch(message.zoomType) {
 					case EZoomType.IN: {
 						chrome.tabs.setZoom(payload[0].id, 1.2);
@@ -54,10 +57,9 @@ chrome.runtime.onMessage.addListener((message: Type, sender, sendResponse) => {
 						chrome.tabs.setZoom(payload[0].id, 0.8);
 					}
 					case EZoomType.RESET: {
-						chrome.tabs.setZoom(payload[0].id, 1.0);
+						chrome.tabs.setZoom(payload[0].id, 1);
 					}
 				}
-				chrome.tabs.setZoom(payload[0].id, 1.2);
 			});
 			break;
 		}
@@ -72,6 +74,7 @@ chrome.runtime.onMessage.addListener((message: Type, sender, sendResponse) => {
 		}
 		default: {
 			console.log('undefined message type: ' + message);
+			console.log(message);
 		}
 	}
 });

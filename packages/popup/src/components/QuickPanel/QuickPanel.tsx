@@ -9,34 +9,32 @@ import { searchChange } from './../../redux/reducers/Actions';
 import { quickPanelS, searchBoxS } from './QuickPanel.style';
 
 interface IProps {
-    activeInd: number;
-    commands: ITextCommand[];
-    opened: boolean;
-    inputVal: string;
-    onCommandClick: () => null;
-    onSearchChange: (newValue: string) => null;
+	activeInd: number;
+	commands: ITextCommand[];
+	opened: boolean;
+	inputVal: string;
+	onSearchChange: (newValue: string) => null;
 };
 
 export const QuickPanelComponent = (props: IProps) => (
-    <div className={ quickPanelS }>
-        <div className={ searchBoxS }>
-            <SearchInput value={ props.inputVal } onSearchChange={ props.onSearchChange }/>
-        </div>
-        <div>
-            <CommandList commands={ props.commands } activeInd={props.activeInd} onCommandClick={props.onCommandClick}/>
-    </div>
-    </div>
+	<div className={ quickPanelS }>
+		<div className={ searchBoxS }>
+			<SearchInput value={ props.inputVal } onSearchChange={ props.onSearchChange }/>
+		</div>
+		<div>
+			<CommandList commands={ props.commands } activeInd={props.activeInd}/>
+	</div>
+	</div>
 );
 
 export const QuickPanel = connect(
-    (state: IAppState) => ({
-            activeInd: state.quickpanel.offset,
-            commands: state.quickpanel.commands,
-            inputVal: state.quickpanel.inputVal,
-            opened: state.quickpanel.opened
-    }),
-    (dispatch) => ({
-        onCommandClick: () => dispatch(executeCommand()),
-        onSearchChange: (value: string) => dispatch(searchChange(value))
-    })
+	(state: IAppState) => ({
+			activeInd: state.quickpanel.offset,
+			commands: state.quickpanel.commands,
+			inputVal: state.quickpanel.inputVal,
+			opened: state.quickpanel.opened
+	}),
+	(dispatch) => ({
+		onSearchChange: (value: string) => dispatch(searchChange(value))
+	})
 )(QuickPanelComponent);

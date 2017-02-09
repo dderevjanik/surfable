@@ -17768,7 +17768,7 @@
 	                var newCommands = action.favorites.map(function (favorite) { return ({
 	                    desc: '',
 	                    cat: 'Favorite',
-	                    text: favorite.title,
+	                    text: (favorite.length > 50) ? (favorite.title.slice(0, 50) + '...') : favorite.title,
 	                    func: function () { return chrome.runtime.sendMessage(tabNew_1.tabNew(favorite.url)); }
 	                }); });
 	                var commands = state.allCommands.concat(newCommands);
@@ -35242,22 +35242,20 @@
 	var CommandList_1 = __webpack_require__(455);
 	var SearchInput_1 = __webpack_require__(465);
 	var Actions_1 = __webpack_require__(467);
-	var Actions_2 = __webpack_require__(467);
 	var QuickPanel_style_1 = __webpack_require__(469);
 	;
 	exports.QuickPanelComponent = function (props) { return (React.createElement("div", { className: QuickPanel_style_1.quickPanelS },
 	    React.createElement("div", { className: QuickPanel_style_1.searchBoxS },
 	        React.createElement(SearchInput_1.SearchInput, { value: props.inputVal, onSearchChange: props.onSearchChange })),
 	    React.createElement("div", null,
-	        React.createElement(CommandList_1.CommandList, { commands: props.commands, activeInd: props.activeInd, onCommandClick: props.onCommandClick })))); };
+	        React.createElement(CommandList_1.CommandList, { commands: props.commands, activeInd: props.activeInd })))); };
 	exports.QuickPanel = react_redux_1.connect(function (state) { return ({
 	    activeInd: state.quickpanel.offset,
 	    commands: state.quickpanel.commands,
 	    inputVal: state.quickpanel.inputVal,
 	    opened: state.quickpanel.opened
 	}); }, function (dispatch) { return ({
-	    onCommandClick: function () { return dispatch(Actions_1.executeCommand()); },
-	    onSearchChange: function (value) { return dispatch(Actions_2.searchChange(value)); }
+	    onSearchChange: function (value) { return dispatch(Actions_1.searchChange(value)); }
 	}); })(exports.QuickPanelComponent);
 
 
@@ -35271,7 +35269,7 @@
 	var CommandList_style_1 = __webpack_require__(464);
 	;
 	exports.CommandList = function (props) { return (React.createElement("ul", { className: CommandList_style_1.ulS }, props.commands.map(function (command, i) {
-	    return React.createElement(Command_1.Command, { active: (props.activeInd === i) ? true : false, category: command.cat, commandInd: i, desc: command.desc, key: i, name: command.text, onCommandClick: props.onCommandClick, partialText: command.pText });
+	    return React.createElement(Command_1.Command, { active: (props.activeInd === i) ? true : false, category: command.cat, commandInd: i, desc: command.desc, key: i, name: command.text, onCommandClick: function () { return command.func(); }, partialText: command.pText });
 	}))); };
 
 
@@ -35283,7 +35281,7 @@
 	var React = __webpack_require__(174);
 	var Command_style_1 = __webpack_require__(457);
 	;
-	exports.Command = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(props.commandInd); } },
+	exports.Command = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } },
 	    (props.partialText)
 	        ? (React.createElement("span", { className: Command_style_1.textS },
 	            React.createElement("span", null, props.partialText[0]),
@@ -35305,6 +35303,11 @@
 	    padding: '2px 8px',
 	    textAlign: 'left',
 	    lineHeight: '1.5em',
+	    overflow: 'hidden',
+	    textOverflow: 'ellipsis',
+	    display: '-webkit-box',
+	    '-webkit-line-clamp': '1',
+	    '-webkit-box-orient': 'vertical',
 	    $nest: {
 	        '&:hover': {
 	            background: '#2A2D2E'

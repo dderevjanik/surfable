@@ -97,7 +97,7 @@ export const panelReducer = (state: IPanel = initState.quickpanel, action): IPan
 				const newCommands: ITextCommand[] = action.favorites.map(favorite => ({
 					desc: '',
 					cat: 'Favorite',
-					text: favorite.title,
+					text: (favorite.length > 50) ? (favorite.title.slice(0, 50) + '...') : favorite.title,
 					func: () => chrome.runtime.sendMessage(tabNew(favorite.url))
 				}));
 				const commands: ITextCommand[] = state.allCommands.concat(newCommands);
