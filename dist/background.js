@@ -52,84 +52,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var All_1 = __webpack_require__(2);
-	chrome.runtime.onMessage.addListener(function (message, sender) {
-	    switch (message.type) {
-	        case All_1.TAB_CLOSE: {
-	            chrome.tabs.query({ active: true }, function (payload) {
-	                chrome.tabs.remove(payload[0].id);
-	            });
-	            break;
-	        }
-	        case All_1.TAB_NEW: {
-	            if (message.url.length > 0) {
-	                chrome.tabs.create({ url: message.url });
-	            }
-	            else {
-	                chrome.tabs.create({});
-	            }
-	            break;
-	        }
-	        case All_1.BOOKMARK_ADD: {
-	            chrome.tabs.query({ active: true }, function (payload) {
-	                var activeTab = payload[0];
-	                chrome.bookmarks.create({ title: activeTab.title, url: activeTab.url });
-	            });
-	            break;
-	        }
-	        case All_1.BOOKMARK_ADD_AS: {
-	            chrome.bookmarks.create({ title: message.title, url: sender.url });
-	            break;
-	        }
-	        case All_1.TAB_RELOAD: {
-	            chrome.tabs.query({ active: true }, function (payload) {
-	                chrome.tabs.reload(payload[0].id);
-	            });
-	            break;
-	        }
-	        case All_1.TAB_DUPLICATE: {
-	            chrome.tabs.query({ active: true }, function (payload) {
-	                chrome.tabs.duplicate(payload[0].id);
-	            });
-	            break;
-	        }
-	        case All_1.ZOOM: {
-	            chrome.tabs.query({ active: true }, function (payload) {
-	                switch (message.zoomType) {
-	                    case 0 /* IN */: {
-	                        chrome.tabs.setZoom(payload[0].id, 1.2);
-	                        break;
-	                    }
-	                    case 1 /* OUT */: {
-	                        chrome.tabs.setZoom(payload[0].id, 0.8);
-	                        break;
-	                    }
-	                    case 2 /* RESET */: {
-	                        chrome.tabs.setZoom(payload[0].id, 1);
-	                        break;
-	                    }
-	                    default: {
-	                        console.log('unknown zoom modifier EZoomType');
-	                    }
-	                }
-	            });
-	            break;
-	        }
-	        case All_1.CAPTURE: {
-	            break;
-	        }
-	        case All_1.GET_FAVORITES: {
-	            chrome.topSites.get(function (favorites) {
-	                chrome.runtime.sendMessage({ type: 'SHOW_FAVORITES', favorites: favorites });
-	            });
-	            break;
-	        }
-	        default: {
-	            console.log('undefined message: ');
-	            console.log(message);
-	        }
-	    }
-	});
+	var MessageListener_1 = __webpack_require__(2);
+	MessageListener_1.messageListener();
 
 
 /***/ },
@@ -137,33 +61,121 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var BookmarkAdd_1 = __webpack_require__(3);
-	exports.BOOKMARK_ADD = BookmarkAdd_1.BOOKMARK_ADD;
-	var BookmarkAddAs_1 = __webpack_require__(4);
-	exports.BOOKMARK_ADD_AS = BookmarkAddAs_1.BOOKMARK_ADD_AS;
-	var TabClose_1 = __webpack_require__(5);
-	exports.TAB_CLOSE = TabClose_1.TAB_CLOSE;
-	var TabNew_1 = __webpack_require__(6);
-	exports.TAB_NEW = TabNew_1.TAB_NEW;
-	var Zoom_1 = __webpack_require__(7);
-	exports.ZOOM = Zoom_1.ZOOM;
-	var Capture_1 = __webpack_require__(8);
-	exports.CAPTURE = Capture_1.CAPTURE;
-	var TabReload_1 = __webpack_require__(9);
-	exports.TAB_RELOAD = TabReload_1.TAB_RELOAD;
-	var TabDuplicate_1 = __webpack_require__(10);
-	exports.TAB_DUPLICATE = TabDuplicate_1.TAB_DUPLICATE;
-	var GetFavorites_1 = __webpack_require__(11);
-	exports.GET_FAVORITES = GetFavorites_1.GET_FAVORITES;
+	var Message = __webpack_require__(3);
+	exports.messageListener = function () {
+	    chrome.runtime.onMessage.addListener(function (message, sender) {
+	        switch (message.type) {
+	            case Message.TAB_CLOSE: {
+	                chrome.tabs.query({ active: true }, function (payload) {
+	                    chrome.tabs.remove(payload[0].id);
+	                });
+	                break;
+	            }
+	            case Message.TAB_NEW: {
+	                if (message.url.length > 0) {
+	                    chrome.tabs.create({ url: message.url });
+	                }
+	                else {
+	                    chrome.tabs.create({});
+	                }
+	                break;
+	            }
+	            case Message.BOOKMARK_ADD: {
+	                chrome.tabs.query({ active: true }, function (payload) {
+	                    var activeTab = payload[0];
+	                    chrome.bookmarks.create({ title: activeTab.title, url: activeTab.url });
+	                });
+	                break;
+	            }
+	            case Message.BOOKMARK_ADD_AS: {
+	                chrome.bookmarks.create({ title: message.title, url: sender.url });
+	                break;
+	            }
+	            case Message.TAB_RELOAD: {
+	                chrome.tabs.query({ active: true }, function (payload) {
+	                    chrome.tabs.reload(payload[0].id);
+	                });
+	                break;
+	            }
+	            case Message.TAB_DUPLICATE: {
+	                chrome.tabs.query({ active: true }, function (payload) {
+	                    chrome.tabs.duplicate(payload[0].id);
+	                });
+	                break;
+	            }
+	            case Message.ZOOM: {
+	                chrome.tabs.query({ active: true }, function (payload) {
+	                    switch (message.zoomType) {
+	                        case 0 /* IN */: {
+	                            chrome.tabs.setZoom(payload[0].id, 1.2);
+	                            break;
+	                        }
+	                        case 1 /* OUT */: {
+	                            chrome.tabs.setZoom(payload[0].id, 0.8);
+	                            break;
+	                        }
+	                        case 2 /* RESET */: {
+	                            chrome.tabs.setZoom(payload[0].id, 1);
+	                            break;
+	                        }
+	                        default: {
+	                            console.log('unknown zoom modifier EZoomType');
+	                        }
+	                    }
+	                });
+	                break;
+	            }
+	            case Message.CAPTURE: {
+	                break;
+	            }
+	            case Message.GET_FAVORITES: {
+	                chrome.topSites.get(function (favorites) {
+	                    chrome.runtime.sendMessage({ type: Message.GET_FAVORITES, favorites: favorites });
+	                });
+	                break;
+	            }
+	            default: {
+	                console.log('undefined message: ');
+	                console.log(message);
+	            }
+	        }
+	    });
+	};
 
 
 /***/ },
 /* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var BookmarkAdd_1 = __webpack_require__(4);
+	exports.BOOKMARK_ADD = BookmarkAdd_1.BOOKMARK_ADD;
+	var BookmarkAddAs_1 = __webpack_require__(5);
+	exports.BOOKMARK_ADD_AS = BookmarkAddAs_1.BOOKMARK_ADD_AS;
+	var TabClose_1 = __webpack_require__(6);
+	exports.TAB_CLOSE = TabClose_1.TAB_CLOSE;
+	var TabNew_1 = __webpack_require__(7);
+	exports.TAB_NEW = TabNew_1.TAB_NEW;
+	var Zoom_1 = __webpack_require__(8);
+	exports.ZOOM = Zoom_1.ZOOM;
+	var Capture_1 = __webpack_require__(9);
+	exports.CAPTURE = Capture_1.CAPTURE;
+	var TabReload_1 = __webpack_require__(10);
+	exports.TAB_RELOAD = TabReload_1.TAB_RELOAD;
+	var TabDuplicate_1 = __webpack_require__(11);
+	exports.TAB_DUPLICATE = TabDuplicate_1.TAB_DUPLICATE;
+	var GetFavorites_1 = __webpack_require__(12);
+	exports.GET_FAVORITES = GetFavorites_1.GET_FAVORITES;
+	var ShowFavorites_1 = __webpack_require__(13);
+	exports.SHOW_FAVORITES = ShowFavorites_1.SHOW_FAVORITES;
+
+
+/***/ },
+/* 4 */
 /***/ function(module, exports) {
 
 	"use strict";
 	exports.BOOKMARK_ADD = 'BOOKMARK_ADD';
-	;
 	/**
 	 * Add current page to bookmarks
 	 */
@@ -173,12 +185,11 @@
 
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports) {
 
 	"use strict";
 	exports.BOOKMARK_ADD_AS = 'BOOKMARK_ADD_AS';
-	;
 	exports.bookmarkAddAs = function (bookmarkTitle) { return ({
 	    type: exports.BOOKMARK_ADD_AS,
 	    title: bookmarkTitle
@@ -186,7 +197,7 @@
 
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -201,7 +212,7 @@
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -218,7 +229,7 @@
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -227,19 +238,18 @@
 	/**
 	 * Add current page to bookmarks
 	 */
-	exports.Zoom = function (zoomType) { return ({
+	exports.zoom = function (zoomType) { return ({
 	    type: exports.ZOOM,
 	    zoomType: zoomType
 	}); };
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	"use strict";
 	exports.CAPTURE = 'CAPTURE';
-	;
 	exports.capture = function (captureType) { return ({
 	    type: exports.CAPTURE,
 	    captureType: captureType
@@ -247,7 +257,7 @@
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -257,12 +267,12 @@
 	 * Close current page
 	 */
 	exports.tabReload = function () { return ({
-	    type: exports.TAB_RELOAD,
+	    type: exports.TAB_RELOAD
 	}); };
 
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -277,13 +287,25 @@
 
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports) {
 
 	"use strict";
 	exports.GET_FAVORITES = 'GET_FAVORITES';
 	exports.getFavorites = function () { return ({
 	    type: exports.GET_FAVORITES
+	}); };
+
+
+/***/ },
+/* 13 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.SHOW_FAVORITES = 'SHOW_FAVORITES';
+	exports.showFavorites = function (favorites) { return ({
+	    type: exports.SHOW_FAVORITES,
+	    favorites: favorites
 	}); };
 
 

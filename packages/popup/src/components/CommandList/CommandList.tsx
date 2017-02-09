@@ -4,11 +4,11 @@ import { ITextCommand } from './../../interfaces/ITextCommand';
 import { ulS } from './CommandList.style';
 
 interface IProps {
-	commands: ITextCommand[];
-	activeInd: number;
+	readonly commands: ITextCommand[];
+	readonly activeInd: number;
 };
 
-export const CommandList = (props: IProps)  => (
+export const CommandList = (props: IProps) => (
 	<ul className={ ulS }>
 		{
 			props.commands.map((command, i) =>

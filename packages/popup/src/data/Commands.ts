@@ -4,7 +4,6 @@ import {ITextCommand} from './../interfaces/ITextCommand';
 import {EZoomType} from 'surfable-common/src/enums/EZoomType';
 import * as allCommands from './../commands/All';
 
-declare const chrome;
 const sendMessage = (message: Type) => chrome.runtime.sendMessage(message, () => null);
 
 /**

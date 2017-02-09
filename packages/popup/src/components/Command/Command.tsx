@@ -2,13 +2,13 @@ import * as React from 'react';
 import { commandS, commandHighlightS, textS, descS, highlightS } from './Command.style';
 
 interface IProps {
-	active: boolean;
-	category: string;
-	commandInd: number;
-	desc: string;
-	partialText: string[];
-	name: string;
-	onCommandClick: () => void;
+	readonly active: boolean;
+	readonly category: string;
+	readonly commandInd: number;
+	readonly desc: string;
+	readonly partialText: string[];
+	readonly name: string;
+	readonly onCommandClick: () => void;
 };
 
 export const Command = (props: IProps) => (

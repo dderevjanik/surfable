@@ -57,64 +57,23 @@
 	var Actions_1 = __webpack_require__(306);
 	var Index_1 = __webpack_require__(307);
 	var AsyncActions_1 = __webpack_require__(470);
-	var showLinks = function () {
-	    console.log('showiiiing links');
-	    var createHint = function () {
-	        var hint = document.createElement('div');
-	        hint.className = 'surfable_hint';
-	        hint.innerText = 'LINKA';
-	        return hint;
-	    };
-	    var links = document.querySelectorAll('a');
-	    for (var i = 0; i < links.length; i++) {
-	        var link = links[i];
-	        link.appendChild(createHint());
-	    }
-	};
+	var All_1 = __webpack_require__(471);
 	Index_1.render();
-	var pressedKeys = {};
 	var processEvent = function (event) {
-	    //     const state = store.getState() as IAppState;
-	    //     // if (!((document.activeElement.tagName === 'BODY') || (document.activeElement.id === 'surfable_input'))) {
-	    //     //     return;
-	    //     // } else {
-	    //     //     event.preventDefault();
-	    //     // }
-	    //     // if (event.ctrlKey && event.keyCode === keyMap.p) {
-	    //     //     event.preventDefault();
-	    //     // }
-	    //     if (document.activeElement.tagName === 'BODY') {
-	    //         switch(event.keyCode) {
-	    //             case keyMap.esc: {
-	    //                 console.log('dispatching close');
-	    //                 store.dispatch(panelClose());
-	    //                 break;
-	    //             }
-	    //             case keyMap.p: {
-	    //                 console.log('dispatching open');
-	    //                 store.dispatch(panelOpen());
-	    //                 break;
-	    //             }
-	    //         }
-	    //     }
 	    switch (event.keyCode) {
 	        case KeyMap_1.keyMap.esc: {
-	            console.log('dispatching close');
 	            store_1.store.dispatch(Actions_1.panelClose());
 	            break;
 	        }
 	        case KeyMap_1.keyMap.up: {
-	            console.log('dispatching up');
 	            store_1.store.dispatch(Actions_1.panelUp());
 	            break;
 	        }
 	        case KeyMap_1.keyMap.down: {
-	            console.log('dispatching down');
 	            store_1.store.dispatch(Actions_1.panelDown());
 	            break;
 	        }
 	        case KeyMap_1.keyMap.enter: {
-	            console.log('dispatching execute command');
 	            store_1.store.dispatch(Actions_1.executeCommand());
 	            break;
 	        }
@@ -123,12 +82,7 @@
 	        }
 	    }
 	};
-	// document.onkeypress = (e) => {
-	//     processEvent(e);
-	// };
 	document.onkeydown = function (e) {
-	    // It's not possible to catch arrow keys with 'onkeypress' event
-	    console.log('key: ', e.keyCode);
 	    if ((e.keyCode >= 37) && (e.keyCode <= 40) || (e.keyCode == KeyMap_1.keyMap.esc) || (e.keyCode == KeyMap_1.keyMap.enter)) {
 	        processEvent(e);
 	    }
@@ -136,7 +90,7 @@
 	AsyncActions_1.getFavorites();
 	chrome.runtime.onMessage.addListener(function (message) {
 	    switch (message.type) {
-	        case 'SHOW_FAVORITES': {
+	        case All_1.SHOW_FAVORITES: {
 	            store_1.store.dispatch({ type: message.type, favorites: message.favorites });
 	            break;
 	        }
@@ -17386,7 +17340,6 @@
 
 	"use strict";
 	exports.BOOKMARK_ADD = 'BOOKMARK_ADD';
-	;
 	/**
 	 * Add current page to bookmarks
 	 */
@@ -17420,7 +17373,6 @@
 
 	"use strict";
 	exports.BOOKMARK_ADD_AS = 'BOOKMARK_ADD_AS';
-	;
 	exports.bookmarkAddAs = function (bookmarkTitle) { return ({
 	    type: exports.BOOKMARK_ADD_AS,
 	    title: bookmarkTitle
@@ -17643,7 +17595,7 @@
 	/**
 	 * Add current page to bookmarks
 	 */
-	exports.Zoom = function (zoomType) { return ({
+	exports.zoom = function (zoomType) { return ({
 	    type: exports.ZOOM,
 	    zoomType: zoomType
 	}); };
@@ -36229,7 +36181,6 @@
 	};
 	var React = __webpack_require__(174);
 	var SearchInput_style_1 = __webpack_require__(466);
-	;
 	var SearchInput = (function (_super) {
 	    __extends(SearchInput, _super);
 	    function SearchInput() {
@@ -36347,6 +36298,172 @@
 	"use strict";
 	var ActionsList_1 = __webpack_require__(468);
 	exports.getFavorites = function () { return chrome.runtime.sendMessage({ type: ActionsList_1.GET_FAVORITES }); };
+
+
+/***/ },
+/* 471 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var BookmarkAdd_1 = __webpack_require__(472);
+	exports.BOOKMARK_ADD = BookmarkAdd_1.BOOKMARK_ADD;
+	var BookmarkAddAs_1 = __webpack_require__(473);
+	exports.BOOKMARK_ADD_AS = BookmarkAddAs_1.BOOKMARK_ADD_AS;
+	var TabClose_1 = __webpack_require__(474);
+	exports.TAB_CLOSE = TabClose_1.TAB_CLOSE;
+	var TabNew_1 = __webpack_require__(475);
+	exports.TAB_NEW = TabNew_1.TAB_NEW;
+	var Zoom_1 = __webpack_require__(476);
+	exports.ZOOM = Zoom_1.ZOOM;
+	var Capture_1 = __webpack_require__(477);
+	exports.CAPTURE = Capture_1.CAPTURE;
+	var TabReload_1 = __webpack_require__(478);
+	exports.TAB_RELOAD = TabReload_1.TAB_RELOAD;
+	var TabDuplicate_1 = __webpack_require__(479);
+	exports.TAB_DUPLICATE = TabDuplicate_1.TAB_DUPLICATE;
+	var GetFavorites_1 = __webpack_require__(480);
+	exports.GET_FAVORITES = GetFavorites_1.GET_FAVORITES;
+	var ShowFavorites_1 = __webpack_require__(481);
+	exports.SHOW_FAVORITES = ShowFavorites_1.SHOW_FAVORITES;
+
+
+/***/ },
+/* 472 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.BOOKMARK_ADD = 'BOOKMARK_ADD';
+	/**
+	 * Add current page to bookmarks
+	 */
+	exports.bookmarkAdd = function () { return ({
+	    type: exports.BOOKMARK_ADD
+	}); };
+
+
+/***/ },
+/* 473 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.BOOKMARK_ADD_AS = 'BOOKMARK_ADD_AS';
+	exports.bookmarkAddAs = function (bookmarkTitle) { return ({
+	    type: exports.BOOKMARK_ADD_AS,
+	    title: bookmarkTitle
+	}); };
+
+
+/***/ },
+/* 474 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.TAB_CLOSE = 'TAB_CLOSE';
+	;
+	/**
+	 * Close current page
+	 */
+	exports.tabClose = function () { return ({
+	    type: exports.TAB_CLOSE,
+	}); };
+
+
+/***/ },
+/* 475 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.TAB_NEW = 'TAB_NEW';
+	;
+	/**
+	 * Open a new tab with specific url.
+	 * @param {string} url - url to open. When empty, it'll open a blank page
+	 */
+	exports.tabNew = function (url) { return ({
+	    type: exports.TAB_NEW,
+	    url: url
+	}); };
+
+
+/***/ },
+/* 476 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.ZOOM = 'ZOOM';
+	;
+	/**
+	 * Add current page to bookmarks
+	 */
+	exports.zoom = function (zoomType) { return ({
+	    type: exports.ZOOM,
+	    zoomType: zoomType
+	}); };
+
+
+/***/ },
+/* 477 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.CAPTURE = 'CAPTURE';
+	exports.capture = function (captureType) { return ({
+	    type: exports.CAPTURE,
+	    captureType: captureType
+	}); };
+
+
+/***/ },
+/* 478 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.TAB_RELOAD = 'TAB_RELOAD';
+	;
+	/**
+	 * Close current page
+	 */
+	exports.tabReload = function () { return ({
+	    type: exports.TAB_RELOAD
+	}); };
+
+
+/***/ },
+/* 479 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.TAB_DUPLICATE = 'TAB_DUPLICATE';
+	;
+	/**
+	 * Close current page
+	 */
+	exports.tabDuplicate = function () { return ({
+	    type: exports.TAB_DUPLICATE,
+	}); };
+
+
+/***/ },
+/* 480 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.GET_FAVORITES = 'GET_FAVORITES';
+	exports.getFavorites = function () { return ({
+	    type: exports.GET_FAVORITES
+	}); };
+
+
+/***/ },
+/* 481 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.SHOW_FAVORITES = 'SHOW_FAVORITES';
+	exports.showFavorites = function (favorites) { return ({
+	    type: exports.SHOW_FAVORITES,
+	    favorites: favorites
+	}); };
 
 
 /***/ }

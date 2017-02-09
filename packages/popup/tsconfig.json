@@ -6,5 +6,8 @@
         "noUnusedParameters": true,
         "sourceMap": false,
         "target": "es5"
-    }
+    },
+    "types": [
+        "chrome"
+    ]
 }

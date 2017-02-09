@@ -5,9 +5,9 @@ import { ConstMap } from './../Types';
  * command panel
  */
 export const CAT = {
-    BOOKMARK: 'Bookmark',
-    BROWSER: 'Browser',
-    GOTO: 'Goto',
-    PAGE: 'Page',
-    WINDOW: 'Window'
+	BOOKMARK: 'Bookmark',
+	BROWSER: 'Browser',
+	GOTO: 'Goto',
+	PAGE: 'Page',
+	WINDOW: 'Window'
 };

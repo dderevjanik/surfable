@@ -9,9 +9,10 @@
   },
   "license": "ISC",
   "devDependencies": {
+    "@types/chrome": "0.0.39",
     "ts-loader": "^2.0.0",
-    "typescript": "^2.1.5",
     "tslint": "^4.4.2",
-    "tslint-config-xo": "^1.1.0"
+    "tslint-config-xo": "^1.1.0",
+    "typescript": "^2.1.5"
   }
 }

@@ -12,7 +12,7 @@ export interface IZoom extends IAction {
 /**
  * Add current page to bookmarks
  */
-export const Zoom = (zoomType: EZoomType): IZoom => ({
+export const zoom = (zoomType: EZoomType): IZoom => ({
 	type: ZOOM,
 	zoomType: zoomType
 });
