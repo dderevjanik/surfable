@@ -1,3 +1,5 @@
+import { ETarget } from '../../common/src/enums/ETarget';
+import { SHOW_TABS } from '../../common/src/actions/ShowTabs';
 import {ITextCommand} from './interfaces/ITextCommand';
 import {IAppState} from './interfaces/IAppState';
 import {PressedKeysMap} from './Types';
@@ -40,12 +42,17 @@ document.onkeydown = (e: KeyboardEvent) => {
 	}
 }
 
+chrome.runtime.sendMessage({type: 'GET_CURRENT_TABS', target: ETarget.BACKGROUND});
 getFavorites();
 chrome.runtime.onMessage.addListener(
 	(message: Type) => {
 		switch(message.type) {
 			case SHOW_FAVORITES: {
 				store.dispatch({type: message.type, favorites: message.favorites});
+				break;
+			}
+			case SHOW_TABS: {
+				store.dispatch(message);
 				break;
 			}
 			default: {

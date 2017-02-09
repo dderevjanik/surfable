@@ -1,7 +1,4 @@
-import {Type} from 'surfable-common/src/actions/all';
-import {GET_FAVORITES, SHOW_FAVORITES} from './ActionsList';
+import {GET_FAVORITES} from './ActionsList';
+import {sendToBackground} from 'surfable-common/src/Sender';
 
-declare const chrome;
-
-export const getFavorites = () => chrome.runtime.sendMessage({type: GET_FAVORITES});
-
+export const getFavorites = () => sendToBackground({type: GET_FAVORITES});

@@ -1,4 +1,4 @@
-import { IAction } from './IAction';
+import {IAction} from './IAction';
 
 export type BOOKMARK_ADD_AS = 'BOOKMARK_ADD_AS';
 export const BOOKMARK_ADD_AS: BOOKMARK_ADD_AS = 'BOOKMARK_ADD_AS';

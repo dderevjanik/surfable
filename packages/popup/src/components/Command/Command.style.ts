@@ -41,3 +41,7 @@ export const descS = style({
 	float: 'right'
 });
 
+export const iconS = style({
+	height: '1.1em',
+	marginRight: '5px'
+});

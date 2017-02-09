@@ -17,6 +17,7 @@ export const CommandList = (props: IProps) => (
 					category={command.cat}
 					commandInd={i}
 					desc={command.desc}
+					imgUrl={command.imgUrl}
 					key={i}
 					name={command.text}
 					onCommandClick={() => command.func()}

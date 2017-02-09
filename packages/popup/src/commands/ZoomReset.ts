@@ -1,20 +1,14 @@
 import { ITextCommand } from './../interfaces/ITextCommand';
 import { Type } from 'surfable-common/src/actions/All';
-import { Zoom } from 'surfable-common/src/actions/Zoom';
+import { zoom } from 'surfable-common/src/actions/Zoom';
 import { Chrome } from './../data/Chrome';
 import { EZoomType } from 'surfable-common/src/enums/EZoomType';
 import { CAT } from './../data/Category';
-
-declare const chrome;
-
-/**
- * Zoom out current page
- */
-const sendMessage = (message: Type) => chrome.runtime.sendMessage(message, () => null);
+import {sendToBackground} from 'surfable-common/src/Sender';
 
 export const zoomReset: ITextCommand = {
     text: 'Zoom out',
     desc: '',
     cat: CAT.PAGE,
-    func: () => sendMessage(Zoom(EZoomType.RESET))
+    func: () => sendToBackground(zoom(EZoomType.RESET))
 };

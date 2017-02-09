@@ -1,5 +1,5 @@
-import { IAction } from './IAction';
-import { ECapture } from './../enums/ECaptureType';
+import {IAction} from './IAction';
+import {ECapture} from './../enums/ECaptureType';
 
 export type CAPTURE = 'CAPTURE';
 export const CAPTURE: CAPTURE = 'CAPTURE';

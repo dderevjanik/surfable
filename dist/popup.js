@@ -52,6 +52,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var ShowTabs_1 = __webpack_require__(498);
 	var KeyMap_1 = __webpack_require__(2);
 	var store_1 = __webpack_require__(3);
 	var Actions_1 = __webpack_require__(306);
@@ -87,11 +88,16 @@
 	        processEvent(e);
 	    }
 	};
+	chrome.runtime.sendMessage({ type: 'GET_CURRENT_TABS', target: 0 /* BACKGROUND */ });
 	AsyncActions_1.getFavorites();
 	chrome.runtime.onMessage.addListener(function (message) {
 	    switch (message.type) {
 	        case All_1.SHOW_FAVORITES: {
 	            store_1.store.dispatch({ type: message.type, favorites: message.favorites });
+	            break;
+	        }
+	        case ShowTabs_1.SHOW_TABS: {
+	            store_1.store.dispatch(message);
 	            break;
 	        }
 	        default: {
@@ -17243,6 +17249,7 @@
 
 	"use strict";
 	var Category_1 = __webpack_require__(284);
+	var Sender_1 = __webpack_require__(482);
 	var allCommands = __webpack_require__(285);
 	var sendMessage = function (message) { return chrome.runtime.sendMessage(message, function () { return null; }); };
 	/**
@@ -17252,17 +17259,17 @@
 	    allCommands.addToBookmarks,
 	    // AllCommands.addToBookmarksAs,
 	    allCommands.closeCurrentTab,
-	    { desc: 'Ctrl + R', cat: Category_1.CAT.PAGE, text: 'Reload', func: function () { return sendMessage({ type: 'TAB_RELOAD' }); } },
+	    { desc: 'Ctrl + R', cat: Category_1.CAT.PAGE, text: 'Reload', func: function () { return Sender_1.sendToBackground({ type: 'TAB_RELOAD' }); } },
 	    allCommands.openNewTab,
-	    { desc: '', cat: Category_1.CAT.PAGE, text: 'Duplicate', func: function () { return sendMessage({ type: 'TAB_DUPLICATE' }); } },
+	    { desc: '', cat: Category_1.CAT.PAGE, text: 'Duplicate', func: function () { return Sender_1.sendToBackground({ type: 'TAB_DUPLICATE' }); } },
 	    allCommands.showBookmarks,
 	    allCommands.showDownloads,
 	    allCommands.showExtensions,
 	    allCommands.showHistory,
 	    allCommands.showSettings,
-	    { desc: 'Ctrl + =', cat: Category_1.CAT.PAGE, text: 'Zoom in', func: function () { return sendMessage({ type: 'ZOOM', zoomType: 0 /* IN */ }); } },
-	    { desc: 'Ctrl + -', cat: Category_1.CAT.PAGE, text: 'Zoom out', func: function () { return sendMessage({ type: 'ZOOM', zoomType: 1 /* OUT */ }); } },
-	    { desc: '', cat: Category_1.CAT.PAGE, text: 'Zoom reset', func: function () { return sendMessage({ type: 'ZOOM', zoomType: 2 /* RESET */ }); } }
+	    { desc: 'Ctrl + =', cat: Category_1.CAT.PAGE, text: 'Zoom in', func: function () { return Sender_1.sendToBackground({ type: 'ZOOM', zoomType: 0 /* IN */ }); } },
+	    { desc: 'Ctrl + -', cat: Category_1.CAT.PAGE, text: 'Zoom out', func: function () { return Sender_1.sendToBackground({ type: 'ZOOM', zoomType: 1 /* OUT */ }); } },
+	    { desc: '', cat: Category_1.CAT.PAGE, text: 'Zoom reset', func: function () { return Sender_1.sendToBackground({ type: 'ZOOM', zoomType: 2 /* RESET */ }); } }
 	];
 
 
@@ -17322,15 +17329,12 @@
 	"use strict";
 	var BookmarkAdd_1 = __webpack_require__(287);
 	var Category_1 = __webpack_require__(284);
-	/**
-	 * Will send message via chrome runtime to background
-	 */
-	var sendMessage = function (message) { return chrome.runtime.sendMessage(message, function () { return null; }); };
+	var Sender_1 = __webpack_require__(482);
 	exports.addToBookmarks = {
 	    text: 'Add to bookmarks',
 	    desc: 'Ctrl + D',
 	    cat: Category_1.CAT.BOOKMARK,
-	    func: function () { return sendMessage(BookmarkAdd_1.bookmarkAdd()); }
+	    func: function () { return Sender_1.sendToBackground(BookmarkAdd_1.bookmarkAdd()); }
 	};
 
 
@@ -17355,15 +17359,12 @@
 	"use strict";
 	var BookmarkAddAs_1 = __webpack_require__(289);
 	var Category_1 = __webpack_require__(284);
-	/**
-	 * Will send message via chrome runtime to background
-	 */
-	var sendMessage = function (message) { return chrome.runtime.sendMessage(message, function () { return null; }); };
+	var Sender_1 = __webpack_require__(482);
 	exports.addToBookmarksAs = {
 	    text: 'Add to bookmarks As',
 	    desc: '',
 	    cat: Category_1.CAT.BOOKMARK,
-	    func: function () { return sendMessage(BookmarkAddAs_1.bookmarkAddAs('TEST')); }
+	    func: function () { return Sender_1.sendToBackground(BookmarkAddAs_1.bookmarkAddAs('TEST')); }
 	};
 
 
@@ -17386,15 +17387,12 @@
 	"use strict";
 	var tabClose_1 = __webpack_require__(291);
 	var Category_1 = __webpack_require__(284);
-	/**
-	 * Will send message via chrome runtime to background
-	 */
-	var sendMessage = function (message) { return chrome.runtime.sendMessage(message, function () { return null; }); };
+	var Sender_1 = __webpack_require__(482);
 	exports.closeCurrentTab = {
 	    text: 'Close current tab',
 	    desc: 'Ctrl + W',
 	    cat: Category_1.CAT.PAGE,
-	    func: function () { return sendMessage(tabClose_1.tabClose()); }
+	    func: function () { return Sender_1.sendToBackground(tabClose_1.tabClose()); }
 	};
 
 
@@ -17420,15 +17418,12 @@
 	"use strict";
 	var tabNew_1 = __webpack_require__(293);
 	var Category_1 = __webpack_require__(284);
-	/**
-	 * Will send message via chrome runtime to background
-	 */
-	var sendMessage = function (message) { return chrome.runtime.sendMessage(message, function () { return null; }); };
+	var Sender_1 = __webpack_require__(482);
 	exports.openNewTab = {
 	    text: 'Open new tab',
 	    desc: 'Ctrl + T',
 	    cat: Category_1.CAT.PAGE,
-	    func: function () { return sendMessage(tabNew_1.tabNew('')); }
+	    func: function () { return Sender_1.sendToBackground(tabNew_1.tabNew('')); }
 	};
 
 
@@ -17457,15 +17452,12 @@
 	var Chrome_1 = __webpack_require__(295);
 	var tabNew_1 = __webpack_require__(293);
 	var Category_1 = __webpack_require__(284);
-	/**
-	 * Will send message via chrome runtime to background
-	 */
-	var sendMessage = function (message) { return chrome.runtime.sendMessage(message, function () { return null; }); };
+	var Sender_1 = __webpack_require__(482);
 	exports.showBookmarks = {
 	    text: 'Bookmarks',
 	    desc: 'Ctrl + Shift + O',
 	    cat: Category_1.CAT.BROWSER,
-	    func: function () { return sendMessage(tabNew_1.tabNew(Chrome_1.Chrome.BOOKMARKS)); }
+	    func: function () { return Sender_1.sendToBackground(tabNew_1.tabNew(Chrome_1.Chrome.BOOKMARKS)); }
 	};
 
 
@@ -17482,7 +17474,7 @@
 	    DOWNLOADS: 'chrome://downloads',
 	    EXTENSIONS: 'chrome://extensions',
 	    SETTINGS: 'chrome://settings',
-	    BOOKMARKS: 'chrome://bookmarks',
+	    BOOKMARKS: 'chrome://bookmarks'
 	};
 
 
@@ -17494,15 +17486,12 @@
 	var Chrome_1 = __webpack_require__(295);
 	var tabNew_1 = __webpack_require__(293);
 	var Category_1 = __webpack_require__(284);
-	/**
-	 * Will send message via chrome runtime to background
-	 */
-	var sendMessage = function (message) { return chrome.runtime.sendMessage(message, function () { return null; }); };
+	var Sender_1 = __webpack_require__(482);
 	exports.showDownloads = {
 	    text: 'Downloads',
 	    desc: 'Ctrl + J',
 	    cat: Category_1.CAT.BROWSER,
-	    func: function () { return sendMessage(tabNew_1.tabNew(Chrome_1.Chrome.DOWNLOADS)); }
+	    func: function () { return Sender_1.sendToBackground(tabNew_1.tabNew(Chrome_1.Chrome.DOWNLOADS)); }
 	};
 
 
@@ -17514,15 +17503,12 @@
 	var Chrome_1 = __webpack_require__(295);
 	var tabNew_1 = __webpack_require__(293);
 	var Category_1 = __webpack_require__(284);
-	/**
-	 * Will send message via chrome runtime to background
-	 */
-	var sendMessage = function (message) { return chrome.runtime.sendMessage(message, function () { return null; }); };
+	var Sender_1 = __webpack_require__(482);
 	exports.showExtensions = {
 	    text: 'Extensions',
 	    desc: '',
 	    cat: Category_1.CAT.BROWSER,
-	    func: function () { return sendMessage(tabNew_1.tabNew(Chrome_1.Chrome.EXTENSIONS)); }
+	    func: function () { return Sender_1.sendToBackground(tabNew_1.tabNew(Chrome_1.Chrome.EXTENSIONS)); }
 	};
 
 
@@ -17534,15 +17520,12 @@
 	var Chrome_1 = __webpack_require__(295);
 	var tabNew_1 = __webpack_require__(293);
 	var Category_1 = __webpack_require__(284);
-	/**
-	 * Will send message via chrome runtime to background
-	 */
-	var sendMessage = function (message) { return chrome.runtime.sendMessage(message, function () { return null; }); };
+	var Sender_1 = __webpack_require__(482);
 	exports.showHistory = {
 	    text: 'History',
 	    desc: 'Ctrl + H',
 	    cat: Category_1.CAT.BROWSER,
-	    func: function () { return sendMessage(tabNew_1.tabNew(Chrome_1.Chrome.HISTORY)); }
+	    func: function () { return Sender_1.sendToBackground(tabNew_1.tabNew(Chrome_1.Chrome.HISTORY)); }
 	};
 
 
@@ -17554,15 +17537,12 @@
 	var Chrome_1 = __webpack_require__(295);
 	var tabNew_1 = __webpack_require__(293);
 	var Category_1 = __webpack_require__(284);
-	/**
-	 * Will send message via chrome runtime to background
-	 */
-	var sendMessage = function (message) { return chrome.runtime.sendMessage(message, function () { return null; }); };
+	var Sender_1 = __webpack_require__(482);
 	exports.showSettings = {
 	    text: 'Settings',
 	    desc: '',
 	    cat: Category_1.CAT.BROWSER,
-	    func: function () { return sendMessage(tabNew_1.tabNew(Chrome_1.Chrome.SETTINGS)); }
+	    func: function () { return Sender_1.sendToBackground(tabNew_1.tabNew(Chrome_1.Chrome.SETTINGS)); }
 	};
 
 
@@ -17573,15 +17553,12 @@
 	"use strict";
 	var Zoom_1 = __webpack_require__(301);
 	var Category_1 = __webpack_require__(284);
-	/**
-	 * Zoom in current page
-	 */
-	var sendMessage = function (message) { return chrome.runtime.sendMessage(message, function () { return null; }); };
+	var Sender_1 = __webpack_require__(482);
 	exports.zoomIn = {
 	    text: 'Zoom in',
 	    desc: 'Ctrl + =',
 	    cat: Category_1.CAT.PAGE,
-	    func: function () { return sendMessage(Zoom_1.Zoom(0 /* IN */)); }
+	    func: function () { return Sender_1.sendToBackground(Zoom_1.zoom(0 /* IN */)); }
 	};
 
 
@@ -17608,15 +17585,12 @@
 	"use strict";
 	var Zoom_1 = __webpack_require__(301);
 	var Category_1 = __webpack_require__(284);
-	/**
-	 * Zoom out current page
-	 */
-	var sendMessage = function (message) { return chrome.runtime.sendMessage(message, function () { return null; }); };
+	var Sender_1 = __webpack_require__(482);
 	exports.zoomOut = {
 	    text: 'Zoom out',
 	    desc: 'Ctrl + -',
 	    cat: Category_1.CAT.PAGE,
-	    func: function () { return sendMessage(Zoom_1.Zoom(1 /* OUT */)); }
+	    func: function () { return Sender_1.sendToBackground(Zoom_1.zoom(1 /* OUT */)); }
 	};
 
 
@@ -17627,15 +17601,12 @@
 	"use strict";
 	var Zoom_1 = __webpack_require__(301);
 	var Category_1 = __webpack_require__(284);
-	/**
-	 * Zoom out current page
-	 */
-	var sendMessage = function (message) { return chrome.runtime.sendMessage(message, function () { return null; }); };
+	var Sender_1 = __webpack_require__(482);
 	exports.zoomReset = {
 	    text: 'Zoom out',
 	    desc: '',
 	    cat: Category_1.CAT.PAGE,
-	    func: function () { return sendMessage(Zoom_1.Zoom(2 /* RESET */)); }
+	    func: function () { return Sender_1.sendToBackground(Zoom_1.zoom(2 /* RESET */)); }
 	};
 
 
@@ -17652,9 +17623,11 @@
 	    }
 	    return t;
 	};
+	var Sender_1 = __webpack_require__(482);
 	var ActionsList_1 = __webpack_require__(305);
 	var InitState_1 = __webpack_require__(282);
 	var tabNew_1 = __webpack_require__(293);
+	var All_1 = __webpack_require__(485);
 	var notFoundCommand = {
 	    cat: '',
 	    desc: '',
@@ -17721,7 +17694,7 @@
 	                    desc: '',
 	                    cat: 'Favorite',
 	                    text: (favorite.length > 50) ? (favorite.title.slice(0, 50) + '...') : favorite.title,
-	                    func: function () { return chrome.runtime.sendMessage(tabNew_1.tabNew(favorite.url)); }
+	                    func: function () { return Sender_1.sendToBackground(tabNew_1.tabNew(favorite.url)); }
 	                }); });
 	                var commands = state.allCommands.concat(newCommands);
 	                return __assign({}, state, { allCommands: commands, commands: commands });
@@ -17729,6 +17702,20 @@
 	            else {
 	                return state;
 	            }
+	        }
+	        case All_1.SHOW_TABS: {
+	            if (action.tabs) {
+	                var newCommands = action.tabs.map(function (tab, index) { return ({
+	                    desc: (index < 11) ? "Ctrl + " + index : '',
+	                    cat: 'Switch To',
+	                    text: (tab.title.length > 50) ? (tab.title.slice(0, 50) + '...') : tab.title,
+	                    imgUrl: (tab.favIconUrl) ? tab.favIconUrl : 'https://image.flaticon.com/icons/png/128/12/12195.png',
+	                    func: function () { return Sender_1.sendToBackground(tabNew_1.tabNew(tab.url)); }
+	                }); });
+	                var commands = state.allCommands.concat(newCommands);
+	                return __assign({}, state, { allCommands: commands, commands: commands });
+	            }
+	            return state;
 	        }
 	        default: {
 	            return state;
@@ -35221,7 +35208,7 @@
 	var CommandList_style_1 = __webpack_require__(464);
 	;
 	exports.CommandList = function (props) { return (React.createElement("ul", { className: CommandList_style_1.ulS }, props.commands.map(function (command, i) {
-	    return React.createElement(Command_1.Command, { active: (props.activeInd === i) ? true : false, category: command.cat, commandInd: i, desc: command.desc, key: i, name: command.text, onCommandClick: function () { return command.func(); }, partialText: command.pText });
+	    return React.createElement(Command_1.Command, { active: (props.activeInd === i) ? true : false, category: command.cat, commandInd: i, desc: command.desc, imgUrl: command.imgUrl, key: i, name: command.text, onCommandClick: function () { return command.func(); }, partialText: command.pText });
 	}))); };
 
 
@@ -35236,10 +35223,12 @@
 	exports.Command = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } },
 	    (props.partialText)
 	        ? (React.createElement("span", { className: Command_style_1.textS },
+	            props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null,
 	            React.createElement("span", null, props.partialText[0]),
 	            React.createElement("span", { className: Command_style_1.highlightS }, props.partialText[1]),
 	            React.createElement("span", null, props.partialText[2])))
-	        : React.createElement("span", { className: Command_style_1.textS }, props.category + ": " + props.name),
+	        : React.createElement("span", { className: Command_style_1.textS },
+	            props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null, props.category + ": " + props.name),
 	    React.createElement("small", { className: Command_style_1.descS }, props.desc))); };
 
 
@@ -35284,6 +35273,10 @@
 	exports.descS = typestyle_1.style({
 	    fontSize: '13px',
 	    float: 'right'
+	});
+	exports.iconS = typestyle_1.style({
+	    height: '1.1em',
+	    marginRight: '5px'
 	});
 
 
@@ -36297,7 +36290,8 @@
 
 	"use strict";
 	var ActionsList_1 = __webpack_require__(468);
-	exports.getFavorites = function () { return chrome.runtime.sendMessage({ type: ActionsList_1.GET_FAVORITES }); };
+	var Sender_1 = __webpack_require__(482);
+	exports.getFavorites = function () { return Sender_1.sendToBackground({ type: ActionsList_1.GET_FAVORITES }); };
 
 
 /***/ },
@@ -36325,6 +36319,10 @@
 	exports.GET_FAVORITES = GetFavorites_1.GET_FAVORITES;
 	var ShowFavorites_1 = __webpack_require__(481);
 	exports.SHOW_FAVORITES = ShowFavorites_1.SHOW_FAVORITES;
+	var ShowTabs_1 = __webpack_require__(483);
+	exports.SHOW_TABS = ShowTabs_1.SHOW_TABS;
+	var GetCurrentTabs_1 = __webpack_require__(484);
+	exports.GET_CURRENT_TABS = GetCurrentTabs_1.GET_CURRENT_TABS;
 
 
 /***/ },
@@ -36463,6 +36461,258 @@
 	exports.showFavorites = function (favorites) { return ({
 	    type: exports.SHOW_FAVORITES,
 	    favorites: favorites
+	}); };
+
+
+/***/ },
+/* 482 */
+/***/ function(module, exports) {
+
+	"use strict";
+	var __assign = (this && this.__assign) || Object.assign || function(t) {
+	    for (var s, i = 1, n = arguments.length; i < n; i++) {
+	        s = arguments[i];
+	        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+	            t[p] = s[p];
+	    }
+	    return t;
+	};
+	exports.sendToBackground = function (message) {
+	    return chrome.runtime.sendMessage(__assign({}, message, { target: 0 /* BACKGROUND */ }));
+	};
+	exports.sendToPopup = function (message) {
+	    return chrome.runtime.sendMessage(__assign({}, message, { target: 1 /* POPUP */ }));
+	};
+	exports.sendToContent = function (message) {
+	    return chrome.runtime.sendMessage(__assign({}, message, { target: ETarget_1.ETarget.CONTENT }));
+	};
+
+
+/***/ },
+/* 483 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.SHOW_TABS = 'SHOW_TABS';
+	exports.showTabs = function (tabs) { return ({
+	    type: exports.SHOW_TABS,
+	    tabs: tabs
+	}); };
+
+
+/***/ },
+/* 484 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.GET_CURRENT_TABS = 'GET_CURRENT_TABS';
+	exports.getCurrentTabs = function () { return ({
+	    type: exports.GET_CURRENT_TABS
+	}); };
+
+
+/***/ },
+/* 485 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var BookmarkAdd_1 = __webpack_require__(486);
+	exports.BOOKMARK_ADD = BookmarkAdd_1.BOOKMARK_ADD;
+	var BookmarkAddAs_1 = __webpack_require__(487);
+	exports.BOOKMARK_ADD_AS = BookmarkAddAs_1.BOOKMARK_ADD_AS;
+	var TabClose_1 = __webpack_require__(488);
+	exports.TAB_CLOSE = TabClose_1.TAB_CLOSE;
+	var TabNew_1 = __webpack_require__(489);
+	exports.TAB_NEW = TabNew_1.TAB_NEW;
+	var Zoom_1 = __webpack_require__(490);
+	exports.ZOOM = Zoom_1.ZOOM;
+	var Capture_1 = __webpack_require__(491);
+	exports.CAPTURE = Capture_1.CAPTURE;
+	var TabReload_1 = __webpack_require__(492);
+	exports.TAB_RELOAD = TabReload_1.TAB_RELOAD;
+	var TabDuplicate_1 = __webpack_require__(493);
+	exports.TAB_DUPLICATE = TabDuplicate_1.TAB_DUPLICATE;
+	var GetFavorites_1 = __webpack_require__(494);
+	exports.GET_FAVORITES = GetFavorites_1.GET_FAVORITES;
+	var ShowFavorites_1 = __webpack_require__(495);
+	exports.SHOW_FAVORITES = ShowFavorites_1.SHOW_FAVORITES;
+	var ShowTabs_1 = __webpack_require__(496);
+	exports.SHOW_TABS = ShowTabs_1.SHOW_TABS;
+	var GetCurrentTabs_1 = __webpack_require__(497);
+	exports.GET_CURRENT_TABS = GetCurrentTabs_1.GET_CURRENT_TABS;
+
+
+/***/ },
+/* 486 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.BOOKMARK_ADD = 'BOOKMARK_ADD';
+	/**
+	 * Add current page to bookmarks
+	 */
+	exports.bookmarkAdd = function () { return ({
+	    type: exports.BOOKMARK_ADD
+	}); };
+
+
+/***/ },
+/* 487 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.BOOKMARK_ADD_AS = 'BOOKMARK_ADD_AS';
+	exports.bookmarkAddAs = function (bookmarkTitle) { return ({
+	    type: exports.BOOKMARK_ADD_AS,
+	    title: bookmarkTitle
+	}); };
+
+
+/***/ },
+/* 488 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.TAB_CLOSE = 'TAB_CLOSE';
+	;
+	/**
+	 * Close current page
+	 */
+	exports.tabClose = function () { return ({
+	    type: exports.TAB_CLOSE,
+	}); };
+
+
+/***/ },
+/* 489 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.TAB_NEW = 'TAB_NEW';
+	;
+	/**
+	 * Open a new tab with specific url.
+	 * @param {string} url - url to open. When empty, it'll open a blank page
+	 */
+	exports.tabNew = function (url) { return ({
+	    type: exports.TAB_NEW,
+	    url: url
+	}); };
+
+
+/***/ },
+/* 490 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.ZOOM = 'ZOOM';
+	;
+	/**
+	 * Add current page to bookmarks
+	 */
+	exports.zoom = function (zoomType) { return ({
+	    type: exports.ZOOM,
+	    zoomType: zoomType
+	}); };
+
+
+/***/ },
+/* 491 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.CAPTURE = 'CAPTURE';
+	exports.capture = function (captureType) { return ({
+	    type: exports.CAPTURE,
+	    captureType: captureType
+	}); };
+
+
+/***/ },
+/* 492 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.TAB_RELOAD = 'TAB_RELOAD';
+	;
+	/**
+	 * Close current page
+	 */
+	exports.tabReload = function () { return ({
+	    type: exports.TAB_RELOAD
+	}); };
+
+
+/***/ },
+/* 493 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.TAB_DUPLICATE = 'TAB_DUPLICATE';
+	;
+	/**
+	 * Close current page
+	 */
+	exports.tabDuplicate = function () { return ({
+	    type: exports.TAB_DUPLICATE,
+	}); };
+
+
+/***/ },
+/* 494 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.GET_FAVORITES = 'GET_FAVORITES';
+	exports.getFavorites = function () { return ({
+	    type: exports.GET_FAVORITES
+	}); };
+
+
+/***/ },
+/* 495 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.SHOW_FAVORITES = 'SHOW_FAVORITES';
+	exports.showFavorites = function (favorites) { return ({
+	    type: exports.SHOW_FAVORITES,
+	    favorites: favorites
+	}); };
+
+
+/***/ },
+/* 496 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.SHOW_TABS = 'SHOW_TABS';
+	exports.showTabs = function (tabs) { return ({
+	    type: exports.SHOW_TABS,
+	    tabs: tabs
+	}); };
+
+
+/***/ },
+/* 497 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.GET_CURRENT_TABS = 'GET_CURRENT_TABS';
+	exports.getCurrentTabs = function () { return ({
+	    type: exports.GET_CURRENT_TABS
+	}); };
+
+
+/***/ },
+/* 498 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.SHOW_TABS = 'SHOW_TABS';
+	exports.showTabs = function (tabs) { return ({
+	    type: exports.SHOW_TABS,
+	    tabs: tabs
 	}); };
 
 

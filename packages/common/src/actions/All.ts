@@ -8,8 +8,9 @@ import {ITabReload} from './TabReload';
 import {ITabDuplicate} from './TabDuplicate';
 import {IGetFavorites} from './GetFavorites';
 import {IShowFavorites} from './ShowFavorites';
-
-export type Type = IBookmarkAdd | IBookmarkAddAs | ITabNew | ITabClose | IZoom | ICapture | ITabReload | ITabDuplicate | IGetFavorites | IShowFavorites;
+import {IGetCurrentTabs} from './GetCurrentTabs';
+import {IShowTabs} from './ShowTabs';
+export type Type = IBookmarkAdd | IBookmarkAddAs | ITabNew | ITabClose | IZoom | ICapture | ITabReload | ITabDuplicate | IGetFavorites | IShowFavorites | IShowTabs | IGetCurrentTabs;
 
 export {BOOKMARK_ADD} from './BookmarkAdd';
 export {BOOKMARK_ADD_AS} from './BookmarkAddAs';
@@ -21,3 +22,5 @@ export {TAB_RELOAD} from './TabReload';
 export {TAB_DUPLICATE} from './TabDuplicate';
 export {GET_FAVORITES} from './GetFavorites';
 export {SHOW_FAVORITES} from './ShowFavorites';
+export {SHOW_TABS} from './ShowTabs';
+export {GET_CURRENT_TABS} from './GetCurrentTabs';

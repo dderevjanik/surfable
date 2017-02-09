@@ -1,8 +1,10 @@
+import { sendToBackground } from '../../../../../common/src/Sender';
 import {PANEL_OPEN, PANEL_CLOSE, PANEL_UP, PANEL_DOWN, PANEL_EXECUTE_COMMAND, PANEL_KEYPRESS, SEARCH_CHANGE, SHOW_FAVORITES} from './../ActionsList';
 import {IPanel} from './../../interfaces/IPanel';
 import {ITextCommand} from './../../../interfaces/ITextCommand';
 import {initState} from './../../InitState';
 import {tabNew} from 'surfable-common/src/actions/tabNew';
+import {SHOW_TABS} from 'surfable-common/src/actions/All';
 
 declare const chrome;
 
@@ -98,7 +100,7 @@ export const panelReducer = (state: IPanel = initState.quickpanel, action): IPan
 					desc: '',
 					cat: 'Favorite',
 					text: (favorite.length > 50) ? (favorite.title.slice(0, 50) + '...') : favorite.title,
-					func: () => chrome.runtime.sendMessage(tabNew(favorite.url))
+					func: () => sendToBackground(tabNew(favorite.url))
 				}));
 				const commands: ITextCommand[] = state.allCommands.concat(newCommands);
 				return {
@@ -109,6 +111,24 @@ export const panelReducer = (state: IPanel = initState.quickpanel, action): IPan
 			} else {
 				return state;
 			}
+		}
+		case SHOW_TABS: {
+			if (action.tabs) {
+				const newCommands: ITextCommand[] = action.tabs.map((tab, index) => ({
+					desc: (index < 11) ? `Ctrl + ${index}` : '',
+					cat: 'Switch To',
+					text: (tab.title.length > 50) ? (tab.title.slice(0, 50) + '...') : tab.title,
+					imgUrl: (tab.favIconUrl) ? tab.favIconUrl : 'https://image.flaticon.com/icons/png/128/12/12195.png',
+					func: () => sendToBackground(tabNew(tab.url))
+				}));
+				const commands: ITextCommand[] = state.allCommands.concat(newCommands);
+				return {
+					...state,
+					allCommands: commands,
+					commands: commands
+				};
+			}
+			return state;
 		}
 		default: {
 			return state;
