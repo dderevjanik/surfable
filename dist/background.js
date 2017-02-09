@@ -105,23 +105,25 @@
 	            }
 	            case Message.ZOOM: {
 	                chrome.tabs.query({ active: true }, function (payload) {
-	                    switch (message.zoomType) {
-	                        case 0 /* IN */: {
-	                            chrome.tabs.setZoom(payload[0].id, 1.2);
-	                            break;
+	                    chrome.tabs.getZoom(payload[0].id, function (zoomFactor) {
+	                        switch (message.zoomType) {
+	                            case 0 /* IN */: {
+	                                chrome.tabs.setZoom(payload[0].id, zoomFactor + 0.2);
+	                                break;
+	                            }
+	                            case 1 /* OUT */: {
+	                                chrome.tabs.setZoom(payload[0].id, zoomFactor - 0.2);
+	                                break;
+	                            }
+	                            case 2 /* RESET */: {
+	                                chrome.tabs.setZoom(payload[0].id, 1);
+	                                break;
+	                            }
+	                            default: {
+	                                console.log('unknown zoom modifier EZoomType');
+	                            }
 	                        }
-	                        case 1 /* OUT */: {
-	                            chrome.tabs.setZoom(payload[0].id, 0.8);
-	                            break;
-	                        }
-	                        case 2 /* RESET */: {
-	                            chrome.tabs.setZoom(payload[0].id, 1);
-	                            break;
-	                        }
-	                        default: {
-	                            console.log('unknown zoom modifier EZoomType');
-	                        }
-	                    }
+	                    });
 	                });
 	                break;
 	            }

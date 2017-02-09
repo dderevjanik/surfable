@@ -44,23 +44,25 @@ export const messageListener = () => {
 			}
 			case Message.ZOOM: {
 				chrome.tabs.query({active: true}, payload => {
-					switch(message.zoomType) {
-						case EZoomType.IN: {
-							chrome.tabs.setZoom(payload[0].id, 1.2);
-							break;
+					chrome.tabs.getZoom(payload[0].id, zoomFactor => {
+						switch(message.zoomType) {
+							case EZoomType.IN: {
+								chrome.tabs.setZoom(payload[0].id, zoomFactor + 0.2);
+								break;
+							}
+							case EZoomType.OUT: {
+								chrome.tabs.setZoom(payload[0].id, zoomFactor - 0.2);
+								break;
+							}
+							case EZoomType.RESET: {
+								chrome.tabs.setZoom(payload[0].id, 1);
+								break;
+							}
+							default: {
+								console.log('unknown zoom modifier EZoomType');
+							}
 						}
-						case EZoomType.OUT: {
-							chrome.tabs.setZoom(payload[0].id, 0.8);
-							break;
-						}
-						case EZoomType.RESET: {
-							chrome.tabs.setZoom(payload[0].id, 1);
-							break;
-						}
-						default: {
-							console.log('unknown zoom modifier EZoomType');
-						}
-					}
+					});
 				});
 				break;
 			}
