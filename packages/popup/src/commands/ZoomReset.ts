@@ -7,8 +7,8 @@ import { CAT } from './../data/Category';
 import {sendToBackground} from 'surfable-common/src/Sender';
 
 export const zoomReset: ITextCommand = {
-    text: 'Zoom out',
-    desc: '',
-    cat: CAT.PAGE,
-    func: () => sendToBackground(zoom(EZoomType.RESET))
+	text: 'Zoom out',
+	desc: '',
+	cat: CAT.PAGE,
+	func: () => sendToBackground(zoom(EZoomType.RESET))
 };

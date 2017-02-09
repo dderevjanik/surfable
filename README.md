@@ -3,15 +3,8 @@
 Surfable is quick command pallete extension for chrome. It's heavly inspired
 by command pallete from Sublime Text, Atom and VS Code (thank VS Code for design).
 
-- [Surfable](#surfable)
-    - [1. Development](#1-development)
-        - [1.1. Overview](#1-1-overview)
-        - [1.2. Lerna scripts](#1-2-lerna-scripts)
-        - [1.3. Packages](#1-3-packages)
-            - [1.3.1. Background](#1-3-1-background)
-            - [1.3.2. Popup](#1-3-2-popup)
-            - [1.3.3. Content](#1-3-3-content)
-            - [1.3.3. Common](#1-3-3-common)
+![screenshot](docs/img/screen.jpg)
+
 
 ## 1. Development
 
@@ -31,7 +24,8 @@ your `package.json` and lerna will handle everything (installing dependencies an
 symlinks) for you.
 
 When you already cloned surfable repository, start with bootstraping project, instead
-of doing `npm install` in every subrepository, use `lerna bootstrap`.
+of doing `npm install` in every subrepository, use `lerna bootstrap`. So, make sure
+that lerna is installed globaly `npm install lerna -g`
 
 ```bash
 git clone https://github.com/dderevjanik/surfable
@@ -51,9 +45,14 @@ Instead of using `npm run script` use `lerna run script`
 
 Available lerna scripts:
 
-`lerna run lint` - lint all subprojects
+`lerna run lint` - lint all subprojects using tslint
 
 ### 1.3. Packages
+
+Surfable consist from several subpackages listed bellow. Most of packages are named
+after chrome extension's achitecture. It's highly recommended to read about
+[chrome extension's architecture](https://developer.chrome.com/extensions/overview#arch)
+before starting contributing to this project.
 
 #### 1.3.1. Background
 
@@ -71,5 +70,6 @@ Content is script, which is executed on every page user visits.
 
 #### 1.3.4. Common
 
-Used to share interfaces, types a common data between subprojects like popup and
-background to don't have same code.
+Used to share interfaces, types a common data between subprojects. Events (redux's
+actions), which are used among subprojects are stored in common to avoid type
+errors and common javascript mistakes.
