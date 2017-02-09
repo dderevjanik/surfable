@@ -1,10 +1,10 @@
 import { IChrome } from './interfaces/IChrome';
-import { Type, ZOOM, TAB_DUPLICATE, TAB_RELOAD, TAB_CLOSE, TAB_NEW, BOOKMARK_ADD, BOOKMARK_ADD_AS, CAPTURE } from 'surfable-common/src/actions/All';
+import { Type, ZOOM, TAB_DUPLICATE, TAB_RELOAD, TAB_CLOSE, TAB_NEW, BOOKMARK_ADD, BOOKMARK_ADD_AS, CAPTURE, GET_FAVORITES } from 'surfable-common/src/actions/All';
 import { EZoomType } from 'surfable-common/src/enums/EZoomType';
 
 declare const chrome: IChrome;
 
-chrome.runtime.onMessage.addListener((message: Type, sender) => {
+chrome.runtime.onMessage.addListener((message: Type, sender, sendResponse) => {
 	switch(message.type) {
 		case TAB_CLOSE: {
 			chrome.tabs.query({active: true}, (payload) => {
@@ -62,6 +62,12 @@ chrome.runtime.onMessage.addListener((message: Type, sender) => {
 			break;
 		}
 		case CAPTURE: {
+			break;
+		}
+		case GET_FAVORITES: {
+			chrome.topSites.get((favorites) => {
+				chrome.runtime.sendMessage({type: 'SHOW_FAVORITES', favorites: favorites});
+			});
 			break;
 		}
 		default: {

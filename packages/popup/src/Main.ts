@@ -1,26 +1,25 @@
-import { ITextCommand } from './interfaces/ITextCommand';
-import { IAppState } from './interfaces/IAppState';
-import { PressedKeysMap } from './Types';
-import { keyMap } from './data/KeyMap';
-import { store } from './redux/store';
-import { panelClose, panelOpen, panelUp, panelDown, executeCommand, keyPress } from './redux/Reducers/Actions'
-import { render } from './Index';
-
-render();
+import {ITextCommand} from './interfaces/ITextCommand';
+import {IAppState} from './interfaces/IAppState';
+import {PressedKeysMap} from './Types';
+import {keyMap} from './data/KeyMap';
+import {store} from './redux/store';
+import {panelClose, panelOpen, panelUp, panelDown, executeCommand, keyPress} from './redux/Reducers/Actions'
+import {render} from './Index';
+import {getFavorites} from './redux/reducers/AsyncActions';
 
 const showLinks = () => {
-    console.log('showiiiing links');
-    const createHint = () => {
-        const hint = document.createElement('div');
-        hint.className = 'surfable_hint';
-        hint.innerText = 'LINKA';
-        return hint;
-    }
-    const links = document.querySelectorAll('a');
-    for(let i = 0; i < links.length; i++) {
-        const link = links[i];
-        link.appendChild(createHint());
-    }
+	console.log('showiiiing links');
+	const createHint = () => {
+		const hint = document.createElement('div');
+		hint.className = 'surfable_hint';
+		hint.innerText = 'LINKA';
+		return hint;
+	}
+	const links = document.querySelectorAll('a');
+	for(let i = 0; i < links.length; i++) {
+		const link = links[i];
+		link.appendChild(createHint());
+	}
 };
 
 render();
@@ -51,32 +50,32 @@ const processEvent = (event: KeyboardEvent) => {
 //             }
 //         }
 //     }
-    switch(event.keyCode) {
-        case keyMap.esc: {
-            console.log('dispatching close');
-            store.dispatch(panelClose());
-            break;
-        }
-        case keyMap.up: {
-            console.log('dispatching up');
-            store.dispatch(panelUp());
-            break;
-        }
-        case keyMap.down: {
-            console.log('dispatching down');
-            store.dispatch(panelDown());
-            break;
-        }
-        case keyMap.enter: {
-            console.log('dispatching execute command');
-            store.dispatch(executeCommand());
-            break;
-        }
-        default: {
-            store.dispatch(keyPress(String.fromCharCode(event.keyCode)));
-        }
-        // event.preventDefault();
-    }
+	switch(event.keyCode) {
+		case keyMap.esc: {
+			console.log('dispatching close');
+			store.dispatch(panelClose());
+			break;
+		}
+		case keyMap.up: {
+			console.log('dispatching up');
+			store.dispatch(panelUp());
+			break;
+		}
+		case keyMap.down: {
+			console.log('dispatching down');
+			store.dispatch(panelDown());
+			break;
+		}
+		case keyMap.enter: {
+			console.log('dispatching execute command');
+			store.dispatch(executeCommand());
+			break;
+		}
+		default: {
+			store.dispatch(keyPress(String.fromCharCode(event.keyCode)));
+		}
+		// event.preventDefault();
+	}
 };
 
 
@@ -85,9 +84,26 @@ const processEvent = (event: KeyboardEvent) => {
 // };
 
 document.onkeydown = (e) => {
-    // It's not possible to catch arrow keys with 'onkeypress' event
-    console.log('key: ', e.keyCode);
-    if ((e.keyCode >= 37) && (e.keyCode <= 40) || (e.keyCode == keyMap.esc) || (e.keyCode == keyMap.enter)) {
-        processEvent(e);
-    }
+	// It's not possible to catch arrow keys with 'onkeypress' event
+	console.log('key: ', e.keyCode);
+	if ((e.keyCode >= 37) && (e.keyCode <= 40) || (e.keyCode == keyMap.esc) || (e.keyCode == keyMap.enter)) {
+		processEvent(e);
+	}
 }
+
+declare const chrome;
+getFavorites();
+
+chrome.runtime.onMessage.addListener(
+	(message) => {
+		switch(message.type) {
+			case 'SHOW_FAVORITES': {
+				store.dispatch({type: message.type, favorites: message.favorites});
+				break;
+			}
+			default: {
+				break;
+			}
+		}
+	}
+);

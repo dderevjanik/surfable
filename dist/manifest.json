@@ -39,6 +39,7 @@
     "activeTab",
     "notifications",
     "bookmarks",
+    "topSites",
     "https://ajax.googleapis.com/"
   ]
 }

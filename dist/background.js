@@ -53,7 +53,7 @@
 
 	"use strict";
 	var All_1 = __webpack_require__(2);
-	chrome.runtime.onMessage.addListener(function (message, sender) {
+	chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 	    switch (message.type) {
 	        case All_1.TAB_CLOSE: {
 	            chrome.tabs.query({ active: true }, function (payload) {
@@ -85,11 +85,13 @@
 	            chrome.tabs.query({ active: true }, function (payload) {
 	                chrome.tabs.reload(payload[0].id);
 	            });
+	            break;
 	        }
 	        case All_1.TAB_DUPLICATE: {
 	            chrome.tabs.query({ active: true }, function (payload) {
 	                chrome.tabs.duplicate(payload[0].id);
 	            });
+	            break;
 	        }
 	        case All_1.ZOOM: {
 	            chrome.tabs.query({ active: true }, function (payload) {
@@ -106,9 +108,19 @@
 	                }
 	                chrome.tabs.setZoom(payload[0].id, 1.2);
 	            });
+	            break;
 	        }
 	        case All_1.CAPTURE: {
 	            break;
+	        }
+	        case All_1.GET_FAVORITES: {
+	            chrome.topSites.get(function (favorites) {
+	                chrome.runtime.sendMessage({ type: 'SHOW_FAVORITES', favorites: favorites });
+	            });
+	            break;
+	        }
+	        default: {
+	            console.log('undefined message type: ' + message);
 	        }
 	    }
 	});
@@ -135,6 +147,8 @@
 	exports.TAB_RELOAD = TabReload_1.TAB_RELOAD;
 	var TabDuplicate_1 = __webpack_require__(10);
 	exports.TAB_DUPLICATE = TabDuplicate_1.TAB_DUPLICATE;
+	var GetFavorites_1 = __webpack_require__(11);
+	exports.GET_FAVORITES = GetFavorites_1.GET_FAVORITES;
 
 
 /***/ },
@@ -253,6 +267,17 @@
 	 */
 	exports.tabDuplicate = function () { return ({
 	    type: exports.TAB_DUPLICATE,
+	}); };
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.GET_FAVORITES = 'GET_FAVORITES';
+	exports.getFavorites = function () { return ({
+	    type: exports.GET_FAVORITES
 	}); };
 
 

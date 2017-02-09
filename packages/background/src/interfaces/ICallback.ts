@@ -8,4 +8,4 @@ interface ISender {
 	readonly url: string;
 }
 
-export type ICallback = (message: IMessage, sender: ISender, response: any, port: any) => void;
+export type ICallback = (message: IMessage, sender: ISender, sendResponse: any, port: any) => void;

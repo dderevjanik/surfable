@@ -1,5 +1,4 @@
-import {Type} from 'surfable-common/src/actions/all';
-import {CAPTURE} from 'surfable-common/src/actions/all';
+import {Type, CAPTURE} from 'surfable-common/src/actions/all';
 import {CAT} from './../data/Category';
 import {ITextCommand} from './../interfaces/ITextCommand';
 import {EZoomType} from 'surfable-common/src/enums/EZoomType';
