@@ -1,6 +1,6 @@
 export const enum EZoomType {
-    IN,
-    OUT,
-    RESET
+	IN,
+	OUT,
+	RESET
 };
 

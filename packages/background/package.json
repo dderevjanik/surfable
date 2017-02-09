@@ -11,6 +11,7 @@
   },
   "license": "ISC",
   "devDependencies": {
+    "@types/chrome": "0.0.39",
     "surfable-common": "0.0.1",
     "ts-loader": "^2.0.0",
     "tslint": "^4.4.2",

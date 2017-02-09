@@ -53,7 +53,7 @@
 
 	"use strict";
 	var All_1 = __webpack_require__(2);
-	chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+	chrome.runtime.onMessage.addListener(function (message, sender) {
 	    switch (message.type) {
 	        case All_1.TAB_CLOSE: {
 	            chrome.tabs.query({ active: true }, function (payload) {
@@ -94,19 +94,22 @@
 	            break;
 	        }
 	        case All_1.ZOOM: {
-	            console.log('vvvv');
-	            console.log(message);
 	            chrome.tabs.query({ active: true }, function (payload) {
-	                chrome.tabs.getZoom(payload[0].id, function (zoom) { return console.log(zoom); });
 	                switch (message.zoomType) {
 	                    case 0 /* IN */: {
 	                        chrome.tabs.setZoom(payload[0].id, 1.2);
+	                        break;
 	                    }
 	                    case 1 /* OUT */: {
 	                        chrome.tabs.setZoom(payload[0].id, 0.8);
+	                        break;
 	                    }
 	                    case 2 /* RESET */: {
 	                        chrome.tabs.setZoom(payload[0].id, 1);
+	                        break;
+	                    }
+	                    default: {
+	                        console.log('unknown zoom modifier EZoomType');
 	                    }
 	                }
 	            });
@@ -122,7 +125,7 @@
 	            break;
 	        }
 	        default: {
-	            console.log('undefined message type: ' + message);
+	            console.log('undefined message: ');
 	            console.log(message);
 	        }
 	    }

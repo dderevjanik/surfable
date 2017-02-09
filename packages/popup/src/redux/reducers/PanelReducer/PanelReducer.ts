@@ -94,7 +94,7 @@ export const panelReducer = (state: IPanel = initState.quickpanel, action): IPan
 		}
 		case SHOW_FAVORITES: {
 			if (action.favorites) {
-				const newCommands: ITextCommand[] = action.favorites.map(favorite => ({
+				const newCommands: ITextCommand[] = action.favorites.slice(0, 10).map(favorite => ({
 					desc: '',
 					cat: 'Favorite',
 					text: (favorite.length > 50) ? (favorite.title.slice(0, 50) + '...') : favorite.title,

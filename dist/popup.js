@@ -17765,7 +17765,7 @@
 	        }
 	        case ActionsList_1.SHOW_FAVORITES: {
 	            if (action.favorites) {
-	                var newCommands = action.favorites.map(function (favorite) { return ({
+	                var newCommands = action.favorites.slice(0, 10).map(function (favorite) { return ({
 	                    desc: '',
 	                    cat: 'Favorite',
 	                    text: (favorite.length > 50) ? (favorite.title.slice(0, 50) + '...') : favorite.title,

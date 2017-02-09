@@ -5,14 +5,14 @@ export type ZOOM = 'ZOOM';
 export const ZOOM: ZOOM = 'ZOOM';
 
 export interface IZoom extends IAction {
-    readonly type: ZOOM;
-    readonly zoomType: EZoomType;
+	readonly type: ZOOM;
+	readonly zoomType: EZoomType;
 };
 
 /**
  * Add current page to bookmarks
  */
 export const Zoom = (zoomType: EZoomType): IZoom => ({
-    type: ZOOM,
-    zoomType: zoomType
+	type: ZOOM,
+	zoomType: zoomType
 });
