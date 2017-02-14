@@ -6,7 +6,7 @@ export const TAB_NEW: TAB_NEW = 'TAB_NEW';
 export interface ITabNew extends IAction {
 	readonly type: TAB_NEW;
 	readonly url: string;
-};
+}
 
 /**
  * Open a new tab with specific url.

@@ -1,17 +1,20 @@
-import { sendToBackground } from '../../../../../common/src/Sender';
+import { Type } from '../../../../../common/src/actions/All';
 import {PANEL_OPEN, PANEL_CLOSE, PANEL_UP, PANEL_DOWN, PANEL_EXECUTE_COMMAND, PANEL_KEYPRESS, SEARCH_CHANGE, SHOW_FAVORITES} from './../ActionsList';
 import {IPanel} from './../../interfaces/IPanel';
-import {ITextCommand} from './../../../interfaces/ITextCommand';
+import {ICommand} from './../../../interfaces/ICommand';
 import {initState} from './../../InitState';
 import {tabNew} from 'surfable-common/src/actions/tabNew';
 import {SHOW_TABS} from 'surfable-common/src/actions/All';
+import {ETarget} from 'surfable-common/src/enums/ETarget';
+import {sendAction} from 'surfable-common/src/Sender';
 
 declare const chrome;
 
-const notFoundCommand: ITextCommand = {
+const notFoundCommand: ICommand = {
+	type: 'SIMPLE_COMMAND',
 	cat: '',
 	desc: '',
-	func: () => null,
+	action: {type: 'NOTHING', target: ETarget.BACKGROUND},
 	text: 'No commands matching'
 };
 
@@ -19,7 +22,7 @@ export const panelReducer = (state: IPanel = initState.quickpanel, action): IPan
 	switch(action.type) {
 		case PANEL_EXECUTE_COMMAND: {
 			console.log(state.commands[state.offset]);
-			state.commands[state.offset].func();
+			sendAction(state.commands[state.offset].action);
 			return {
 				...state,
 				opened: false
@@ -96,13 +99,13 @@ export const panelReducer = (state: IPanel = initState.quickpanel, action): IPan
 		}
 		case SHOW_FAVORITES: {
 			if (action.favorites) {
-				const newCommands: ITextCommand[] = action.favorites.slice(0, 10).map(favorite => ({
+				const newCommands: ICommand[] = action.favorites.slice(0, 10).map(favorite => ({
 					desc: '',
 					cat: 'Favorite',
 					text: (favorite.length > 50) ? (favorite.title.slice(0, 50) + '...') : favorite.title,
-					func: () => sendToBackground(tabNew(favorite.url))
+					action: {type: 'TAB_NEW', url: favorite.url, target: ETarget.BACKGROUND}
 				}));
-				const commands: ITextCommand[] = state.allCommands.concat(newCommands);
+				const commands: ICommand[] = state.allCommands.concat(newCommands);
 				return {
 					...state,
 					allCommands: commands,
@@ -114,14 +117,14 @@ export const panelReducer = (state: IPanel = initState.quickpanel, action): IPan
 		}
 		case SHOW_TABS: {
 			if (action.tabs) {
-				const newCommands: ITextCommand[] = action.tabs.map((tab, index) => ({
+				const newCommands: ICommand[] = action.tabs.map((tab, index) => ({
 					desc: (index < 11) ? `Ctrl + ${index}` : '',
 					cat: 'Switch To',
 					text: (tab.title.length > 50) ? (tab.title.slice(0, 50) + '...') : tab.title,
 					imgUrl: (tab.favIconUrl) ? tab.favIconUrl : 'https://image.flaticon.com/icons/png/128/12/12195.png',
-					func: () => sendToBackground(tabNew(tab.url))
+					action: {type: 'TAB_SWITCH', id: tab.id, target: ETarget.BACKGROUND}
 				}));
-				const commands: ITextCommand[] = state.allCommands.concat(newCommands);
+				const commands: ICommand[] = state.allCommands.concat(newCommands);
 				return {
 					...state,
 					allCommands: commands,

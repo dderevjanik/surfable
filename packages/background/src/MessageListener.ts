@@ -1,3 +1,4 @@
+import { SWITCH_TAB } from '../../common/src/actions/All';
 import { sendToContent } from '../../common/src/Sender';
 import * as Message from 'surfable-common/src/actions/All';
 import {EZoomType} from 'surfable-common/src/enums/EZoomType';
@@ -72,6 +73,14 @@ export const messageListener = () => {
 				case Message.CAPTURE: {
 					break;
 				}
+				case Message.PRINT_PAGE: {
+					const actionUrl = 'javascript:window.print();';
+					chrome.tabs.query({active: true}, payload => {
+						console.log(payload);
+  						chrome.tabs.update(payload[0].id, {url: actionUrl});
+					});
+					break;
+				}
 				case Message.GET_FAVORITES: {
 					chrome.topSites.get(favorites => {
 						chrome.runtime.sendMessage({type: Message.SHOW_FAVORITES, favorites: favorites});
@@ -82,6 +91,10 @@ export const messageListener = () => {
 					chrome.tabs.query({currentWindow: true}, payload => {
 						sendToContent({type: Message.SHOW_TABS, tabs: payload});
 					});
+					break;
+				}
+				case Message.TAB_SWITCH: {
+					chrome.tabs.update(message.id, {active: true});
 					break;
 				}
 				default: {

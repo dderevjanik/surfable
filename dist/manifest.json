@@ -40,6 +40,8 @@
     "notifications",
     "bookmarks",
     "topSites",
-    "https://ajax.googleapis.com/"
+    "https://ajax.googleapis.com/",
+    "http://*/*",
+    "https://*/*"
   ]
 }

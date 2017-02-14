@@ -132,6 +132,14 @@
 	                case Message.CAPTURE: {
 	                    break;
 	                }
+	                case Message.PRINT_PAGE: {
+	                    var actionUrl_1 = 'javascript:window.print();';
+	                    chrome.tabs.query({ active: true }, function (payload) {
+	                        console.log(payload);
+	                        chrome.tabs.update(payload[0].id, { url: actionUrl_1 });
+	                    });
+	                    break;
+	                }
 	                case Message.GET_FAVORITES: {
 	                    chrome.topSites.get(function (favorites) {
 	                        chrome.runtime.sendMessage({ type: Message.SHOW_FAVORITES, favorites: favorites });
@@ -142,6 +150,10 @@
 	                    chrome.tabs.query({ currentWindow: true }, function (payload) {
 	                        Sender_1.sendToContent({ type: Message.SHOW_TABS, tabs: payload });
 	                    });
+	                    break;
+	                }
+	                case Message.TAB_SWITCH: {
+	                    chrome.tabs.update(message.id, { active: true });
 	                    break;
 	                }
 	                default: {
@@ -168,14 +180,34 @@
 	    }
 	    return t;
 	};
+	var sendMessage = function (message) { return chrome.runtime.sendMessage(message); };
 	exports.sendToBackground = function (message) {
-	    return chrome.runtime.sendMessage(__assign({}, message, { target: 0 /* BACKGROUND */ }));
+	    return sendMessage(__assign({}, message, { target: 0 /* BACKGROUND */ }));
 	};
 	exports.sendToPopup = function (message) {
-	    return chrome.runtime.sendMessage(__assign({}, message, { target: 2 /* POPUP */ }));
+	    return sendMessage(__assign({}, message, { target: 2 /* POPUP */ }));
 	};
 	exports.sendToContent = function (message) {
-	    return chrome.runtime.sendMessage(__assign({}, message, { target: 1 /* CONTENT */ }));
+	    return sendMessage(__assign({}, message, { target: 1 /* CONTENT */ }));
+	};
+	exports.sendAction = function (message) {
+	    switch (message.target) {
+	        case 0 /* BACKGROUND */: {
+	            sendMessage(message);
+	            break;
+	        }
+	        case 1 /* CONTENT */: {
+	            sendMessage(message);
+	            break;
+	        }
+	        case 2 /* POPUP */: {
+	            sendMessage(message);
+	            break;
+	        }
+	        default: {
+	            throw new Error("Unexpected target '" + message.target + "' for message '" + message.type + "'");
+	        }
+	    }
 	};
 
 
@@ -184,6 +216,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	exports.PRINT_PAGE = 'PRINT_PAGE';
+	exports.TAB_SWITCH = 'TAB_SWITCH';
 	var BookmarkAdd_1 = __webpack_require__(5);
 	exports.BOOKMARK_ADD = BookmarkAdd_1.BOOKMARK_ADD;
 	var BookmarkAddAs_1 = __webpack_require__(6);
@@ -208,6 +242,8 @@
 	exports.SHOW_TABS = ShowTabs_1.SHOW_TABS;
 	var GetCurrentTabs_1 = __webpack_require__(16);
 	exports.GET_CURRENT_TABS = GetCurrentTabs_1.GET_CURRENT_TABS;
+	var Nothing_1 = __webpack_require__(17);
+	exports.NOTHING = Nothing_1.NOTHING;
 
 
 /***/ },
@@ -257,7 +293,6 @@
 
 	"use strict";
 	exports.TAB_NEW = 'TAB_NEW';
-	;
 	/**
 	 * Open a new tab with specific url.
 	 * @param {string} url - url to open. When empty, it'll open a blank page
@@ -369,6 +404,17 @@
 	exports.GET_CURRENT_TABS = 'GET_CURRENT_TABS';
 	exports.getCurrentTabs = function () { return ({
 	    type: exports.GET_CURRENT_TABS
+	}); };
+
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.NOTHING = 'NOTHING';
+	exports.nothing = function () { return ({
+	    type: exports.NOTHING
 	}); };
 
 
