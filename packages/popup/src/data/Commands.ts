@@ -8,8 +8,10 @@ import { MESSAGE } from 'surfable-common/src/Messages';
  * All possible defaults commands listed in command panel
  */
 export const commands: ICommand[] = [
+	// BOOKMARK
 	{type: SIMPLE_COMMAND, cat: CAT.BOOKMARK, text: 'Add to bookmarks', desc: 'Ctrl + D',
 		action: {type: MESSAGE.BOOKMARK_ADD, target: ETarget.BACKGROUND}},
+	// PAGE
 	{type: SIMPLE_COMMAND, cat: CAT.PAGE, text: 'Close current tab', desc: 'Ctrl + W',
 		action: {type: MESSAGE.TAB_CLOSE, target: ETarget.BACKGROUND}},
 	{type: SIMPLE_COMMAND, cat: CAT.PAGE, text: 'Reload', desc: 'Ctrl + R',
@@ -28,8 +30,10 @@ export const commands: ICommand[] = [
 		action: {type: MESSAGE.ZOOM, zoomType: EZoomType.OUT, target: ETarget.BACKGROUND}},
 	{type: SIMPLE_COMMAND, cat: CAT.PAGE, text: 'Zoom reset', desc: '',
 		action: {type: MESSAGE.ZOOM, zoomType: EZoomType.RESET, target: ETarget.BACKGROUND}},
+	// WINDOW
 	{type: SIMPLE_COMMAND, cat: CAT.WINDOW, text: 'Close current window', desc: 'Ctrl + Shift + W',
 		action: {type: MESSAGE.WINDOW_CLOSE, target: ETarget.BACKGROUND}},
+	// BROWSER
 	{type: SIMPLE_COMMAND, cat: CAT.BROWSER, text: 'Bookmarks', desc: 'Ctrl + Shift + O',
 		action: {type: MESSAGE.TAB_NEW, url: CHROME.BOOKMARKS, target: ETarget.BACKGROUND}},
 	{type: SIMPLE_COMMAND, cat: CAT.BROWSER, text: 'Downloads', desc: 'Ctrl + J',

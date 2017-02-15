@@ -1,32 +1,23 @@
-import { MESSAGE } from 'surfable-common/src/Messages';
-import {ETarget} from 'surfable-common/src/enums/ETarget';
-import {sendAction} from 'surfable-common/src/Sender';
-import {PANEL_OPEN, PANEL_CLOSE, PANEL_UP, PANEL_DOWN, PANEL_EXECUTE_COMMAND, PANEL_KEYPRESS, SEARCH_CHANGE, SHOW_FAVORITES} from './../ActionsList';
-import {IPanel} from './../../interfaces/IPanel';
-import {ICommand} from './../../../interfaces/ICommand';
-import {initState} from './../../InitState';
-import { favoriteToCommand, tabToCommand } from './../../../utils/CommandTransfer';
+import { MESSAGE, MessageType } from 'surfable-common/src/Messages';
+import { ETarget } from 'surfable-common/src/enums/ETarget';
+import { sendAction } from 'surfable-common/src/Sender';
+import { IPanel } from './interfaces/IPanel';
+import { ICommand } from './../interfaces/ICommand';
+import { ACTION, ActionType } from './Actions';
+import { initState } from './InitState';
+import { favoriteToCommand, tabToCommand } from './../utils/CommandTransfer';
+import { notFoundCommand } from './../utils/DummyCommands';
 
-declare const chrome;
-
-const notFoundCommand: ICommand = {
-	type: 'SIMPLE_COMMAND',
-	cat: '',
-	desc: '',
-	action: {type: 'NOTHING', target: ETarget.BACKGROUND},
-	text: 'No commands matching'
-};
-
-export const panelReducer = (state: IPanel = initState.quickpanel, action): IPanel => {
+export const panelReducer = (state: IPanel = initState.quickpanel, action: ActionType|MessageType): IPanel => {
 	switch(action.type) {
-		case PANEL_EXECUTE_COMMAND: {
+		case ACTION.PANEL_EXECUTE_COMMAND: {
 			sendAction(state.commands[state.offset].action);
 			return {
 				...state,
 				opened: false
 			}
 		}
-		case PANEL_UP: {
+		case ACTION.PANEL_UP: {
 			const nextOffset = (state.offset - 1);
 			if (nextOffset < 0) {
 				return state;
@@ -37,7 +28,7 @@ export const panelReducer = (state: IPanel = initState.quickpanel, action): IPan
 				}
 			}
 		}
-		case PANEL_DOWN: {
+		case ACTION.PANEL_DOWN: {
 			const nextOffset = (state.offset + 1);
 			if (nextOffset >= state.commands.length) {
 				return state;
@@ -48,27 +39,21 @@ export const panelReducer = (state: IPanel = initState.quickpanel, action): IPan
 				}
 			}
 		}
-		case PANEL_OPEN: {
+		case ACTION.PANEL_OPEN: {
 			return {
 				...state,
 				inputVal: '',
 				opened: true
 			};
 		}
-		case PANEL_CLOSE: {
+		case ACTION.PANEL_CLOSE: {
 			document.body.focus();
 			return {
 				...state,
 				opened: false
 			}
 		}
-		case PANEL_KEYPRESS: {
-			return {
-				...state,
-				inputVal: (state.inputVal + action.char)
-			}
-		}
-		case SEARCH_CHANGE: {
+		case ACTION.SEARCH_CHANGE: {
 			const searchValue = action.value.toLowerCase();
 			if (searchValue.length > 0 && searchValue !== state.inputVal) {
 				const valLen = searchValue.length;

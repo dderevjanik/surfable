@@ -4,7 +4,7 @@ import {CommandList} from './../CommandList/CommandList';
 import {SearchInput} from './../SearchInput/SearchInput';
 import {IAppState} from './../../interfaces/IAppState';
 import {ICommand} from './../../interfaces/ICommand';
-import {executeCommand, searchChange} from './../../redux/reducers/Actions';
+import {ACTION} from './../../redux/Actions';
 import {quickPanelS, searchBoxS} from './QuickPanel.style';
 
 interface IProps {
@@ -34,6 +34,6 @@ export const QuickPanel = connect(
 		opened: state.quickpanel.opened
 	}),
 	dispatch => ({
-		onSearchChange: (value: string) => dispatch(searchChange(value))
+		onSearchChange: (value: string) => dispatch({type: ACTION.SEARCH_CHANGE, value: value})
 	})
 )(QuickPanelComponent);

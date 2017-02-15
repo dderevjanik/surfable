@@ -55,52 +55,43 @@
 	var Messages_1 = __webpack_require__(2);
 	var KeyMap_1 = __webpack_require__(3);
 	var store_1 = __webpack_require__(4);
-	var Actions_1 = __webpack_require__(38);
+	var Actions_1 = __webpack_require__(30);
 	var Index_1 = __webpack_require__(39);
-	var AsyncActions_1 = __webpack_require__(249);
 	Index_1.render();
 	var processEvent = function (event) {
 	    switch (event.keyCode) {
-	        case KeyMap_1.keyMap.esc: {
-	            store_1.store.dispatch(Actions_1.panelClose());
+	        case KeyMap_1.keyMap.esc:
+	            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_CLOSE });
 	            break;
-	        }
-	        case KeyMap_1.keyMap.up: {
-	            store_1.store.dispatch(Actions_1.panelUp());
+	        case KeyMap_1.keyMap.up:
+	            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_UP });
 	            break;
-	        }
-	        case KeyMap_1.keyMap.down: {
-	            store_1.store.dispatch(Actions_1.panelDown());
+	        case KeyMap_1.keyMap.down:
+	            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_DOWN });
 	            break;
-	        }
-	        case KeyMap_1.keyMap.enter: {
-	            store_1.store.dispatch(Actions_1.executeCommand());
+	        case KeyMap_1.keyMap.enter:
+	            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_EXECUTE_COMMAND });
 	            break;
-	        }
 	        default: {
-	            store_1.store.dispatch(Actions_1.keyPress(String.fromCharCode(event.keyCode)));
 	        }
 	    }
 	};
 	document.onkeydown = function (e) {
-	    if ((e.keyCode >= 37) && (e.keyCode <= 40) || (e.keyCode == KeyMap_1.keyMap.esc) || (e.keyCode == KeyMap_1.keyMap.enter)) {
+	    if ((e.keyCode >= 37) && (e.keyCode <= 40) || (e.keyCode === KeyMap_1.keyMap.esc) || (e.keyCode === KeyMap_1.keyMap.enter)) {
 	        processEvent(e);
 	    }
 	};
-	chrome.runtime.sendMessage({ type: 'GET_CURRENT_TABS', target: 0 /* BACKGROUND */ });
-	AsyncActions_1.getFavorites();
+	chrome.runtime.sendMessage({ type: Messages_1.MESSAGE.GET_CURRENT_TABS, target: 0 /* BACKGROUND */ });
+	chrome.runtime.sendMessage({ type: Messages_1.MESSAGE.GET_FAVORITES, target: 0 /* BACKGROUND */ });
 	chrome.runtime.onMessage.addListener(function (message) {
 	    switch (message.type) {
-	        case Messages_1.MESSAGE.SHOW_FAVORITES: {
+	        case Messages_1.MESSAGE.SHOW_FAVORITES:
 	            store_1.store.dispatch({ type: message.type, favorites: message.favorites });
 	            break;
-	        }
-	        case Messages_1.MESSAGE.SHOW_TABS: {
+	        case Messages_1.MESSAGE.SHOW_TABS:
 	            store_1.store.dispatch(message);
 	            break;
-	        }
 	        default: {
-	            break;
 	        }
 	    }
 	});
@@ -162,7 +153,7 @@
 	"use strict";
 	var redux_1 = __webpack_require__(5);
 	var AppReducer_1 = __webpack_require__(27);
-	var InitState_1 = __webpack_require__(29);
+	var InitState_1 = __webpack_require__(31);
 	exports.store = redux_1.createStore(AppReducer_1.appReducer, InitState_1.initState);
 
 
@@ -1390,145 +1381,14 @@
 
 	"use strict";
 	var redux_1 = __webpack_require__(5);
-	var ConfigReducer_1 = __webpack_require__(28);
-	var PanelReducer_1 = __webpack_require__(34);
+	var PanelReducer_1 = __webpack_require__(28);
 	exports.appReducer = redux_1.combineReducers({
-	    config: ConfigReducer_1.configReducer,
 	    quickpanel: PanelReducer_1.panelReducer
 	});
 
 
 /***/ },
 /* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var InitState_1 = __webpack_require__(29);
-	exports.configReducer = function (state, action) {
-	    if (state === void 0) { state = InitState_1.initState.config; }
-	    switch (action.type) {
-	        default: {
-	            return state;
-	        }
-	    }
-	};
-
-
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var Commands_1 = __webpack_require__(30);
-	exports.initState = {
-	    config: {
-	        maxCommands: 7
-	    },
-	    quickpanel: {
-	        allCommands: Commands_1.commands,
-	        commands: Commands_1.commands,
-	        opened: false,
-	        offset: 0,
-	        inputVal: ''
-	    }
-	};
-
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var Category_1 = __webpack_require__(31);
-	var Chrome_1 = __webpack_require__(32);
-	var ICommand_1 = __webpack_require__(33);
-	var Messages_1 = __webpack_require__(2);
-	/**
-	 * All possible defaults commands listed in command panel
-	 */
-	exports.commands = [
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.BOOKMARK, text: 'Add to bookmarks', desc: 'Ctrl + D',
-	        action: { type: Messages_1.MESSAGE.BOOKMARK_ADD, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Close current tab', desc: 'Ctrl + W',
-	        action: { type: Messages_1.MESSAGE.TAB_CLOSE, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Reload', desc: 'Ctrl + R',
-	        action: { type: Messages_1.MESSAGE.TAB_RELOAD, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Open new tab', desc: 'Ctrl + T',
-	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: '', target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Duplicate', desc: '',
-	        action: { type: Messages_1.MESSAGE.TAB_DUPLICATE, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Close all tabs', desc: '',
-	        action: { type: Messages_1.MESSAGE.TAB_CLOSE_ALL, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Print Page', desc: 'Ctrl + P',
-	        action: { type: Messages_1.MESSAGE.PRINT_PAGE, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Zoom in', desc: 'Ctrl + =',
-	        action: { type: Messages_1.MESSAGE.ZOOM, zoomType: 0 /* IN */, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Zoom out', desc: 'Ctrl + -',
-	        action: { type: Messages_1.MESSAGE.ZOOM, zoomType: 1 /* OUT */, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Zoom reset', desc: '',
-	        action: { type: Messages_1.MESSAGE.ZOOM, zoomType: 2 /* RESET */, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.WINDOW, text: 'Close current window', desc: 'Ctrl + Shift + W',
-	        action: { type: Messages_1.MESSAGE.WINDOW_CLOSE, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.BROWSER, text: 'Bookmarks', desc: 'Ctrl + Shift + O',
-	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.BOOKMARKS, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.BROWSER, text: 'Downloads', desc: 'Ctrl + J',
-	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.DOWNLOADS, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.BROWSER, text: 'Extensions', desc: '',
-	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.EXTENSIONS, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.BROWSER, text: 'History', desc: 'Ctrl + H',
-	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.HISTORY, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.BROWSER, text: 'Settings', desc: '',
-	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.SETTINGS, target: 0 /* BACKGROUND */ } }
-	];
-
-
-/***/ },
-/* 31 */
-/***/ function(module, exports) {
-
-	"use strict";
-	/**
-	 * Categories are used to categorize commands to be more easily found in
-	 * command panel
-	 */
-	exports.CAT = {
-	    BOOKMARK: 'Bookmark',
-	    BROWSER: 'Browser',
-	    GOTO: 'Goto',
-	    PAGE: 'Page',
-	    WINDOW: 'Window',
-	    FAVORITE: 'Favitore',
-	    SWITCH: 'Switch To'
-	};
-
-
-/***/ },
-/* 32 */
-/***/ function(module, exports) {
-
-	"use strict";
-	/**
-	 * Chrome default urls
-	 */
-	exports.CHROME = {
-	    HISTORY: 'chrome://history',
-	    DOWNLOADS: 'chrome://downloads',
-	    EXTENSIONS: 'chrome://extensions',
-	    SETTINGS: 'chrome://settings',
-	    BOOKMARKS: 'chrome://bookmarks'
-	};
-
-
-/***/ },
-/* 33 */
-/***/ function(module, exports) {
-
-	"use strict";
-	exports.SIMPLE_COMMAND = 'SIMPLE_COMMAND';
-
-
-/***/ },
-/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1541,25 +1401,19 @@
 	    return t;
 	};
 	var Messages_1 = __webpack_require__(2);
-	var Sender_1 = __webpack_require__(35);
-	var ActionsList_1 = __webpack_require__(36);
-	var InitState_1 = __webpack_require__(29);
-	var CommandTransfer_1 = __webpack_require__(37);
-	var notFoundCommand = {
-	    type: 'SIMPLE_COMMAND',
-	    cat: '',
-	    desc: '',
-	    action: { type: 'NOTHING', target: 0 /* BACKGROUND */ },
-	    text: 'No commands matching'
-	};
+	var Sender_1 = __webpack_require__(29);
+	var Actions_1 = __webpack_require__(30);
+	var InitState_1 = __webpack_require__(31);
+	var CommandTransfer_1 = __webpack_require__(36);
+	var DummyCommands_1 = __webpack_require__(38);
 	exports.panelReducer = function (state, action) {
 	    if (state === void 0) { state = InitState_1.initState.quickpanel; }
 	    switch (action.type) {
-	        case ActionsList_1.PANEL_EXECUTE_COMMAND: {
+	        case Actions_1.ACTION.PANEL_EXECUTE_COMMAND: {
 	            Sender_1.sendAction(state.commands[state.offset].action);
 	            return __assign({}, state, { opened: false });
 	        }
-	        case ActionsList_1.PANEL_UP: {
+	        case Actions_1.ACTION.PANEL_UP: {
 	            var nextOffset = (state.offset - 1);
 	            if (nextOffset < 0) {
 	                return state;
@@ -1568,7 +1422,7 @@
 	                return __assign({}, state, { offset: nextOffset });
 	            }
 	        }
-	        case ActionsList_1.PANEL_DOWN: {
+	        case Actions_1.ACTION.PANEL_DOWN: {
 	            var nextOffset = (state.offset + 1);
 	            if (nextOffset >= state.commands.length) {
 	                return state;
@@ -1577,17 +1431,14 @@
 	                return __assign({}, state, { offset: nextOffset });
 	            }
 	        }
-	        case ActionsList_1.PANEL_OPEN: {
+	        case Actions_1.ACTION.PANEL_OPEN: {
 	            return __assign({}, state, { inputVal: '', opened: true });
 	        }
-	        case ActionsList_1.PANEL_CLOSE: {
+	        case Actions_1.ACTION.PANEL_CLOSE: {
 	            document.body.focus();
 	            return __assign({}, state, { opened: false });
 	        }
-	        case ActionsList_1.PANEL_KEYPRESS: {
-	            return __assign({}, state, { inputVal: (state.inputVal + action.char) });
-	        }
-	        case ActionsList_1.SEARCH_CHANGE: {
+	        case Actions_1.ACTION.SEARCH_CHANGE: {
 	            var searchValue_1 = action.value.toLowerCase();
 	            if (searchValue_1.length > 0 && searchValue_1 !== state.inputVal) {
 	                var valLen_1 = searchValue_1.length;
@@ -1598,7 +1449,7 @@
 	                    return (ind >= 0)
 	                        ? __assign({}, command, { pText: [text.slice(0, ind), text.slice(ind, ind + valLen_1), text.slice(ind + valLen_1, text.length)] }) : null;
 	                }).filter(function (command) { return command; });
-	                return __assign({}, state, { inputVal: (action.value), offset: 0, commands: (foundCommands.length > 0) ? foundCommands : [notFoundCommand] });
+	                return __assign({}, state, { inputVal: (action.value), offset: 0, commands: (foundCommands.length > 0) ? foundCommands : [DummyCommands_1.notFoundCommand] });
 	            }
 	            else {
 	                return __assign({}, state, { inputVal: (action.value), commands: state.allCommands });
@@ -1634,7 +1485,7 @@
 
 
 /***/ },
-/* 35 */
+/* 29 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1690,27 +1541,145 @@
 
 
 /***/ },
-/* 36 */
+/* 30 */
 /***/ function(module, exports) {
 
 	"use strict";
-	exports.PANEL_OPEN = 'PANEL_OPEN';
-	exports.PANEL_CLOSE = 'PANEL_CLOSE';
-	exports.PANEL_EXECUTE_COMMAND = 'PANEL_EXECUTE_COMMAND';
-	exports.PANEL_UP = 'PANEL_UP';
-	exports.PANEL_DOWN = 'PANEL_DOWN';
-	exports.PANEL_KEYPRESS = 'PANEL_KEYPRESS';
-	exports.SEARCH_CHANGE = 'SEARCH_CHANGE';
-	exports.GET_FAVORITES = 'GET_FAVORITES';
-	exports.SHOW_FAVORITES = 'SHOW_FAVORITES';
+	exports.ACTION = {
+	    PANEL_CLOSE: 'PANEL_CLOSE',
+	    PANEL_OPEN: 'PANEL_OPEN',
+	    PANEL_UP: 'PANEL_UP',
+	    PANEL_DOWN: 'PANEL_DOWN',
+	    SEARCH_CHANGE: 'SEARCH_CHANGE',
+	    PANEL_EXECUTE_COMMAND: 'PANEL_EXECUTE_COMMAND'
+	};
 
 
 /***/ },
-/* 37 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Category_1 = __webpack_require__(31);
+	var Commands_1 = __webpack_require__(32);
+	exports.initState = {
+	    config: {
+	        maxCommands: 7
+	    },
+	    quickpanel: {
+	        allCommands: Commands_1.commands,
+	        commands: Commands_1.commands,
+	        opened: false,
+	        offset: 0,
+	        inputVal: ''
+	    }
+	};
+
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var Category_1 = __webpack_require__(33);
+	var Chrome_1 = __webpack_require__(34);
+	var ICommand_1 = __webpack_require__(35);
+	var Messages_1 = __webpack_require__(2);
+	/**
+	 * All possible defaults commands listed in command panel
+	 */
+	exports.commands = [
+	    // BOOKMARK
+	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.BOOKMARK, text: 'Add to bookmarks', desc: 'Ctrl + D',
+	        action: { type: Messages_1.MESSAGE.BOOKMARK_ADD, target: 0 /* BACKGROUND */ } },
+	    // PAGE
+	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Close current tab', desc: 'Ctrl + W',
+	        action: { type: Messages_1.MESSAGE.TAB_CLOSE, target: 0 /* BACKGROUND */ } },
+	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Reload', desc: 'Ctrl + R',
+	        action: { type: Messages_1.MESSAGE.TAB_RELOAD, target: 0 /* BACKGROUND */ } },
+	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Open new tab', desc: 'Ctrl + T',
+	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: '', target: 0 /* BACKGROUND */ } },
+	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Duplicate', desc: '',
+	        action: { type: Messages_1.MESSAGE.TAB_DUPLICATE, target: 0 /* BACKGROUND */ } },
+	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Close all tabs', desc: '',
+	        action: { type: Messages_1.MESSAGE.TAB_CLOSE_ALL, target: 0 /* BACKGROUND */ } },
+	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Print Page', desc: 'Ctrl + P',
+	        action: { type: Messages_1.MESSAGE.PRINT_PAGE, target: 0 /* BACKGROUND */ } },
+	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Zoom in', desc: 'Ctrl + =',
+	        action: { type: Messages_1.MESSAGE.ZOOM, zoomType: 0 /* IN */, target: 0 /* BACKGROUND */ } },
+	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Zoom out', desc: 'Ctrl + -',
+	        action: { type: Messages_1.MESSAGE.ZOOM, zoomType: 1 /* OUT */, target: 0 /* BACKGROUND */ } },
+	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Zoom reset', desc: '',
+	        action: { type: Messages_1.MESSAGE.ZOOM, zoomType: 2 /* RESET */, target: 0 /* BACKGROUND */ } },
+	    // WINDOW
+	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.WINDOW, text: 'Close current window', desc: 'Ctrl + Shift + W',
+	        action: { type: Messages_1.MESSAGE.WINDOW_CLOSE, target: 0 /* BACKGROUND */ } },
+	    // BROWSER
+	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.BROWSER, text: 'Bookmarks', desc: 'Ctrl + Shift + O',
+	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.BOOKMARKS, target: 0 /* BACKGROUND */ } },
+	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.BROWSER, text: 'Downloads', desc: 'Ctrl + J',
+	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.DOWNLOADS, target: 0 /* BACKGROUND */ } },
+	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.BROWSER, text: 'Extensions', desc: '',
+	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.EXTENSIONS, target: 0 /* BACKGROUND */ } },
+	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.BROWSER, text: 'History', desc: 'Ctrl + H',
+	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.HISTORY, target: 0 /* BACKGROUND */ } },
+	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.BROWSER, text: 'Settings', desc: '',
+	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.SETTINGS, target: 0 /* BACKGROUND */ } }
+	];
+
+
+/***/ },
+/* 33 */
+/***/ function(module, exports) {
+
+	"use strict";
+	/**
+	 * Categories are used to categorize commands to be more easily found in
+	 * command panel
+	 */
+	exports.CAT = {
+	    BOOKMARK: 'Bookmark',
+	    BROWSER: 'Browser',
+	    GOTO: 'Goto',
+	    PAGE: 'Page',
+	    WINDOW: 'Window',
+	    FAVORITE: 'Favitore',
+	    SWITCH: 'Switch To'
+	};
+
+
+/***/ },
+/* 34 */
+/***/ function(module, exports) {
+
+	"use strict";
+	/**
+	 * Chrome default urls
+	 */
+	exports.CHROME = {
+	    HISTORY: 'chrome://history',
+	    DOWNLOADS: 'chrome://downloads',
+	    EXTENSIONS: 'chrome://extensions',
+	    SETTINGS: 'chrome://settings',
+	    BOOKMARKS: 'chrome://bookmarks'
+	};
+
+
+/***/ },
+/* 35 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.SIMPLE_COMMAND = 'SIMPLE_COMMAND';
+
+
+/***/ },
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var Messages_1 = __webpack_require__(2);
+	var Category_1 = __webpack_require__(33);
+	var Constants_1 = __webpack_require__(37);
 	/**
 	 * Create simple command to switch to another tab
 	 */
@@ -1718,73 +1687,62 @@
 	    // Show shortcut key only for first 10 tabs
 	    console.log(tab);
 	    var description = (index < 10) ? "Ctrl + " + index : '';
-	    var text = (tab.title.length > 50)
-	        ? (tab.title.slice(0, 50) + '...')
+	    var text = (tab.title.length > Constants_1.MAX_COMMAND_TEXT_LENGTH)
+	        ? (tab.title.slice(0, Constants_1.MAX_COMMAND_TEXT_LENGTH) + '...')
 	        : tab.title;
 	    var iconUrl = (tab.favIconUrl)
-	        ? (tab.favIconUrl.indexOf('chrome://') === 0)
-	            ? 'https://image.flaticon.com/icons/png/128/12/12195.png'
+	        ? (tab.favIconUrl.indexOf(Constants_1.CHROME_PROTOCOL) === 0)
+	            ? Constants_1.BLANK_FAVICON
 	            : tab.favIconUrl
-	        : 'https://image.flaticon.com/icons/png/128/12/12195.png';
+	        : Constants_1.BLANK_FAVICON;
 	    return {
 	        type: 'SIMPLE_COMMAND',
 	        desc: description,
 	        cat: Category_1.CAT.GOTO,
 	        text: text,
 	        imgUrl: iconUrl,
-	        action: { type: 'TAB_SWITCH', id: tab.id, target: 0 /* BACKGROUND */ }
+	        action: { type: Messages_1.MESSAGE.TAB_SWITCH, id: tab.id, target: 0 /* BACKGROUND */ }
 	    };
 	};
 	/**
 	 * Create simple command to open new tab from favorite
 	 */
 	exports.favoriteToCommand = function (favorite) {
-	    var text = (favorite.title.length > 50)
-	        ? (favorite.title.slice(0, 50) + '...')
+	    var text = (favorite.title.length > Constants_1.MAX_COMMAND_TEXT_LENGTH)
+	        ? (favorite.title.slice(0, Constants_1.MAX_COMMAND_TEXT_LENGTH) + '...')
 	        : favorite.title;
 	    return {
 	        type: 'SIMPLE_COMMAND',
 	        desc: '',
 	        cat: Category_1.CAT.FAVORITE,
-	        action: { type: 'TAB_NEW', target: 0 /* BACKGROUND */, url: favorite.url },
+	        action: { type: Messages_1.MESSAGE.TAB_NEW, target: 0 /* BACKGROUND */, url: favorite.url },
 	        text: text
 	    };
 	};
 
 
 /***/ },
-/* 38 */
-/***/ function(module, exports, __webpack_require__) {
+/* 37 */
+/***/ function(module, exports) {
 
 	"use strict";
-	var ActionsList_1 = __webpack_require__(36);
-	exports.panelClose = function () { return ({
-	    type: ActionsList_1.PANEL_CLOSE
-	}); };
-	exports.panelOpen = function () { return ({
-	    type: ActionsList_1.PANEL_OPEN
-	}); };
-	exports.panelUp = function () { return ({
-	    type: ActionsList_1.PANEL_UP
-	}); };
-	exports.panelDown = function () { return ({
-	    type: ActionsList_1.PANEL_DOWN
-	}); };
-	exports.searchChange = function (value) { return ({
-	    type: ActionsList_1.SEARCH_CHANGE,
-	    value: value
-	}); };
-	exports.keyPress = function (char) { return ({
-	    type: ActionsList_1.PANEL_KEYPRESS,
-	    char: char
-	}); };
-	exports.executeCommand = function () { return ({
-	    type: ActionsList_1.PANEL_EXECUTE_COMMAND
-	}); };
-	exports.showFavorites = function (favorites) { return ({
-	    type: ActionsList_1.SHOW_FAVORITES,
-	    favorites: favorites
-	}); };
+	exports.BLANK_FAVICON = 'https://image.flaticon.com/icons/png/128/12/12195.png';
+	exports.MAX_COMMAND_TEXT_LENGTH = 50;
+	exports.CHROME_PROTOCOL = 'chrome://';
+
+
+/***/ },
+/* 38 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.notFoundCommand = {
+	    type: 'SIMPLE_COMMAND',
+	    cat: '',
+	    desc: '',
+	    action: { type: 'NOTHING', target: 0 /* BACKGROUND */ },
+	    text: 'No commands matching'
+	};
 
 
 /***/ },
@@ -24256,8 +24214,8 @@
 	var react_redux_1 = __webpack_require__(216);
 	var CommandList_1 = __webpack_require__(234);
 	var SearchInput_1 = __webpack_require__(244);
-	var Actions_1 = __webpack_require__(246);
-	var QuickPanel_style_1 = __webpack_require__(248);
+	var Actions_1 = __webpack_require__(30);
+	var QuickPanel_style_1 = __webpack_require__(246);
 	;
 	exports.QuickPanelComponent = function (props) { return (React.createElement("div", { className: QuickPanel_style_1.quickPanelS },
 	    React.createElement("div", { className: QuickPanel_style_1.searchBoxS },
@@ -24270,7 +24228,7 @@
 	    inputVal: state.quickpanel.inputVal,
 	    opened: state.quickpanel.opened
 	}); }, function (dispatch) { return ({
-	    onSearchChange: function (value) { return dispatch(Actions_1.searchChange(value)); }
+	    onSearchChange: function (value) { return dispatch({ type: Actions_1.ACTION.SEARCH_CHANGE, value: value }); }
 	}); })(exports.QuickPanelComponent);
 
 
@@ -24282,7 +24240,7 @@
 	var React = __webpack_require__(40);
 	var Command_1 = __webpack_require__(235);
 	var CommandList_style_1 = __webpack_require__(243);
-	var Sender_1 = __webpack_require__(35);
+	var Sender_1 = __webpack_require__(29);
 	;
 	exports.CommandList = function (props) { return (React.createElement("ul", { className: CommandList_style_1.ulS }, props.commands.map(function (command, i) {
 	    return React.createElement(Command_1.Command, { active: (props.activeInd === i) ? true : false, category: command.cat, commandInd: i, desc: command.desc, imgUrl: command.imgUrl, key: i, name: command.text, onCommandClick: function () { return Sender_1.sendAction(command.action); }, partialText: command.pText });
@@ -25294,57 +25252,6 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var ActionsList_1 = __webpack_require__(247);
-	exports.panelClose = function () { return ({
-	    type: ActionsList_1.PANEL_CLOSE
-	}); };
-	exports.panelOpen = function () { return ({
-	    type: ActionsList_1.PANEL_OPEN
-	}); };
-	exports.panelUp = function () { return ({
-	    type: ActionsList_1.PANEL_UP
-	}); };
-	exports.panelDown = function () { return ({
-	    type: ActionsList_1.PANEL_DOWN
-	}); };
-	exports.searchChange = function (value) { return ({
-	    type: ActionsList_1.SEARCH_CHANGE,
-	    value: value
-	}); };
-	exports.keyPress = function (char) { return ({
-	    type: ActionsList_1.PANEL_KEYPRESS,
-	    char: char
-	}); };
-	exports.executeCommand = function () { return ({
-	    type: ActionsList_1.PANEL_EXECUTE_COMMAND
-	}); };
-	exports.showFavorites = function (favorites) { return ({
-	    type: ActionsList_1.SHOW_FAVORITES,
-	    favorites: favorites
-	}); };
-
-
-/***/ },
-/* 247 */
-/***/ function(module, exports) {
-
-	"use strict";
-	exports.PANEL_OPEN = 'PANEL_OPEN';
-	exports.PANEL_CLOSE = 'PANEL_CLOSE';
-	exports.PANEL_EXECUTE_COMMAND = 'PANEL_EXECUTE_COMMAND';
-	exports.PANEL_UP = 'PANEL_UP';
-	exports.PANEL_DOWN = 'PANEL_DOWN';
-	exports.PANEL_KEYPRESS = 'PANEL_KEYPRESS';
-	exports.SEARCH_CHANGE = 'SEARCH_CHANGE';
-	exports.GET_FAVORITES = 'GET_FAVORITES';
-	exports.SHOW_FAVORITES = 'SHOW_FAVORITES';
-
-
-/***/ },
-/* 248 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
 	var typestyle_1 = __webpack_require__(237);
 	exports.quickPanelS = typestyle_1.style({
 	    display: 'block',
@@ -25359,16 +25266,6 @@
 	exports.searchBoxS = typestyle_1.style({
 	    padding: '5px 6px'
 	});
-
-
-/***/ },
-/* 249 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var ActionsList_1 = __webpack_require__(247);
-	var Sender_1 = __webpack_require__(35);
-	exports.getFavorites = function () { return Sender_1.sendToBackground({ type: ActionsList_1.GET_FAVORITES }); };
 
 
 /***/ }
