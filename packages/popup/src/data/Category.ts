@@ -1,5 +1,3 @@
-import { ConstMap } from './../Types';
-
 /**
  * Categories are used to categorize commands to be more easily found in
  * command panel
@@ -9,5 +7,7 @@ export const CAT = {
 	BROWSER: 'Browser',
 	GOTO: 'Goto',
 	PAGE: 'Page',
-	WINDOW: 'Window'
+	WINDOW: 'Window',
+	FAVORITE: 'Favitore',
+	SWITCH: 'Switch To'
 };

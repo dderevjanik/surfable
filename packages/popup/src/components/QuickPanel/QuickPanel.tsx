@@ -3,13 +3,13 @@ import {connect} from 'react-redux';
 import {CommandList} from './../CommandList/CommandList';
 import {SearchInput} from './../SearchInput/SearchInput';
 import {IAppState} from './../../interfaces/IAppState';
-import {ITextCommand} from './../../interfaces/ITextCommand';
+import {ICommand} from './../../interfaces/ICommand';
 import {executeCommand, searchChange} from './../../redux/reducers/Actions';
 import {quickPanelS, searchBoxS} from './QuickPanel.style';
 
 interface IProps {
 	readonly activeInd: number;
-	readonly commands: ITextCommand[];
+	readonly commands: ICommand[];
 	readonly opened: boolean;
 	readonly inputVal: string;
 	readonly onSearchChange: (newValue: string) => null;

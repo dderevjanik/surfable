@@ -1,29 +1,41 @@
-import {Type} from './actions/All';
-import {ETarget} from './enums/ETarget';
+import { MessageType } from './Messages';
+import { ETarget } from './enums/ETarget';
 
 declare const chrome;
 
-const sendMessage = (message: Type) => chrome.runtime.sendMessage(message);
+const sendMessage = (message: MessageType) => chrome.runtime.sendMessage(message);
 
-export const sendToBackground = (message: Type) =>
+/**
+ * Send specific message to Background
+ */
+export const sendToBackground = (message: MessageType) =>
 	sendMessage({
 		...message,
 		target: ETarget.BACKGROUND
 	});
 
-export const sendToPopup = (message: Type) =>
+/**
+ * Send specific message to Popup
+ */
+export const sendToPopup = (message: MessageType) =>
 	sendMessage({
 		...message,
 		target: ETarget.POPUP
 	});
 
-export const sendToContent = (message: Type) =>
+/**
+ * Send specific message to Content
+ */
+export const sendToContent = (message: MessageType) =>
 	sendMessage({
 		...message,
 		target: ETarget.CONTENT
 	});
 
-export const sendAction = (message: Type) => {
+/**
+ * Dispatch message between Background, Popup and Content
+ */
+export const sendAction = (message: MessageType) => {
 	switch(message.target) {
 		case ETarget.BACKGROUND: {
 			sendMessage(message);

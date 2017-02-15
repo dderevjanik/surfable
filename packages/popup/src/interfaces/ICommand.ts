@@ -1,4 +1,4 @@
-import * as Actions from 'surfable-common/src/actions/All';
+import { MessageType } from 'surfable-common/src/Messages';
 export type SIMPLE_COMMAND = 'SIMPLE_COMMAND';
 export const SIMPLE_COMMAND: 'SIMPLE_COMMAND' = 'SIMPLE_COMMAND';
 
@@ -9,7 +9,7 @@ export interface SimpleCommand {
 	readonly cat: string;
 	readonly imgUrl?: string;
 	readonly pText?: string[]; // Refactor, please :-)
-	readonly action: Actions.Type;
+	readonly action: MessageType;
 }
 
 export type ICommand = SimpleCommand;

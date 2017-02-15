@@ -1,6 +1,6 @@
-import {ETarget} from './../enums/ETarget';
+import { ETarget } from './../enums/ETarget';
 
-export interface IAction {
+export interface IMessage {
 	readonly type: string;
 	readonly target?: ETarget;
 	[key: string]: any;

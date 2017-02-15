@@ -1,8 +1,8 @@
-import { ICommands } from './ICommands';
+import { ICommand } from '../../interfaces/ICommand';
 
 export interface IPanel {
-	readonly allCommands: ICommands;
-	commands: ICommands;
+	readonly allCommands: ICommand[];
+	commands: ICommand[];
 	readonly opened: boolean;
 	readonly offset: number;
 	readonly inputVal: string;

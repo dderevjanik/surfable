@@ -1,6 +1,6 @@
-import { ETarget } from '../../common/src/enums/ETarget';
-import { SHOW_TABS } from '../../common/src/actions/ShowTabs';
-import {ITextCommand} from './interfaces/ITextCommand';
+import { MessageType } from '../../common/src/Messages';
+import { ETarget } from 'surfable-common/src/enums/ETarget';
+import { MESSAGE } from 'surfable-common/src/Messages';
 import {IAppState} from './interfaces/IAppState';
 import {PressedKeysMap} from './Types';
 import {keyMap} from './data/KeyMap';
@@ -8,7 +8,6 @@ import {store} from './redux/store';
 import {panelClose, panelOpen, panelUp, panelDown, executeCommand, keyPress} from './redux/Reducers/Actions';
 import {render} from './Index';
 import {getFavorites} from './redux/reducers/AsyncActions';
-import {Type, SHOW_FAVORITES} from 'surfable-common/src/Actions/All';
 
 render();
 
@@ -45,13 +44,13 @@ document.onkeydown = (e: KeyboardEvent) => {
 chrome.runtime.sendMessage({type: 'GET_CURRENT_TABS', target: ETarget.BACKGROUND});
 getFavorites();
 chrome.runtime.onMessage.addListener(
-	(message: Type) => {
+	(message: MessageType) => {
 		switch(message.type) {
-			case SHOW_FAVORITES: {
+			case MESSAGE.SHOW_FAVORITES: {
 				store.dispatch({type: message.type, favorites: message.favorites});
 				break;
 			}
-			case SHOW_TABS: {
+			case MESSAGE.SHOW_TABS: {
 				store.dispatch(message);
 				break;
 			}

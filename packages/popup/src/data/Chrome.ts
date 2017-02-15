@@ -1,9 +1,7 @@
-import {ConstMap} from './../Types';
-
 /**
  * Chrome default urls
  */
-export const Chrome = {
+export const CHROME = {
 	HISTORY: 'chrome://history',
 	DOWNLOADS: 'chrome://downloads',
 	EXTENSIONS: 'chrome://extensions',
