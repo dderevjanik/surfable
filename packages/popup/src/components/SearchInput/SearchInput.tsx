@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { reduxForm } from 'redux-form';
 import { searchInputS } from './SearchInput.style';
 
 interface IProps {
