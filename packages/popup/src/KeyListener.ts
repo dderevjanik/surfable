@@ -22,6 +22,9 @@ const processKeyEvent = (event: KeyboardEvent) => {
 	}
 };
 
+/**
+ * Start listen on keys
+ */
 export const keyListener = () => {
 	document.onkeydown = (e: KeyboardEvent) => {
 		if ((e.keyCode >= 37) && (e.keyCode <= 40) || (e.keyCode === keyMap.esc) || (e.keyCode === keyMap.enter)) {

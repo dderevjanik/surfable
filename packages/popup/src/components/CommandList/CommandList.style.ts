@@ -1,7 +1,7 @@
 import { style } from 'typestyle';
 
 export const ulS = style({
-	fontSize: '14px',
+	fontSize: '13px',
 	padding: '0px',
 	listStyle: 'none',
 	marginTop: '3px',

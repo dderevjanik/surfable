@@ -1369,6 +1369,7 @@
 	};
 	var Messages_1 = __webpack_require__(2);
 	var Sender_1 = __webpack_require__(29);
+	var ICommand_1 = __webpack_require__(35);
 	var Actions_1 = __webpack_require__(30);
 	var InitState_1 = __webpack_require__(31);
 	var CommandTransfer_1 = __webpack_require__(36);
@@ -1411,10 +1412,29 @@
 	                var valLen_1 = searchValue_1.length;
 	                var foundCommands = state.allCommands
 	                    .map(function (command) {
-	                    var text = (command.cat + ': ' + command.text);
-	                    var ind = text.toLowerCase().indexOf(searchValue_1);
-	                    return (ind >= 0)
-	                        ? __assign({}, command, { pText: [text.slice(0, ind), text.slice(ind, ind + valLen_1), text.slice(ind + valLen_1, text.length)] }) : null;
+	                    switch (command.type) {
+	                        case ICommand_1.COMMAND.SIMPLE: {
+	                            var text = (command.cat + ': ' + command.text);
+	                            var ind = text.toLowerCase().indexOf(searchValue_1);
+	                            return (ind >= 0)
+	                                ? __assign({}, command, { pText: [text.slice(0, ind), text.slice(ind, ind + valLen_1), text.slice(ind + valLen_1, text.length)] }) : null;
+	                        }
+	                        case ICommand_1.COMMAND.DUMMY: {
+	                            var text = command.text;
+	                            var ind = text.toLowerCase().indexOf(searchValue_1);
+	                            return (ind >= 0)
+	                                ? __assign({}, command, { pText: [text.slice(0, ind), text.slice(ind, ind + valLen_1), text.slice(ind + valLen_1, text.length)] }) : null;
+	                        }
+	                        case ICommand_1.COMMAND.URL_COMMAND: {
+	                            var text = command.text;
+	                            var ind = text.toLowerCase().indexOf(searchValue_1);
+	                            return (ind >= 0)
+	                                ? __assign({}, command, { pText: [text.slice(0, ind), text.slice(ind, ind + valLen_1), text.slice(ind + valLen_1, text.length)] }) : null;
+	                        }
+	                        default: {
+	                            throw new Error("Undefined command type " + command);
+	                        }
+	                    }
 	                }).filter(function (command) { return command; });
 	                return __assign({}, state, { inputVal: (action.value), offset: 0, commands: (foundCommands.length > 0) ? foundCommands : [DummyCommands_1.notFoundCommand] });
 	            }
@@ -1553,40 +1573,40 @@
 	 */
 	exports.commands = [
 	    // BOOKMARK
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.BOOKMARK, text: 'Add to bookmarks', desc: 'Ctrl + D',
+	    { type: ICommand_1.COMMAND.SIMPLE, cat: Category_1.CAT.BOOKMARK, text: 'Add to bookmarks', desc: 'Ctrl + D',
 	        action: { type: Messages_1.MESSAGE.BOOKMARK_ADD, target: 0 /* BACKGROUND */ } },
 	    // PAGE
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Close current tab', desc: 'Ctrl + W',
+	    { type: ICommand_1.COMMAND.SIMPLE, cat: Category_1.CAT.PAGE, text: 'Close current tab', desc: 'Ctrl + W',
 	        action: { type: Messages_1.MESSAGE.TAB_CLOSE, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Reload', desc: 'Ctrl + R',
+	    { type: ICommand_1.COMMAND.SIMPLE, cat: Category_1.CAT.PAGE, text: 'Reload', desc: 'Ctrl + R',
 	        action: { type: Messages_1.MESSAGE.TAB_RELOAD, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Open new tab', desc: 'Ctrl + T',
+	    { type: ICommand_1.COMMAND.SIMPLE, cat: Category_1.CAT.PAGE, text: 'Open new tab', desc: 'Ctrl + T',
 	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: '', target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Duplicate', desc: '',
+	    { type: ICommand_1.COMMAND.SIMPLE, cat: Category_1.CAT.PAGE, text: 'Duplicate', desc: '',
 	        action: { type: Messages_1.MESSAGE.TAB_DUPLICATE, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Close all tabs', desc: '',
+	    { type: ICommand_1.COMMAND.SIMPLE, cat: Category_1.CAT.PAGE, text: 'Close all tabs', desc: '',
 	        action: { type: Messages_1.MESSAGE.TAB_CLOSE_ALL, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Print Page', desc: 'Ctrl + P',
+	    { type: ICommand_1.COMMAND.SIMPLE, cat: Category_1.CAT.PAGE, text: 'Print Page', desc: 'Ctrl + P',
 	        action: { type: Messages_1.MESSAGE.PRINT_PAGE, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Zoom in', desc: 'Ctrl + =',
+	    { type: ICommand_1.COMMAND.SIMPLE, cat: Category_1.CAT.PAGE, text: 'Zoom in', desc: 'Ctrl + =',
 	        action: { type: Messages_1.MESSAGE.ZOOM, zoomType: 0 /* IN */, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Zoom out', desc: 'Ctrl + -',
+	    { type: ICommand_1.COMMAND.SIMPLE, cat: Category_1.CAT.PAGE, text: 'Zoom out', desc: 'Ctrl + -',
 	        action: { type: Messages_1.MESSAGE.ZOOM, zoomType: 1 /* OUT */, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.PAGE, text: 'Zoom reset', desc: '',
+	    { type: ICommand_1.COMMAND.SIMPLE, cat: Category_1.CAT.PAGE, text: 'Zoom reset', desc: '',
 	        action: { type: Messages_1.MESSAGE.ZOOM, zoomType: 2 /* RESET */, target: 0 /* BACKGROUND */ } },
 	    // WINDOW
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.WINDOW, text: 'Close current window', desc: 'Ctrl + Shift + W',
+	    { type: ICommand_1.COMMAND.SIMPLE, cat: Category_1.CAT.WINDOW, text: 'Close current window', desc: 'Ctrl + Shift + W',
 	        action: { type: Messages_1.MESSAGE.WINDOW_CLOSE, target: 0 /* BACKGROUND */ } },
 	    // BROWSER
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.BROWSER, text: 'Bookmarks', desc: 'Ctrl + Shift + O',
+	    { type: ICommand_1.COMMAND.SIMPLE, cat: Category_1.CAT.BROWSER, text: 'Bookmarks', desc: 'Ctrl + Shift + O',
 	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.BOOKMARKS, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.BROWSER, text: 'Downloads', desc: 'Ctrl + J',
+	    { type: ICommand_1.COMMAND.SIMPLE, cat: Category_1.CAT.BROWSER, text: 'Downloads', desc: 'Ctrl + J',
 	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.DOWNLOADS, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.BROWSER, text: 'Extensions', desc: '',
+	    { type: ICommand_1.COMMAND.SIMPLE, cat: Category_1.CAT.BROWSER, text: 'Extensions', desc: '',
 	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.EXTENSIONS, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.BROWSER, text: 'History', desc: 'Ctrl + H',
+	    { type: ICommand_1.COMMAND.SIMPLE, cat: Category_1.CAT.BROWSER, text: 'History', desc: 'Ctrl + H',
 	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.HISTORY, target: 0 /* BACKGROUND */ } },
-	    { type: ICommand_1.SIMPLE_COMMAND, cat: Category_1.CAT.BROWSER, text: 'Settings', desc: '',
+	    { type: ICommand_1.COMMAND.SIMPLE, cat: Category_1.CAT.BROWSER, text: 'Settings', desc: '',
 	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.SETTINGS, target: 0 /* BACKGROUND */ } }
 	];
 
@@ -1634,7 +1654,12 @@
 /***/ function(module, exports) {
 
 	"use strict";
-	exports.SIMPLE_COMMAND = 'SIMPLE_COMMAND';
+	exports.COMMAND = {
+	    SIMPLE: 'SIMPLE',
+	    LONG_DESC: 'LONG_DESC',
+	    DUMMY: 'DUMMY',
+	    URL_COMMAND: 'URL_COMMAND'
+	};
 
 
 /***/ },
@@ -1643,6 +1668,7 @@
 
 	"use strict";
 	var Messages_1 = __webpack_require__(2);
+	var ICommand_1 = __webpack_require__(35);
 	var Category_1 = __webpack_require__(33);
 	var CommandHelper_1 = __webpack_require__(249);
 	/**
@@ -1652,7 +1678,7 @@
 	    // Show shortcut key only for first 10 tabs
 	    var description = (index < 10) ? "Ctrl + " + index : '';
 	    return {
-	        type: 'SIMPLE_COMMAND',
+	        type: ICommand_1.COMMAND.SIMPLE,
 	        desc: description,
 	        cat: Category_1.CAT.GOTO,
 	        text: CommandHelper_1.sliceOverflowTitle(tab.title),
@@ -1664,10 +1690,10 @@
 	 * Create simple command to open new tab from recently closed tabs
 	 */
 	exports.closedToCommand = function (closed) { return ({
-	    type: 'SIMPLE_COMMAND',
+	    type: ICommand_1.COMMAND.URL_COMMAND,
 	    desc: '',
-	    cat: Category_1.CAT.RECENT,
-	    imgUrl: CommandHelper_1.getFaviconUrl(closed.url),
+	    url: closed.url,
+	    imgUrl: CommandHelper_1.getFaviconUrl(closed.favIconUrl),
 	    action: { type: Messages_1.MESSAGE.TAB_NEW, target: 0 /* BACKGROUND */, url: closed.url },
 	    text: CommandHelper_1.sliceOverflowTitle(closed.title)
 	}); };
@@ -1675,9 +1701,9 @@
 	 * Create simple command to open new tab from favorite
 	 */
 	exports.favoriteToCommand = function (favorite) { return ({
-	    type: 'SIMPLE_COMMAND',
+	    type: ICommand_1.COMMAND.URL_COMMAND,
 	    desc: '',
-	    cat: Category_1.CAT.FAVORITE,
+	    url: favorite.url,
 	    action: { type: Messages_1.MESSAGE.TAB_NEW, target: 0 /* BACKGROUND */, url: favorite.url },
 	    text: CommandHelper_1.sliceOverflowTitle(favorite.title)
 	}); };
@@ -1695,11 +1721,12 @@
 
 /***/ },
 /* 38 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var ICommand_1 = __webpack_require__(35);
 	exports.notFoundCommand = {
-	    type: 'SIMPLE_COMMAND',
+	    type: ICommand_1.COMMAND.DUMMY,
 	    cat: '',
 	    desc: '',
 	    action: { type: 'NOTHING', target: 0 /* BACKGROUND */ },
@@ -24200,36 +24227,33 @@
 
 	"use strict";
 	var React = __webpack_require__(40);
-	var Command_1 = __webpack_require__(235);
+	var SimpleCommand_1 = __webpack_require__(250);
+	var DummyCommand_1 = __webpack_require__(251);
+	var UrlCommand_1 = __webpack_require__(252);
+	var ICommand_1 = __webpack_require__(35);
 	var CommandList_style_1 = __webpack_require__(243);
 	var Sender_1 = __webpack_require__(29);
 	;
 	exports.CommandList = function (props) { return (React.createElement("ul", { className: CommandList_style_1.ulS }, props.commands.map(function (command, i) {
-	    return React.createElement(Command_1.Command, { active: (props.activeInd === i) ? true : false, category: command.cat, commandInd: i, desc: command.desc, imgUrl: command.imgUrl, key: i, name: command.text, onCommandClick: function () { return Sender_1.sendAction(command.action); }, partialText: command.pText });
+	    switch (command.type) {
+	        case ICommand_1.COMMAND.DUMMY: {
+	            return (React.createElement(DummyCommand_1.DummyCommand, { active: (props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text }));
+	        }
+	        case ICommand_1.COMMAND.SIMPLE: {
+	            return (React.createElement(SimpleCommand_1.SimpleCommand, { active: (props.activeInd === i) ? true : false, category: command.cat, commandInd: i, desc: command.desc, imgUrl: command.imgUrl, key: i, name: command.text, onCommandClick: function () { return Sender_1.sendAction(command.action); }, partialText: command.pText }));
+	        }
+	        case ICommand_1.COMMAND.URL_COMMAND: {
+	            return (React.createElement(UrlCommand_1.UrlCommand, { active: (props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text, url: command.url, partialText: command.pText, imgUrl: command.imgUrl }));
+	        }
+	        default: {
+	            throw new Error("Undefined command type: " + command);
+	        }
+	    }
 	}))); };
 
 
 /***/ },
-/* 235 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var React = __webpack_require__(40);
-	var Command_style_1 = __webpack_require__(236);
-	;
-	exports.Command = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } },
-	    (props.partialText)
-	        ? (React.createElement("span", { className: Command_style_1.textS },
-	            props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null,
-	            React.createElement("span", null, props.partialText[0]),
-	            React.createElement("span", { className: Command_style_1.highlightS }, props.partialText[1]),
-	            React.createElement("span", null, props.partialText[2])))
-	        : React.createElement("span", { className: Command_style_1.textS },
-	            props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null, props.category + ": " + props.name),
-	    React.createElement("small", { className: Command_style_1.descS }, props.desc))); };
-
-
-/***/ },
+/* 235 */,
 /* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -24274,6 +24298,9 @@
 	exports.iconS = typestyle_1.style({
 	    height: '1.1em',
 	    marginRight: '5px'
+	});
+	exports.SSmallText = typestyle_1.style({
+	    color: 'grey'
 	});
 
 
@@ -25151,7 +25178,7 @@
 	"use strict";
 	var typestyle_1 = __webpack_require__(237);
 	exports.ulS = typestyle_1.style({
-	    fontSize: '14px',
+	    fontSize: '13px',
 	    padding: '0px',
 	    listStyle: 'none',
 	    marginTop: '3px',
@@ -25256,6 +25283,9 @@
 	        }
 	    }
 	};
+	/**
+	 * Start listen on keys
+	 */
 	exports.keyListener = function () {
 	    document.onkeydown = function (e) {
 	        if ((e.keyCode >= 37) && (e.keyCode <= 40) || (e.keyCode === KeyMap_1.keyMap.esc) || (e.keyCode === KeyMap_1.keyMap.enter)) {
@@ -25322,6 +25352,63 @@
 	            : faviconUrl
 	        : Constants_1.BLANK_FAVICON;
 	};
+
+
+/***/ },
+/* 250 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var React = __webpack_require__(40);
+	var Command_style_1 = __webpack_require__(236);
+	;
+	exports.SimpleCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } },
+	    (props.partialText)
+	        ? (React.createElement("span", { className: Command_style_1.textS },
+	            props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null,
+	            React.createElement("span", null, props.partialText[0]),
+	            React.createElement("span", { className: Command_style_1.highlightS }, props.partialText[1]),
+	            React.createElement("span", null, props.partialText[2])))
+	        : React.createElement("span", { className: Command_style_1.textS },
+	            props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null, props.category + ": " + props.name),
+	    React.createElement("small", { className: Command_style_1.descS }, props.desc))); };
+
+
+/***/ },
+/* 251 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var React = __webpack_require__(40);
+	var Command_style_1 = __webpack_require__(236);
+	;
+	exports.DummyCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } },
+	    React.createElement("i", null,
+	        " ",
+	        props.text,
+	        " "))); };
+
+
+/***/ },
+/* 252 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var React = __webpack_require__(40);
+	var Command_style_1 = __webpack_require__(236);
+	;
+	exports.UrlCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } }, (props.partialText)
+	    ? (React.createElement("span", { className: Command_style_1.textS },
+	        props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null,
+	        React.createElement("span", null, props.partialText[0]),
+	        React.createElement("span", { className: Command_style_1.highlightS }, props.partialText[1]),
+	        React.createElement("span", null, props.partialText[2])))
+	    : React.createElement("span", { className: Command_style_1.textS },
+	        props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null,
+	        " ",
+	        props.text,
+	        " ",
+	        React.createElement("span", { className: Command_style_1.SSmallText }, props.url)))); };
 
 
 /***/ }

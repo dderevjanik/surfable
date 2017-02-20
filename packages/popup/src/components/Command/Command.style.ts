@@ -45,3 +45,7 @@ export const iconS = style({
 	height: '1.1em',
 	marginRight: '5px'
 });
+
+export const SSmallText = style({
+	color: 'grey'
+});

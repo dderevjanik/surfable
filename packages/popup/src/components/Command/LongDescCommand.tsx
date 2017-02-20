@@ -12,8 +12,8 @@ interface IProps {
 	readonly onCommandClick: () => void;
 };
 
-export const Command = (props: IProps) => (
-	<li className={ `${commandS} + ${props.active ? commandHighlightS : ''}` } onClick={() => props.onCommandClick()}>
+export const LongDescCommand = (props: IProps) => (
+    <li className={ `${commandS} + ${props.active ? commandHighlightS : ''}` } onClick={() => props.onCommandClick()}>
 		{ (props.partialText)
 			? (<span className={textS}>
 					{props.imgUrl ? <img className={iconS} src={props.imgUrl} /> : null}

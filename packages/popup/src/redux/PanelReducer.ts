@@ -2,7 +2,7 @@ import { MESSAGE, MessageType } from 'surfable-common/src/Messages';
 import { ETarget } from 'surfable-common/src/enums/ETarget';
 import { sendAction } from 'surfable-common/src/Sender';
 import { IPanel } from './interfaces/IPanel';
-import { ICommand } from './../interfaces/ICommand';
+import { ICommand, COMMAND } from './../interfaces/ICommand';
 import { ACTION, ActionType } from './Actions';
 import { initState } from './InitState';
 import { favoriteToCommand, tabToCommand, closedToCommand } from './../utils/CommandTransfer';
@@ -59,11 +59,32 @@ export const panelReducer = (state: IPanel = initState.quickpanel, action: Actio
 				const valLen = searchValue.length;
 				const foundCommands = state.allCommands
 					.map(command => {
-						const text = (command.cat + ': ' + command.text);
-						const ind = text.toLowerCase().indexOf(searchValue);
-						return (ind >= 0)
-							? {...command, pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)]}
-							: null
+						switch(command.type) {
+							case COMMAND.SIMPLE: {
+								const text = (command.cat + ': ' + command.text);
+								const ind = text.toLowerCase().indexOf(searchValue);
+								return (ind >= 0)
+									? {...command, pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)]}
+									: null
+							}
+							case COMMAND.DUMMY: {
+								const text = command.text;
+								const ind = text.toLowerCase().indexOf(searchValue);
+								return (ind >= 0)
+									? {...command, pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)]}
+									: null
+							}
+							case COMMAND.URL_COMMAND: {
+								const text = command.text;
+								const ind = text.toLowerCase().indexOf(searchValue);
+								return (ind >= 0)
+									? {...command, pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)]}
+									: null
+							}
+							default: {
+								throw new Error(`Undefined command type ${command}`);
+							}
+						}
 					}).filter(command => command);
 				return {
 					...state,

@@ -1,9 +1,14 @@
 import { MessageType } from 'surfable-common/src/Messages';
-export type SIMPLE_COMMAND = 'SIMPLE_COMMAND';
-export const SIMPLE_COMMAND: 'SIMPLE_COMMAND' = 'SIMPLE_COMMAND';
 
-export interface SimpleCommand {
-	readonly type: SIMPLE_COMMAND;
+export const COMMAND = {
+	SIMPLE: 'SIMPLE' as 'SIMPLE',
+	LONG_DESC: 'LONG_DESC' as 'LONG_DESC',
+	DUMMY: 'DUMMY' as 'DUMMY',
+	URL_COMMAND: 'URL_COMMAND' as 'URL_COMMAND'
+};
+
+export interface ISimpleCommand {
+	readonly type: typeof COMMAND.SIMPLE;
 	readonly text: string;
 	readonly desc: string;
 	readonly cat: string;
@@ -12,4 +17,19 @@ export interface SimpleCommand {
 	readonly action: MessageType;
 }
 
-export type ICommand = SimpleCommand;
+export interface IDummyCommand {
+	readonly type: typeof COMMAND.DUMMY;
+	readonly text: string;
+	readonly action: MessageType;
+}
+
+export interface IUrlCommand {
+	readonly type: typeof COMMAND.URL_COMMAND;
+	readonly text: string;
+	readonly action: MessageType;
+	readonly url: string;
+	readonly imgUrl?: string;
+	readonly pText?: string[];
+}
+
+export type ICommand = ISimpleCommand | IDummyCommand | IUrlCommand;
