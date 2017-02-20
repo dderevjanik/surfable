@@ -1,10 +1,12 @@
-import { sendToContent } from '../../common/src/Sender';
+import { EZoomType } from 'surfable-common/src/enums/EZoomType';
+import { ETarget } from 'surfable-common/src/enums/ETarget';
 import { MessageType, MESSAGE } from 'surfable-common/src/Messages';
-import {EZoomType} from 'surfable-common/src/enums/EZoomType';
-import {ETarget} from 'surfable-common/src/enums/ETarget';
-
-export const messageListener = () => {
-
+import { sendToPopup } from 'surfable-common/src/Sender';
+import { store } from './redux/Store';
+/**
+ * Will listen on events/messages incoming from other parts of extension
+ */
+export const messageReceiver = () => {
 	chrome.runtime.onMessage.addListener((message: MessageType) => {
 		if (message.target === ETarget.BACKGROUND) {
 			switch(message.type) {
@@ -76,16 +78,8 @@ export const messageListener = () => {
 					});
 					break;
 				}
-				case MESSAGE.GET_FAVORITES: {
-					chrome.topSites.get(favorites => {
-						chrome.runtime.sendMessage({type: MESSAGE.SHOW_FAVORITES, favorites: favorites});
-					});
-					break;
-				}
 				case MESSAGE.GET_CURRENT_TABS: {
-					chrome.tabs.query({currentWindow: true}, payload => {
-						sendToContent({type: MESSAGE.SHOW_TABS, tabs: payload});
-					});
+					sendToPopup({type: MESSAGE.SHOW_TABS, tabs: store.getState()});
 					break;
 				}
 				case MESSAGE.TAB_SWITCH: {
@@ -112,11 +106,11 @@ export const messageListener = () => {
 					});
 				}
 				default: {
-					throw new Error('Unknown message type: ' + message.type);
+					throw new Error(`Unknown message type: ${message.type}`);
 				}
 			}
 		} else {
-			// Do nothing
+			// Do nothing, message isn't adressed for 'Background'
 		}
 	});
 };

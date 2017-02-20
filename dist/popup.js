@@ -52,49 +52,15 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var Sender_1 = __webpack_require__(29);
 	var Messages_1 = __webpack_require__(2);
-	var KeyMap_1 = __webpack_require__(3);
-	var store_1 = __webpack_require__(4);
-	var Actions_1 = __webpack_require__(30);
 	var Index_1 = __webpack_require__(39);
+	var KeyListener_1 = __webpack_require__(247);
+	var MessageReceiver_1 = __webpack_require__(248);
 	Index_1.render();
-	var processEvent = function (event) {
-	    switch (event.keyCode) {
-	        case KeyMap_1.keyMap.esc:
-	            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_CLOSE });
-	            break;
-	        case KeyMap_1.keyMap.up:
-	            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_UP });
-	            break;
-	        case KeyMap_1.keyMap.down:
-	            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_DOWN });
-	            break;
-	        case KeyMap_1.keyMap.enter:
-	            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_EXECUTE_COMMAND });
-	            break;
-	        default: {
-	        }
-	    }
-	};
-	document.onkeydown = function (e) {
-	    if ((e.keyCode >= 37) && (e.keyCode <= 40) || (e.keyCode === KeyMap_1.keyMap.esc) || (e.keyCode === KeyMap_1.keyMap.enter)) {
-	        processEvent(e);
-	    }
-	};
-	chrome.runtime.sendMessage({ type: Messages_1.MESSAGE.GET_CURRENT_TABS, target: 0 /* BACKGROUND */ });
-	chrome.runtime.sendMessage({ type: Messages_1.MESSAGE.GET_FAVORITES, target: 0 /* BACKGROUND */ });
-	chrome.runtime.onMessage.addListener(function (message) {
-	    switch (message.type) {
-	        case Messages_1.MESSAGE.SHOW_FAVORITES:
-	            store_1.store.dispatch({ type: message.type, favorites: message.favorites });
-	            break;
-	        case Messages_1.MESSAGE.SHOW_TABS:
-	            store_1.store.dispatch(message);
-	            break;
-	        default: {
-	        }
-	    }
-	});
+	KeyListener_1.keyListener();
+	MessageReceiver_1.messageReceiver();
+	Sender_1.sendToBackground({ type: Messages_1.MESSAGE.GET_CURRENT_TABS });
 
 
 /***/ },
@@ -118,7 +84,8 @@
 	    SHOW_FAVORITES: 'SHOW_FAVORITES',
 	    SHOW_TABS: 'SHOW_TABS',
 	    GET_FAVORITES: 'GET_FAVORITES',
-	    GET_CURRENT_TABS: 'GET_CURRENT_TABS'
+	    GET_CURRENT_TABS: 'GET_CURRENT_TABS',
+	    SYNC_TABS: 'SYNC_TABS'
 	};
 
 
@@ -1455,27 +1422,17 @@
 	                return __assign({}, state, { inputVal: (action.value), commands: state.allCommands });
 	            }
 	        }
-	        case Messages_1.MESSAGE.SHOW_FAVORITES: {
-	            if (action.favorites) {
-	                var newCommands = action.favorites
-	                    .slice(0, 10)
-	                    .map(function (favorite) { return CommandTransfer_1.favoriteToCommand(favorite); });
-	                var commands = state.allCommands.concat(newCommands);
-	                return __assign({}, state, { allCommands: commands, commands: commands });
-	            }
-	            else {
-	                return state;
-	            }
-	        }
 	        case Messages_1.MESSAGE.SHOW_TABS: {
-	            if (action.tabs) {
-	                var newCommands = action.tabs.map(function (tab, index) {
-	                    return CommandTransfer_1.tabToCommand(tab, index);
-	                });
-	                var commands = state.allCommands.concat(newCommands);
-	                return __assign({}, state, { allCommands: commands, commands: commands });
-	            }
-	            return state;
+	            console.log(action.tabs);
+	            var favoriteCommands = action.tabs.favorites
+	                .slice(0, 10)
+	                .map(function (favorite) { return CommandTransfer_1.favoriteToCommand(favorite); });
+	            var openedTabCommands = action.tabs.openedTabs
+	                .map(function (tab, index) { return CommandTransfer_1.tabToCommand(tab, index); });
+	            var closedTabCommands = action.tabs.closedTabs
+	                .map(function (tab) { return CommandTransfer_1.closedToCommand(tab); });
+	            var allNewCommands = favoriteCommands.concat(openedTabCommands.concat(closedTabCommands));
+	            return __assign({}, state, { allCommands: state.defaultCommands.concat(allNewCommands), commands: state.defaultCommands.concat(allNewCommands) });
 	        }
 	        default: {
 	            return state;
@@ -1486,9 +1443,9 @@
 
 /***/ },
 /* 29 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	/* WEBPACK VAR INJECTION */(function(process) {"use strict";
 	var __assign = (this && this.__assign) || Object.assign || function(t) {
 	    for (var s, i = 1, n = arguments.length; i < n; i++) {
 	        s = arguments[i];
@@ -1497,7 +1454,12 @@
 	    }
 	    return t;
 	};
-	var sendMessage = function (message) { return chrome.runtime.sendMessage(message); };
+	var sendMessage = function (message) {
+	    if (process.env.dev) {
+	        console.log("Message '" + message.type + "' sent");
+	    }
+	    chrome.runtime.sendMessage(message);
+	};
 	/**
 	 * Send specific message to Background
 	 */
@@ -1539,6 +1501,7 @@
 	    }
 	};
 
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ },
 /* 30 */
@@ -1566,6 +1529,7 @@
 	        maxCommands: 7
 	    },
 	    quickpanel: {
+	        defaultCommands: Commands_1.commands,
 	        allCommands: Commands_1.commands,
 	        commands: Commands_1.commands,
 	        opened: false,
@@ -1643,7 +1607,8 @@
 	    PAGE: 'Page',
 	    WINDOW: 'Window',
 	    FAVORITE: 'Favitore',
-	    SWITCH: 'Switch To'
+	    SWITCH: 'Switch To',
+	    RECENT: 'Recent'
 	};
 
 
@@ -1679,46 +1644,43 @@
 	"use strict";
 	var Messages_1 = __webpack_require__(2);
 	var Category_1 = __webpack_require__(33);
-	var Constants_1 = __webpack_require__(37);
+	var CommandHelper_1 = __webpack_require__(249);
 	/**
 	 * Create simple command to switch to another tab
 	 */
 	exports.tabToCommand = function (tab, index) {
 	    // Show shortcut key only for first 10 tabs
-	    console.log(tab);
 	    var description = (index < 10) ? "Ctrl + " + index : '';
-	    var text = (tab.title.length > Constants_1.MAX_COMMAND_TEXT_LENGTH)
-	        ? (tab.title.slice(0, Constants_1.MAX_COMMAND_TEXT_LENGTH) + '...')
-	        : tab.title;
-	    var iconUrl = (tab.favIconUrl)
-	        ? (tab.favIconUrl.indexOf(Constants_1.CHROME_PROTOCOL) === 0)
-	            ? Constants_1.BLANK_FAVICON
-	            : tab.favIconUrl
-	        : Constants_1.BLANK_FAVICON;
 	    return {
 	        type: 'SIMPLE_COMMAND',
 	        desc: description,
 	        cat: Category_1.CAT.GOTO,
-	        text: text,
-	        imgUrl: iconUrl,
+	        text: CommandHelper_1.sliceOverflowTitle(tab.title),
+	        imgUrl: CommandHelper_1.getFaviconUrl(tab.favIconUrl),
 	        action: { type: Messages_1.MESSAGE.TAB_SWITCH, id: tab.id, target: 0 /* BACKGROUND */ }
 	    };
 	};
 	/**
+	 * Create simple command to open new tab from recently closed tabs
+	 */
+	exports.closedToCommand = function (closed) { return ({
+	    type: 'SIMPLE_COMMAND',
+	    desc: '',
+	    cat: Category_1.CAT.RECENT,
+	    imgUrl: CommandHelper_1.getFaviconUrl(closed.url),
+	    action: { type: Messages_1.MESSAGE.TAB_NEW, target: 0 /* BACKGROUND */, url: closed.url },
+	    text: CommandHelper_1.sliceOverflowTitle(closed.title)
+	}); };
+	/**
 	 * Create simple command to open new tab from favorite
 	 */
-	exports.favoriteToCommand = function (favorite) {
-	    var text = (favorite.title.length > Constants_1.MAX_COMMAND_TEXT_LENGTH)
-	        ? (favorite.title.slice(0, Constants_1.MAX_COMMAND_TEXT_LENGTH) + '...')
-	        : favorite.title;
-	    return {
-	        type: 'SIMPLE_COMMAND',
-	        desc: '',
-	        cat: Category_1.CAT.FAVORITE,
-	        action: { type: Messages_1.MESSAGE.TAB_NEW, target: 0 /* BACKGROUND */, url: favorite.url },
-	        text: text
-	    };
-	};
+	exports.favoriteToCommand = function (favorite) { return ({
+	    type: 'SIMPLE_COMMAND',
+	    desc: '',
+	    cat: Category_1.CAT.FAVORITE,
+	    action: { type: Messages_1.MESSAGE.TAB_NEW, target: 0 /* BACKGROUND */, url: favorite.url },
+	    text: CommandHelper_1.sliceOverflowTitle(favorite.title)
+	}); };
 
 
 /***/ },
@@ -25266,6 +25228,100 @@
 	exports.searchBoxS = typestyle_1.style({
 	    padding: '5px 6px'
 	});
+
+
+/***/ },
+/* 247 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var KeyMap_1 = __webpack_require__(3);
+	var Actions_1 = __webpack_require__(30);
+	var store_1 = __webpack_require__(4);
+	var processKeyEvent = function (event) {
+	    switch (event.keyCode) {
+	        case KeyMap_1.keyMap.esc:
+	            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_CLOSE });
+	            break;
+	        case KeyMap_1.keyMap.up:
+	            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_UP });
+	            break;
+	        case KeyMap_1.keyMap.down:
+	            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_DOWN });
+	            break;
+	        case KeyMap_1.keyMap.enter:
+	            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_EXECUTE_COMMAND });
+	            break;
+	        default: {
+	        }
+	    }
+	};
+	exports.keyListener = function () {
+	    document.onkeydown = function (e) {
+	        if ((e.keyCode >= 37) && (e.keyCode <= 40) || (e.keyCode === KeyMap_1.keyMap.esc) || (e.keyCode === KeyMap_1.keyMap.enter)) {
+	            processKeyEvent(e);
+	        }
+	    };
+	};
+
+
+/***/ },
+/* 248 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var Messages_1 = __webpack_require__(2);
+	var store_1 = __webpack_require__(4);
+	/**
+	 * Will listen on events/messages incoming from other parts of extension
+	 */
+	exports.messageReceiver = function () {
+	    chrome.runtime.onMessage.addListener(function (message) {
+	        if (message.target === 2 /* POPUP */) {
+	            switch (message.type) {
+	                case Messages_1.MESSAGE.SHOW_FAVORITES:
+	                    store_1.store.dispatch({ type: message.type, favorites: message.favorites });
+	                    break;
+	                case Messages_1.MESSAGE.SHOW_TABS:
+	                    store_1.store.dispatch(message);
+	                    break;
+	                default: {
+	                    throw new Error("Unknown message type: " + message.type);
+	                }
+	            }
+	        }
+	        else {
+	        }
+	    });
+	};
+
+
+/***/ },
+/* 249 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var Constants_1 = __webpack_require__(37);
+	/**
+	 * Slice long text from command's title
+	 */
+	exports.sliceOverflowTitle = function (titleText) {
+	    return (titleText.length > Constants_1.MAX_COMMAND_TEXT_LENGTH)
+	        ? titleText.slice(0, Constants_1.MAX_COMMAND_TEXT_LENGTH)
+	        : titleText;
+	};
+	/**
+	 * Will get favicon url, because sometimes is favicon undefined
+	 * or it's set to chrome internals, which don't work outside
+	 * of chrome internals
+	 */
+	exports.getFaviconUrl = function (faviconUrl) {
+	    return (faviconUrl)
+	        ? (faviconUrl.indexOf(Constants_1.CHROME_PROTOCOL) === 0)
+	            ? Constants_1.BLANK_FAVICON
+	            : faviconUrl
+	        : Constants_1.BLANK_FAVICON;
+	};
 
 
 /***/ }

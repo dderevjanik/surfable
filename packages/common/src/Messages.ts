@@ -1,5 +1,6 @@
 import { IMessage } from './interfaces/IAction';
 import { EZoomType } from './enums/EZoomType';
+import { ITabs } from './interfaces/ITabs';
 
 export const MESSAGE = {
 	NOTHING: 'NOTHING' as 'NOTHING',
@@ -17,7 +18,8 @@ export const MESSAGE = {
 	SHOW_FAVORITES: 'SHOW_FAVORITES' as 'SHOW_FAVORITES',
 	SHOW_TABS: 'SHOW_TABS' as 'SHOW_TABS',
 	GET_FAVORITES: 'GET_FAVORITES' as 'GET_FAVORITES',
-	GET_CURRENT_TABS: 'GET_CURRENT_TABS' as 'GET_CURRENT_TABS'
+	GET_CURRENT_TABS: 'GET_CURRENT_TABS' as 'GET_CURRENT_TABS',
+	SYNC_TABS: 'SYNC_TABS' as 'SYNC_TABS'
 };
 
 interface INothing extends IMessage {type: typeof MESSAGE.NOTHING; }
@@ -34,8 +36,9 @@ interface ITabReload extends IMessage {type: typeof MESSAGE.TAB_RELOAD; }
 interface ITabDuplicate extends IMessage {type: typeof MESSAGE.TAB_DUPLICATE; }
 interface IGetFavorites extends IMessage {type: typeof MESSAGE.GET_FAVORITES; }
 interface IShowFavorites extends IMessage {type: typeof MESSAGE.SHOW_FAVORITES; readonly favorites: chrome.topSites.MostVisitedURL[]; }
-interface IShowTabs extends IMessage {type: typeof MESSAGE.SHOW_TABS; readonly tabs: chrome.tabs.Tab[]; }
+interface IShowTabs extends IMessage {type: typeof MESSAGE.SHOW_TABS; tabs: ITabs; }
 interface IGetCurrentTabs extends IMessage {type: typeof MESSAGE.GET_CURRENT_TABS; }
 interface IPrintPage extends IMessage {type: typeof MESSAGE.PRINT_PAGE; }
+interface ISyncTabs extends IMessage {type: typeof MESSAGE.SYNC_TABS; tabs: ITabs; }
 
-export type MessageType = IBookmarkAdd | ITabNew | ITabClose | IZoom | ICapture | ITabReload | ITabDuplicate | IGetFavorites | IShowFavorites | IShowTabs | IGetCurrentTabs | IPrintPage | INothing | ITabSwitch | ITabCloseAll | IWindowClose;
+export type MessageType = IBookmarkAdd | ITabNew | ITabClose | IZoom | ICapture | ITabReload | ITabDuplicate | IGetFavorites | IShowFavorites | IShowTabs | IGetCurrentTabs | IPrintPage | INothing | ITabSwitch | ITabCloseAll | IWindowClose | ISyncTabs;

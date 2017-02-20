@@ -2,8 +2,14 @@ import { MessageType } from './Messages';
 import { ETarget } from './enums/ETarget';
 
 declare const chrome;
+declare const process;
 
-const sendMessage = (message: MessageType) => chrome.runtime.sendMessage(message);
+const sendMessage = (message: MessageType) => {
+	if (process.env.dev) {
+		console.log(`Message '${message.type}' sent`);
+	}
+	chrome.runtime.sendMessage(message);
+};
 
 /**
  * Send specific message to Background

@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "author": "Daniel Derevjanik",
+  "scripts": {
+    "background": "cd packages/background && npm run dev",
+    "popup": "cd packages/popup && npm run dev"
+  },
   "devDependencies": {
     "lerna": "2.0.0-beta.34"
   }

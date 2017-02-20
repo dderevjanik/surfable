@@ -5,7 +5,7 @@ import { IPanel } from './interfaces/IPanel';
 import { ICommand } from './../interfaces/ICommand';
 import { ACTION, ActionType } from './Actions';
 import { initState } from './InitState';
-import { favoriteToCommand, tabToCommand } from './../utils/CommandTransfer';
+import { favoriteToCommand, tabToCommand, closedToCommand } from './../utils/CommandTransfer';
 import { notFoundCommand } from './../utils/DummyCommands';
 
 export const panelReducer = (state: IPanel = initState.quickpanel, action: ActionType|MessageType): IPanel => {
@@ -79,34 +79,21 @@ export const panelReducer = (state: IPanel = initState.quickpanel, action: Actio
 				};
 			}
 		}
-		case MESSAGE.SHOW_FAVORITES: {
-			if (action.favorites) {
-				const newCommands: ICommand[] = action.favorites
-					.slice(0, 10)
-					.map(favorite => favoriteToCommand(favorite));
-				const commands: ICommand[] = state.allCommands.concat(newCommands);
-				return {
-					...state,
-					allCommands: commands,
-					commands: commands
-				};
-			} else {
-				return state;
-			}
-		}
 		case MESSAGE.SHOW_TABS: {
-			if (action.tabs) {
-				const newCommands: ICommand[] = action.tabs.map((tab, index) =>
-					tabToCommand(tab, index)
-				);
-				const commands: ICommand[] = state.allCommands.concat(newCommands);
-				return {
-					...state,
-					allCommands: commands,
-					commands: commands
-				};
-			}
-			return state;
+			console.log(action.tabs);
+			const favoriteCommands: ICommand[] = action.tabs.favorites
+				.slice(0, 10)
+				.map(favorite => favoriteToCommand(favorite))
+			const openedTabCommands: ICommand[] = action.tabs.openedTabs
+				.map((tab, index) => tabToCommand(tab, index));
+			const closedTabCommands: ICommand[] = action.tabs.closedTabs
+				.map((tab) => closedToCommand(tab));
+			const allNewCommands = favoriteCommands.concat(openedTabCommands.concat(closedTabCommands));
+			return {
+				...state,
+				allCommands: state.defaultCommands.concat(allNewCommands),
+				commands: state.defaultCommands.concat(allNewCommands)
+			};
 		}
 		default: {
 			return state;

@@ -9,5 +9,6 @@ export const CAT = {
 	PAGE: 'Page',
 	WINDOW: 'Window',
 	FAVORITE: 'Favitore',
-	SWITCH: 'Switch To'
+	SWITCH: 'Switch To',
+	RECENT: 'Recent'
 };
