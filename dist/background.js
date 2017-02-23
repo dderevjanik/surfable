@@ -53,7 +53,7 @@
 
 	"use strict";
 	var MessageReceiver_1 = __webpack_require__(2);
-	var EventListener_1 = __webpack_require__(5);
+	var EventListener_1 = __webpack_require__(34);
 	var Synchronize_1 = __webpack_require__(35);
 	EventListener_1.eventListener();
 	MessageReceiver_1.messageReceiver();
@@ -65,13 +65,14 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Messages_1 = __webpack_require__(4);
-	var Sender_1 = __webpack_require__(3);
+	var Messages_1 = __webpack_require__(3);
+	var Sender_1 = __webpack_require__(4);
 	var Store_1 = __webpack_require__(6);
 	/**
 	 * Will listen on events/messages incoming from other parts of extension
 	 */
 	exports.messageReceiver = function () {
+	    console.log('ready to listen');
 	    chrome.runtime.onMessage.addListener(function (message) {
 	        if (message.target === 0 /* BACKGROUND */) {
 	            switch (message.type) {
@@ -168,6 +169,7 @@
 	                    chrome.tabs.query({ active: true }, function (payload) {
 	                        var activeTab = payload[0];
 	                        chrome.bookmarks.create({ title: activeTab.title, url: activeTab.url });
+	                        chrome.tabs.sendMessage(activeTab.id, { type: Messages_1.MESSAGE.SHOW_TOAST, title: 'dsadas', text: 'sdadsa', level: 0 });
 	                    });
 	                }
 	                default: {
@@ -183,6 +185,33 @@
 
 /***/ },
 /* 3 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.MESSAGE = {
+	    NOTHING: 'NOTHING',
+	    TAB_NEW: 'TAB_NEW',
+	    TAB_RELOAD: 'TAB_RELOAD',
+	    TAB_DUPLICATE: 'TAB_DUPLICATE',
+	    TAB_CLOSE: 'TAB_CLOSE',
+	    TAB_CLOSE_ALL: 'TAB_CLOSE_ALL',
+	    TAB_SWITCH: 'TAB_SWITCH',
+	    PRINT_PAGE: 'PRINT_PAGE',
+	    WINDOW_CLOSE: 'WINDOW_CLOSE',
+	    BOOKMARK_ADD: 'BOOKMARKD_ADD',
+	    ZOOM: 'ZOOM',
+	    CAPTURE: 'CAPTURE',
+	    SHOW_FAVORITES: 'SHOW_FAVORITES',
+	    SHOW_TABS: 'SHOW_TABS',
+	    GET_FAVORITES: 'GET_FAVORITES',
+	    GET_CURRENT_TABS: 'GET_CURRENT_TABS',
+	    SYNC_TABS: 'SYNC_TABS',
+	    SHOW_TOAST: 'SHOW_TOAST'
+	};
+
+
+/***/ },
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {"use strict";
@@ -241,122 +270,10 @@
 	    }
 	};
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
-
-/***/ },
-/* 4 */
-/***/ function(module, exports) {
-
-	"use strict";
-	exports.MESSAGE = {
-	    NOTHING: 'NOTHING',
-	    TAB_NEW: 'TAB_NEW',
-	    TAB_RELOAD: 'TAB_RELOAD',
-	    TAB_DUPLICATE: 'TAB_DUPLICATE',
-	    TAB_CLOSE: 'TAB_CLOSE',
-	    TAB_CLOSE_ALL: 'TAB_CLOSE_ALL',
-	    TAB_SWITCH: 'TAB_SWITCH',
-	    PRINT_PAGE: 'PRINT_PAGE',
-	    WINDOW_CLOSE: 'WINDOW_CLOSE',
-	    BOOKMARK_ADD: 'BOOKMARKD_ADD',
-	    ZOOM: 'ZOOM',
-	    CAPTURE: 'CAPTURE',
-	    SHOW_FAVORITES: 'SHOW_FAVORITES',
-	    SHOW_TABS: 'SHOW_TABS',
-	    GET_FAVORITES: 'GET_FAVORITES',
-	    GET_CURRENT_TABS: 'GET_CURRENT_TABS',
-	    SYNC_TABS: 'SYNC_TABS'
-	};
-
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var Store_1 = __webpack_require__(6);
-	var Actions_1 = __webpack_require__(31);
-	/**
-	 * Will listen on events incoming from chrome
-	 */
-	exports.eventListener = function () {
-	    chrome.tabs.onCreated.addListener(function (tab) {
-	        Store_1.store.dispatch({ type: Actions_1.ACTION.TAB_CREATED, tab: tab });
-	    });
-	    chrome.tabs.onRemoved.addListener(function (tabId) {
-	        Store_1.store.dispatch({ type: Actions_1.ACTION.TAB_REMOVED, tabId: tabId });
-	    });
-	    chrome.tabs.onUpdated.addListener(function (tabId, _info, tab) {
-	        Store_1.store.dispatch({ type: Actions_1.ACTION.TAB_UPDATED, tabId: tabId, tab: tab });
-	    });
-	};
-
-
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var redux_1 = __webpack_require__(7);
-	var AppReducer_1 = __webpack_require__(29);
-	var AppState_1 = __webpack_require__(30);
-	exports.store = redux_1.createStore(AppReducer_1.appReducer, AppState_1.initState);
-
-
-/***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
-
-	exports.__esModule = true;
-	exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports.combineReducers = exports.createStore = undefined;
-
-	var _createStore = __webpack_require__(9);
-
-	var _createStore2 = _interopRequireDefault(_createStore);
-
-	var _combineReducers = __webpack_require__(24);
-
-	var _combineReducers2 = _interopRequireDefault(_combineReducers);
-
-	var _bindActionCreators = __webpack_require__(26);
-
-	var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
-
-	var _applyMiddleware = __webpack_require__(27);
-
-	var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
-
-	var _compose = __webpack_require__(28);
-
-	var _compose2 = _interopRequireDefault(_compose);
-
-	var _warning = __webpack_require__(25);
-
-	var _warning2 = _interopRequireDefault(_warning);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	/*
-	* This is a dummy function to check if the function name has been altered by minification.
-	* If the function has been minified and NODE_ENV !== 'production', warn the user.
-	*/
-	function isCrushed() {}
-
-	if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
-	  (0, _warning2['default'])('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
-	}
-
-	exports.createStore = _createStore2['default'];
-	exports.combineReducers = _combineReducers2['default'];
-	exports.bindActionCreators = _bindActionCreators2['default'];
-	exports.applyMiddleware = _applyMiddleware2['default'];
-	exports.compose = _compose2['default'];
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
-
-/***/ },
-/* 8 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -542,7 +459,70 @@
 
 
 /***/ },
-/* 9 */
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var redux_1 = __webpack_require__(7);
+	var AppReducer_1 = __webpack_require__(28);
+	var AppState_1 = __webpack_require__(29);
+	exports.store = redux_1.createStore(AppReducer_1.appReducer, AppState_1.initState);
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	exports.__esModule = true;
+	exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports.combineReducers = exports.createStore = undefined;
+
+	var _createStore = __webpack_require__(8);
+
+	var _createStore2 = _interopRequireDefault(_createStore);
+
+	var _combineReducers = __webpack_require__(23);
+
+	var _combineReducers2 = _interopRequireDefault(_combineReducers);
+
+	var _bindActionCreators = __webpack_require__(25);
+
+	var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
+
+	var _applyMiddleware = __webpack_require__(26);
+
+	var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
+
+	var _compose = __webpack_require__(27);
+
+	var _compose2 = _interopRequireDefault(_compose);
+
+	var _warning = __webpack_require__(24);
+
+	var _warning2 = _interopRequireDefault(_warning);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	/*
+	* This is a dummy function to check if the function name has been altered by minification.
+	* If the function has been minified and NODE_ENV !== 'production', warn the user.
+	*/
+	function isCrushed() {}
+
+	if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
+	  (0, _warning2['default'])('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
+	}
+
+	exports.createStore = _createStore2['default'];
+	exports.combineReducers = _combineReducers2['default'];
+	exports.bindActionCreators = _bindActionCreators2['default'];
+	exports.applyMiddleware = _applyMiddleware2['default'];
+	exports.compose = _compose2['default'];
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+
+/***/ },
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -551,11 +531,11 @@
 	exports.ActionTypes = undefined;
 	exports['default'] = createStore;
 
-	var _isPlainObject = __webpack_require__(10);
+	var _isPlainObject = __webpack_require__(9);
 
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-	var _symbolObservable = __webpack_require__(20);
+	var _symbolObservable = __webpack_require__(19);
 
 	var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
 
@@ -808,12 +788,12 @@
 	}
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(11),
-	    getPrototype = __webpack_require__(17),
-	    isObjectLike = __webpack_require__(19);
+	var baseGetTag = __webpack_require__(10),
+	    getPrototype = __webpack_require__(16),
+	    isObjectLike = __webpack_require__(18);
 
 	/** `Object#toString` result references. */
 	var objectTag = '[object Object]';
@@ -876,12 +856,12 @@
 
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(12),
-	    getRawTag = __webpack_require__(15),
-	    objectToString = __webpack_require__(16);
+	var Symbol = __webpack_require__(11),
+	    getRawTag = __webpack_require__(14),
+	    objectToString = __webpack_require__(15);
 
 	/** `Object#toString` result references. */
 	var nullTag = '[object Null]',
@@ -910,10 +890,10 @@
 
 
 /***/ },
-/* 12 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(13);
+	var root = __webpack_require__(12);
 
 	/** Built-in value references. */
 	var Symbol = root.Symbol;
@@ -922,10 +902,10 @@
 
 
 /***/ },
-/* 13 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var freeGlobal = __webpack_require__(14);
+	var freeGlobal = __webpack_require__(13);
 
 	/** Detect free variable `self`. */
 	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
@@ -937,7 +917,7 @@
 
 
 /***/ },
-/* 14 */
+/* 13 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
@@ -948,10 +928,10 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 15 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(12);
+	var Symbol = __webpack_require__(11);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -1000,7 +980,7 @@
 
 
 /***/ },
-/* 16 */
+/* 15 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -1028,10 +1008,10 @@
 
 
 /***/ },
-/* 17 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var overArg = __webpack_require__(18);
+	var overArg = __webpack_require__(17);
 
 	/** Built-in value references. */
 	var getPrototype = overArg(Object.getPrototypeOf, Object);
@@ -1040,7 +1020,7 @@
 
 
 /***/ },
-/* 18 */
+/* 17 */
 /***/ function(module, exports) {
 
 	/**
@@ -1061,7 +1041,7 @@
 
 
 /***/ },
-/* 19 */
+/* 18 */
 /***/ function(module, exports) {
 
 	/**
@@ -1096,14 +1076,14 @@
 
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(21);
+	module.exports = __webpack_require__(20);
 
 
 /***/ },
-/* 21 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, module) {'use strict';
@@ -1112,7 +1092,7 @@
 	  value: true
 	});
 
-	var _ponyfill = __webpack_require__(23);
+	var _ponyfill = __webpack_require__(22);
 
 	var _ponyfill2 = _interopRequireDefault(_ponyfill);
 
@@ -1135,10 +1115,10 @@
 
 	var result = (0, _ponyfill2['default'])(root);
 	exports['default'] = result;
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(22)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(21)(module)))
 
 /***/ },
-/* 22 */
+/* 21 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -1154,7 +1134,7 @@
 
 
 /***/ },
-/* 23 */
+/* 22 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1182,7 +1162,7 @@
 	};
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -1190,13 +1170,13 @@
 	exports.__esModule = true;
 	exports['default'] = combineReducers;
 
-	var _createStore = __webpack_require__(9);
+	var _createStore = __webpack_require__(8);
 
-	var _isPlainObject = __webpack_require__(10);
+	var _isPlainObject = __webpack_require__(9);
 
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-	var _warning = __webpack_require__(25);
+	var _warning = __webpack_require__(24);
 
 	var _warning2 = _interopRequireDefault(_warning);
 
@@ -1327,10 +1307,10 @@
 	    return hasChanged ? nextState : state;
 	  };
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1360,7 +1340,7 @@
 	}
 
 /***/ },
-/* 26 */
+/* 25 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1416,7 +1396,7 @@
 	}
 
 /***/ },
-/* 27 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1427,7 +1407,7 @@
 
 	exports['default'] = applyMiddleware;
 
-	var _compose = __webpack_require__(28);
+	var _compose = __webpack_require__(27);
 
 	var _compose2 = _interopRequireDefault(_compose);
 
@@ -1479,7 +1459,7 @@
 	}
 
 /***/ },
-/* 28 */
+/* 27 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1522,7 +1502,7 @@
 	}
 
 /***/ },
-/* 29 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1534,10 +1514,10 @@
 	    }
 	    return t;
 	};
-	var AppState_1 = __webpack_require__(30);
-	var Actions_1 = __webpack_require__(31);
-	var Utils_1 = __webpack_require__(32);
-	var Immutable_1 = __webpack_require__(34);
+	var AppState_1 = __webpack_require__(29);
+	var Actions_1 = __webpack_require__(30);
+	var Utils_1 = __webpack_require__(31);
+	var Immutable_1 = __webpack_require__(32);
 	var Constants_1 = __webpack_require__(33);
 	exports.appReducer = function (state, action) {
 	    if (state === void 0) { state = AppState_1.initState; }
@@ -1561,7 +1541,7 @@
 
 
 /***/ },
-/* 30 */
+/* 29 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1579,7 +1559,7 @@
 
 
 /***/ },
-/* 31 */
+/* 30 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1591,7 +1571,7 @@
 
 
 /***/ },
-/* 32 */
+/* 31 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1603,15 +1583,7 @@
 
 
 /***/ },
-/* 33 */
-/***/ function(module, exports) {
-
-	"use strict";
-	exports.MAX_RECENT_TABS = 10;
-
-
-/***/ },
-/* 34 */
+/* 32 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1651,13 +1623,44 @@
 
 
 /***/ },
+/* 33 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.MAX_RECENT_TABS = 10;
+
+
+/***/ },
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var Store_1 = __webpack_require__(6);
+	var Actions_1 = __webpack_require__(30);
+	/**
+	 * Will listen on events incoming from chrome
+	 */
+	exports.eventListener = function () {
+	    chrome.tabs.onCreated.addListener(function (tab) {
+	        Store_1.store.dispatch({ type: Actions_1.ACTION.TAB_CREATED, tab: tab });
+	    });
+	    chrome.tabs.onRemoved.addListener(function (tabId) {
+	        Store_1.store.dispatch({ type: Actions_1.ACTION.TAB_REMOVED, tabId: tabId });
+	    });
+	    chrome.tabs.onUpdated.addListener(function (tabId, _info, tab) {
+	        Store_1.store.dispatch({ type: Actions_1.ACTION.TAB_UPDATED, tabId: tabId, tab: tab });
+	    });
+	};
+
+
+/***/ },
 /* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var Store_1 = __webpack_require__(6);
-	var Messages_1 = __webpack_require__(4);
-	var Sender_1 = __webpack_require__(3);
+	var Messages_1 = __webpack_require__(3);
+	var Sender_1 = __webpack_require__(4);
 	exports.synchronizeTabs = function () {
 	    Store_1.store.subscribe(function () {
 	        console.log('sending');

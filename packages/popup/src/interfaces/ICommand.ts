@@ -4,8 +4,17 @@ export const COMMAND = {
 	SIMPLE: 'SIMPLE' as 'SIMPLE',
 	LONG_DESC: 'LONG_DESC' as 'LONG_DESC',
 	DUMMY: 'DUMMY' as 'DUMMY',
-	URL_COMMAND: 'URL_COMMAND' as 'URL_COMMAND'
+	URL_COMMAND: 'URL_COMMAND' as 'URL_COMMAND',
+	QUICKPANEL_COMMAND: 'QUICKPANEL_COMMAND' as 'QUICKPANEL_COMMAND'
 };
+
+export interface IQuickPanelCommand {
+	readonly type: typeof COMMAND.QUICKPANEL_COMMAND;
+	readonly text: string;
+	readonly desc: string;
+	readonly action: MessageType;
+	readonly group: string;
+}
 
 export interface ISimpleCommand {
 	readonly type: typeof COMMAND.SIMPLE;
@@ -32,4 +41,4 @@ export interface IUrlCommand {
 	readonly pText?: string[];
 }
 
-export type ICommand = ISimpleCommand | IDummyCommand | IUrlCommand;
+export type ICommand = ISimpleCommand | IDummyCommand | IUrlCommand | IQuickPanelCommand;

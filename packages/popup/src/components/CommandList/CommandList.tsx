@@ -2,6 +2,7 @@ import * as React from 'react';
 import { SimpleCommand } from './../Command/SimpleCommand';
 import { DummyCommand } from './../Command/DummyCommand';
 import { UrlCommand } from './../Command/UrlCommand';
+import { QuickPanelCommand } from './../Command/QuickPanelCommand';
 import { ICommand, COMMAND } from './../../interfaces/ICommand';
 import { ulS } from './CommandList.style';
 import { sendAction } from 'surfable-common/src/Sender';
@@ -16,6 +17,18 @@ export const CommandList = (props: IProps) => (
 		{
 			props.commands.map((command, i) => {
 				switch(command.type) {
+					case COMMAND.QUICKPANEL_COMMAND: {
+						return (
+							<QuickPanelCommand
+								active={(props.activeInd === i) ? true : false}
+								onCommandClick={() => sendAction(command.action)}
+								commandInd={i}
+								text={command.text}
+								group={command.group}
+								desc={command.desc}
+							/>
+						);
+					}
 					case COMMAND.DUMMY: {
 						return (
 							<DummyCommand

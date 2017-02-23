@@ -34,7 +34,12 @@ export const textS = style({
 export const highlightS = style({
 	color: '#0096FA',
 	fontWeight: 'bold'
-})
+});
+
+export const highlightCommandS = style({
+	textAlign: 'left',
+	color: '#0096FA'
+});
 
 export const descS = style({
 	fontSize: '13px',
@@ -47,5 +52,6 @@ export const iconS = style({
 });
 
 export const SSmallText = style({
-	color: 'grey'
+	color: 'grey',
+	marginLeft: '5px'
 });

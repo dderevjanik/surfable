@@ -1,12 +1,14 @@
 import { EZoomType } from 'surfable-common/src/enums/EZoomType';
 import { ETarget } from 'surfable-common/src/enums/ETarget';
 import { MessageType, MESSAGE } from 'surfable-common/src/Messages';
-import { sendToPopup } from 'surfable-common/src/Sender';
+import { sendToPopup, sendToContent } from 'surfable-common/src/Sender';
 import { store } from './redux/Store';
+
 /**
  * Will listen on events/messages incoming from other parts of extension
  */
 export const messageReceiver = () => {
+	console.log('ready to listen')
 	chrome.runtime.onMessage.addListener((message: MessageType) => {
 		if (message.target === ETarget.BACKGROUND) {
 			switch(message.type) {
@@ -103,6 +105,7 @@ export const messageReceiver = () => {
 					chrome.tabs.query({active: true}, payload => {
 						const activeTab = payload[0];
 						chrome.bookmarks.create({title: activeTab.title, url: activeTab.url});
+						chrome.tabs.sendMessage(activeTab.id, {type: MESSAGE.SHOW_TOAST, title: 'dsadas', text: 'sdadsa', level: 0});
 					});
 				}
 				default: {

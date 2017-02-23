@@ -9,14 +9,14 @@
     "dev": "webpack --colors --watch"
   },
   "license": "ISC",
-  "dependencies": { },
   "devDependencies": {
+    "@types/chrome": "0.0.40",
+    "surfable-common": "0.0.1",
     "ts-loader": "^2.0.0",
     "tslint": "^4.4.2",
     "tslint-config-xo": "^1.1.0",
     "typescript": "^2.1.5",
     "webpack": "^1.14.0",
-    "webpack-dev-server": "^1.16.2",
-    "surfable-common": "0.0.1"
+    "webpack-dev-server": "^1.16.2"
   }
 }

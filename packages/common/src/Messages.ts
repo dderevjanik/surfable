@@ -1,4 +1,5 @@
 import { IMessage } from './interfaces/IAction';
+import { ELevel } from './enums/ELevel';
 import { EZoomType } from './enums/EZoomType';
 import { ITabs } from './interfaces/ITabs';
 
@@ -19,7 +20,8 @@ export const MESSAGE = {
 	SHOW_TABS: 'SHOW_TABS' as 'SHOW_TABS',
 	GET_FAVORITES: 'GET_FAVORITES' as 'GET_FAVORITES',
 	GET_CURRENT_TABS: 'GET_CURRENT_TABS' as 'GET_CURRENT_TABS',
-	SYNC_TABS: 'SYNC_TABS' as 'SYNC_TABS'
+	SYNC_TABS: 'SYNC_TABS' as 'SYNC_TABS',
+	SHOW_TOAST: 'SHOW_TOAST' as 'SHOW_TOAST'
 };
 
 interface INothing extends IMessage {type: typeof MESSAGE.NOTHING; }
@@ -40,5 +42,6 @@ interface IShowTabs extends IMessage {type: typeof MESSAGE.SHOW_TABS; tabs: ITab
 interface IGetCurrentTabs extends IMessage {type: typeof MESSAGE.GET_CURRENT_TABS; }
 interface IPrintPage extends IMessage {type: typeof MESSAGE.PRINT_PAGE; }
 interface ISyncTabs extends IMessage {type: typeof MESSAGE.SYNC_TABS; tabs: ITabs; }
+interface IShowToast extends IMessage {type: typeof MESSAGE.SHOW_TOAST; title: string; text: string; level: ELevel; }
 
-export type MessageType = IBookmarkAdd | ITabNew | ITabClose | IZoom | ICapture | ITabReload | ITabDuplicate | IGetFavorites | IShowFavorites | IShowTabs | IGetCurrentTabs | IPrintPage | INothing | ITabSwitch | ITabCloseAll | IWindowClose | ISyncTabs;
+export type MessageType = IBookmarkAdd | ITabNew | ITabClose | IZoom | ICapture | ITabReload | ITabDuplicate | IGetFavorites | IShowFavorites | IShowTabs | IGetCurrentTabs | IPrintPage | INothing | ITabSwitch | ITabCloseAll | IWindowClose | ISyncTabs | IShowToast;

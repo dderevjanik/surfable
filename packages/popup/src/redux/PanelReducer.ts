@@ -5,7 +5,8 @@ import { IPanel } from './interfaces/IPanel';
 import { ICommand, COMMAND } from './../interfaces/ICommand';
 import { ACTION, ActionType } from './Actions';
 import { initState } from './InitState';
-import { favoriteToCommand, tabToCommand, closedToCommand } from './../utils/CommandTransfer';
+import { favoriteToCommand, tabToCommand, closedToCommand } from './../utils/CommandCreator';
+import { searchCommands } from './../utils/Search';
 import { notFoundCommand } from './../utils/DummyCommands';
 
 export const panelReducer = (state: IPanel = initState.quickpanel, action: ActionType|MessageType): IPanel => {
@@ -54,54 +55,26 @@ export const panelReducer = (state: IPanel = initState.quickpanel, action: Actio
 			}
 		}
 		case ACTION.SEARCH_CHANGE: {
-			const searchValue = action.value.toLowerCase();
-			if (searchValue.length > 0 && searchValue !== state.inputVal) {
-				const valLen = searchValue.length;
-				const foundCommands = state.allCommands
-					.map(command => {
-						switch(command.type) {
-							case COMMAND.SIMPLE: {
-								const text = (command.cat + ': ' + command.text);
-								const ind = text.toLowerCase().indexOf(searchValue);
-								return (ind >= 0)
-									? {...command, pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)]}
-									: null
-							}
-							case COMMAND.DUMMY: {
-								const text = command.text;
-								const ind = text.toLowerCase().indexOf(searchValue);
-								return (ind >= 0)
-									? {...command, pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)]}
-									: null
-							}
-							case COMMAND.URL_COMMAND: {
-								const text = command.text;
-								const ind = text.toLowerCase().indexOf(searchValue);
-								return (ind >= 0)
-									? {...command, pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)]}
-									: null
-							}
-							default: {
-								throw new Error(`Undefined command type ${command}`);
-							}
-						}
-					}).filter(command => command);
+			const searchValue = action.value.toLowerCase(); // Don't care about case
+			const commandsGroupsChars = Object.keys(state.commandsGroups); // REFACTOR: don't calculate all object keys everytime
+			const charBelognsToGroup = commandsGroupsChars.indexOf(action.value[0]) > -1;
+
+			if (charBelognsToGroup) {
+				const foundCommands = searchCommands(action.value.slice(1, action.value.length), state.commandsGroups[action.value[0]]);
+				const hasFoundSomething = (foundCommands.length > -1);
 				return {
 					...state,
-					inputVal: (action.value),
-					offset: 0,
-					commands: (foundCommands.length > 0) ? foundCommands : [notFoundCommand]
-				};
-			} else {
-				return {
-					...state,
-					inputVal: (action.value),
-					commands: state.allCommands
+					inputVal: action.value,
+					commands: hasFoundSomething ? foundCommands : [notFoundCommand]
 				};
 			}
+			return {
+				...state,
+				inputVal: action.value,
+				commands: [notFoundCommand]
+			};
 		}
 		case MESSAGE.SHOW_TABS: {
-			console.log(action.tabs);
 			const favoriteCommands: ICommand[] = action.tabs.favorites
 				.slice(0, 10)
 				.map(favorite => favoriteToCommand(favorite))

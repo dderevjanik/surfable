@@ -5,15 +5,15 @@ interface IProps {
 	readonly active: boolean;
 	readonly commandInd: number;
 	readonly text: string;
-    readonly partialText?: string[];
-    readonly url: string;
-    readonly imgUrl: string;
+	readonly partialText?: string[];
+	readonly url: string;
+	readonly imgUrl: string;
 	readonly onCommandClick: () => void;
 };
 
 export const UrlCommand = (props: IProps) => (
 	<li className={ `${commandS} + ${props.active ? commandHighlightS : ''}` } onClick={() => props.onCommandClick()}>
-        { (props.partialText)
+		{ (props.partialText)
 			? (<span className={textS}>
 					{props.imgUrl ? <img className={iconS} src={props.imgUrl} /> : null}
 					<span>{props.partialText[0]}</span>
