@@ -335,7 +335,8 @@
 	    GET_FAVORITES: 'GET_FAVORITES',
 	    GET_CURRENT_TABS: 'GET_CURRENT_TABS',
 	    SYNC_TABS: 'SYNC_TABS',
-	    SHOW_TOAST: 'SHOW_TOAST'
+	    SHOW_TOAST: 'SHOW_TOAST',
+	    SEARCH_CHANGE: 'SEARCH_CHANGE'
 	};
 
 
@@ -23974,17 +23975,17 @@
 	    {
 	        type: ICommand_1.COMMAND.QUICKPANEL_COMMAND,
 	        group: 'DEAFULT', text: '>', desc: 'Show and run commands',
-	        action: { type: Messages_1.MESSAGE.BOOKMARK_ADD, target: 0 /* BACKGROUND */ }
+	        action: { type: Messages_1.MESSAGE.SEARCH_CHANGE, value: '>', target: 2 /* POPUP */ }
 	    },
 	    {
 	        type: ICommand_1.COMMAND.QUICKPANEL_COMMAND,
 	        group: 'DEFAULT', text: '@', desc: 'Go to tab',
-	        action: { type: Messages_1.MESSAGE.BOOKMARK_ADD, target: 0 /* BACKGROUND */ }
+	        action: { type: Messages_1.MESSAGE.SEARCH_CHANGE, value: '@', target: 2 /* POPUP */ }
 	    },
 	    {
 	        type: ICommand_1.COMMAND.QUICKPANEL_COMMAND,
 	        group: 'DEFAULT', text: '#', desc: 'Open a bookmark',
-	        action: { type: Messages_1.MESSAGE.BOOKMARK_ADD, target: 0 /* BACKGROUND */ }
+	        action: { type: Messages_1.MESSAGE.SEARCH_CHANGE, value: '#', target: 2 /* POPUP */ }
 	    }
 	];
 	/**
@@ -24053,27 +24054,27 @@
 	    {
 	        type: ICommand_1.COMMAND.SIMPLE,
 	        cat: Category_1.CAT.BROWSER, text: 'Bookmarks', desc: 'Ctrl + Shift + O',
-	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.BOOKMARKS, target: 0 /* BACKGROUND */ }
+	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME_INTERNAL.BOOKMARKS, target: 0 /* BACKGROUND */ }
 	    },
 	    {
 	        type: ICommand_1.COMMAND.SIMPLE,
 	        cat: Category_1.CAT.BROWSER, text: 'Downloads', desc: 'Ctrl + J',
-	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.DOWNLOADS, target: 0 /* BACKGROUND */ }
+	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME_INTERNAL.DOWNLOADS, target: 0 /* BACKGROUND */ }
 	    },
 	    {
 	        type: ICommand_1.COMMAND.SIMPLE,
 	        cat: Category_1.CAT.BROWSER, text: 'Extensions', desc: '',
-	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.EXTENSIONS, target: 0 /* BACKGROUND */ }
+	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME_INTERNAL.EXTENSIONS, target: 0 /* BACKGROUND */ }
 	    },
 	    {
 	        type: ICommand_1.COMMAND.SIMPLE,
 	        cat: Category_1.CAT.BROWSER, text: 'History', desc: 'Ctrl + H',
-	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.HISTORY, target: 0 /* BACKGROUND */ }
+	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME_INTERNAL.HISTORY, target: 0 /* BACKGROUND */ }
 	    },
 	    {
 	        type: ICommand_1.COMMAND.SIMPLE,
 	        cat: Category_1.CAT.BROWSER, text: 'Settings', desc: '',
-	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME.SETTINGS, target: 0 /* BACKGROUND */ }
+	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME_INTERNAL.SETTINGS, target: 0 /* BACKGROUND */ }
 	    },
 	];
 
@@ -24102,7 +24103,7 @@
 
 	"use strict";
 	// Chrome internal urls
-	exports.CHROME = {
+	exports.CHROME_INTERNAL = {
 	    HISTORY: 'chrome://history',
 	    DOWNLOADS: 'chrome://downloads',
 	    EXTENSIONS: 'chrome://extensions',
@@ -24244,6 +24245,7 @@
 	 */
 	exports.searchCommands = function (searchValue, commandsGroup) {
 	    var valLen = searchValue.length;
+	    // If there's no value to search, return all commands in group
 	    if (valLen === 0) {
 	        return commandsGroup;
 	    }
@@ -25519,6 +25521,9 @@
 	                    store_1.store.dispatch({ type: message.type, favorites: message.favorites });
 	                    break;
 	                case Messages_1.MESSAGE.SHOW_TABS:
+	                    store_1.store.dispatch(message);
+	                    break;
+	                case Messages_1.MESSAGE.SEARCH_CHANGE:
 	                    store_1.store.dispatch(message);
 	                    break;
 	                default: {

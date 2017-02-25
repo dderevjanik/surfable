@@ -21,7 +21,8 @@ export const MESSAGE = {
 	GET_FAVORITES: 'GET_FAVORITES' as 'GET_FAVORITES',
 	GET_CURRENT_TABS: 'GET_CURRENT_TABS' as 'GET_CURRENT_TABS',
 	SYNC_TABS: 'SYNC_TABS' as 'SYNC_TABS',
-	SHOW_TOAST: 'SHOW_TOAST' as 'SHOW_TOAST'
+	SHOW_TOAST: 'SHOW_TOAST' as 'SHOW_TOAST',
+	SEARCH_CHANGE: 'SEARCH_CHANGE' as 'SEARCH_CHANGE'
 };
 
 interface INothing extends IMessage {type: typeof MESSAGE.NOTHING; }
@@ -43,5 +44,6 @@ interface IGetCurrentTabs extends IMessage {type: typeof MESSAGE.GET_CURRENT_TAB
 interface IPrintPage extends IMessage {type: typeof MESSAGE.PRINT_PAGE; }
 interface ISyncTabs extends IMessage {type: typeof MESSAGE.SYNC_TABS; tabs: ITabs; }
 interface IShowToast extends IMessage {type: typeof MESSAGE.SHOW_TOAST; title: string; text: string; level: ELevel; }
+interface ISearchChange extends IMessage {type: typeof MESSAGE.SEARCH_CHANGE; value: string; }
 
-export type MessageType = IBookmarkAdd | ITabNew | ITabClose | IZoom | ICapture | ITabReload | ITabDuplicate | IGetFavorites | IShowFavorites | IShowTabs | IGetCurrentTabs | IPrintPage | INothing | ITabSwitch | ITabCloseAll | IWindowClose | ISyncTabs | IShowToast;
+export type MessageType = IBookmarkAdd | ITabNew | ITabClose | IZoom | ICapture | ITabReload | ITabDuplicate | IGetFavorites | IShowFavorites | IShowTabs | IGetCurrentTabs | IPrintPage | INothing | ITabSwitch | ITabCloseAll | IWindowClose | ISyncTabs | IShowToast | ISearchChange;

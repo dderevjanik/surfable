@@ -1,23 +1,24 @@
 import { CAT } from './../data/Category';
-import { CHROME } from './../data/Chrome';
+import { CHROME_INTERNAL } from './../data/Chrome';
 import { ICommand, COMMAND } from './../interfaces/ICommand';
 import { EZoomType } from 'surfable-common/src/enums/EZoomType';
 import { ETarget } from 'surfable-common/src/enums/ETarget';
 import { MESSAGE } from 'surfable-common/src/Messages';
+import { ACTION, ActionType } from './../redux/Actions';
 
 export const help: ICommand[] = [
 	{
 		type: COMMAND.QUICKPANEL_COMMAND,
 		group: 'DEAFULT', text: '>', desc: 'Show and run commands',
-		action: {type: MESSAGE.BOOKMARK_ADD, target: ETarget.BACKGROUND}},
+		action: {type: MESSAGE.SEARCH_CHANGE, value: '>', target: ETarget.POPUP}},
 	{
 		type: COMMAND.QUICKPANEL_COMMAND,
 		group: 'DEFAULT', text: '@', desc: 'Go to tab',
-		action: {type: MESSAGE.BOOKMARK_ADD, target: ETarget.BACKGROUND}},
+		action: {type: MESSAGE.SEARCH_CHANGE, value: '@', target: ETarget.POPUP}},
 	{
 		type: COMMAND.QUICKPANEL_COMMAND,
 		group: 'DEFAULT', text: '#', desc: 'Open a bookmark',
-		action: {type: MESSAGE.BOOKMARK_ADD, target: ETarget.BACKGROUND}}
+		action: {type: MESSAGE.SEARCH_CHANGE, value: '#', target: ETarget.POPUP}}
 ];
 
 
@@ -76,21 +77,21 @@ export const commands: ICommand[] = [
 	{
 		type: COMMAND.SIMPLE,
 		cat: CAT.BROWSER, text: 'Bookmarks', desc: 'Ctrl + Shift + O',
-		action: {type: MESSAGE.TAB_NEW, url: CHROME.BOOKMARKS, target: ETarget.BACKGROUND}},
+		action: {type: MESSAGE.TAB_NEW, url: CHROME_INTERNAL.BOOKMARKS, target: ETarget.BACKGROUND}},
 	{
 		type: COMMAND.SIMPLE,
 		cat: CAT.BROWSER, text: 'Downloads', desc: 'Ctrl + J',
-		action: {type: MESSAGE.TAB_NEW, url: CHROME.DOWNLOADS, target: ETarget.BACKGROUND}},
+		action: {type: MESSAGE.TAB_NEW, url: CHROME_INTERNAL.DOWNLOADS, target: ETarget.BACKGROUND}},
 	{
 		type: COMMAND.SIMPLE,
 		cat: CAT.BROWSER, text: 'Extensions', desc: '',
-		action: {type: MESSAGE.TAB_NEW, url: CHROME.EXTENSIONS, target: ETarget.BACKGROUND}},
+		action: {type: MESSAGE.TAB_NEW, url: CHROME_INTERNAL.EXTENSIONS, target: ETarget.BACKGROUND}},
 	{
 		type: COMMAND.SIMPLE,
 		cat: CAT.BROWSER, text: 'History', desc: 'Ctrl + H',
-		action: {type: MESSAGE.TAB_NEW, url: CHROME.HISTORY, target: ETarget.BACKGROUND}},
+		action: {type: MESSAGE.TAB_NEW, url: CHROME_INTERNAL.HISTORY, target: ETarget.BACKGROUND}},
 	{
 		type: COMMAND.SIMPLE,
 		cat: CAT.BROWSER, text: 'Settings', desc: '',
-		action: {type: MESSAGE.TAB_NEW, url: CHROME.SETTINGS, target: ETarget.BACKGROUND}},
+		action: {type: MESSAGE.TAB_NEW, url: CHROME_INTERNAL.SETTINGS, target: ETarget.BACKGROUND}},
 ];

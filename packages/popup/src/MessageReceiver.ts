@@ -17,6 +17,9 @@ export const messageReceiver = (): void => {
 					case MESSAGE.SHOW_TABS:
 						store.dispatch(message);
 						break;
+					case MESSAGE.SEARCH_CHANGE:
+						store.dispatch(message);
+						break;
 					default: {
 						throw new Error(`Unknown message type: ${message.type}. Make sure that proper handler exists in message receiver`);
 					}

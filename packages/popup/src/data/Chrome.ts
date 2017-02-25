@@ -1,5 +1,5 @@
 // Chrome internal urls
-export const CHROME = {
+export const CHROME_INTERNAL = {
 	HISTORY: 'chrome://history',
 	DOWNLOADS: 'chrome://downloads',
 	EXTENSIONS: 'chrome://extensions',
