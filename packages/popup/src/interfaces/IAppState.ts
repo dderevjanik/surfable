@@ -1,7 +1,11 @@
-import { IPanel } from './../redux/interfaces/IPanel';
-import { IConfig } from './../redux/interfaces/IConfig';
+import { ICommand } from './ICommand';
 
 export interface IAppState {
-	readonly config: IConfig;
-	readonly quickpanel: IPanel;
+	readonly defaultCommands: ICommand[];
+	readonly commandsGroups: {[key: string]: ICommand[]}
+	readonly allCommands: ICommand[];
+	readonly commands: ICommand[];
+	readonly opened: boolean;
+	readonly offset: number;
+	readonly inputVal: string;
 };

@@ -8,5 +8,6 @@ render();
 keyListener();
 messageReceiver();
 
+// Synchronize current window's tabs with popup's state
 sendToBackground({type: MESSAGE.GET_CURRENT_TABS});
 

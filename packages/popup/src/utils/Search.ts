@@ -6,6 +6,10 @@ import { ICommand, COMMAND } from './../interfaces/ICommand';
  */
 export const searchCommands = (searchValue: string, commandsGroup: ICommand[]): ICommand[] => {
 	const valLen = searchValue.length;
+	// If there's no value to search, return all commands in group
+	if(valLen === 0) {
+		return commandsGroup;
+	}
 	const foundCommands = commandsGroup
 		.map(command => {
 			switch (command.type) {

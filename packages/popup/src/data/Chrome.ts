@@ -1,6 +1,4 @@
-/**
- * Chrome default urls
- */
+// Chrome internal urls
 export const CHROME = {
 	HISTORY: 'chrome://history',
 	DOWNLOADS: 'chrome://downloads',

@@ -2,7 +2,10 @@ import { keyMap } from './data/KeyMap';
 import { ACTION } from './redux/Actions';
 import { store } from './redux/store';
 
-const processKeyEvent = (event: KeyboardEvent) => {
+/**
+ * Send key's belonging action to redux store
+ */
+const processKeyEvent = (event: KeyboardEvent): void => {
 	switch(event.keyCode) {
 		case keyMap.esc:
 			store.dispatch({type: ACTION.PANEL_CLOSE});
@@ -25,8 +28,9 @@ const processKeyEvent = (event: KeyboardEvent) => {
 /**
  * Start listen on keys
  */
-export const keyListener = () => {
+export const keyListener = (): void => {
 	document.onkeydown = (e: KeyboardEvent) => {
+		// Listen only for arrows, enter and esc keys
 		if ((e.keyCode >= 37) && (e.keyCode <= 40) || (e.keyCode === keyMap.esc) || (e.keyCode === keyMap.enter)) {
 			processKeyEvent(e);
 		}

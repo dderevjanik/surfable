@@ -1,7 +1,4 @@
-/**
- * Categories are used to categorize commands to be more easily found in
- * command panel
- */
+// Categories are used to categorize commands to be more easily found in command panel
 export const CAT = {
 	BOOKMARK: 'Bookmark',
 	BROWSER: 'Browser',

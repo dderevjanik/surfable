@@ -55,11 +55,12 @@
 	var Sender_1 = __webpack_require__(2);
 	var Messages_1 = __webpack_require__(4);
 	var Index_1 = __webpack_require__(5);
-	var KeyListener_1 = __webpack_require__(270);
-	var MessageReceiver_1 = __webpack_require__(272);
+	var KeyListener_1 = __webpack_require__(252);
+	var MessageReceiver_1 = __webpack_require__(254);
 	Index_1.render();
 	KeyListener_1.keyListener();
 	MessageReceiver_1.messageReceiver();
+	// Synchronize current window's tabs with popup's state
 	Sender_1.sendToBackground({ type: Messages_1.MESSAGE.GET_CURRENT_TABS });
 
 
@@ -347,7 +348,7 @@
 	var ReactDOM = __webpack_require__(36);
 	var react_redux_1 = __webpack_require__(182);
 	var store_1 = __webpack_require__(220);
-	var QuickPanel_1 = __webpack_require__(236);
+	var QuickPanel_1 = __webpack_require__(235);
 	exports.render = function () {
 	    ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store_1.store },
 	        React.createElement(QuickPanel_1.QuickPanel, null)), document.getElementById('app'));
@@ -23837,24 +23838,12 @@
 	"use strict";
 	var redux_1 = __webpack_require__(193);
 	var AppReducer_1 = __webpack_require__(221);
-	var InitState_1 = __webpack_require__(224);
+	var InitState_1 = __webpack_require__(223);
 	exports.store = redux_1.createStore(AppReducer_1.appReducer, InitState_1.initState);
 
 
 /***/ },
 /* 221 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var redux_1 = __webpack_require__(193);
-	var PanelReducer_1 = __webpack_require__(222);
-	exports.appReducer = redux_1.combineReducers({
-	    quickpanel: PanelReducer_1.panelReducer
-	});
-
-
-/***/ },
-/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -23868,13 +23857,13 @@
 	};
 	var Messages_1 = __webpack_require__(4);
 	var Sender_1 = __webpack_require__(2);
-	var Actions_1 = __webpack_require__(223);
-	var InitState_1 = __webpack_require__(224);
-	var CommandCreator_1 = __webpack_require__(231);
-	var Search_1 = __webpack_require__(234);
-	var DummyCommands_1 = __webpack_require__(235);
-	exports.panelReducer = function (state, action) {
-	    if (state === void 0) { state = InitState_1.initState.quickpanel; }
+	var Actions_1 = __webpack_require__(222);
+	var InitState_1 = __webpack_require__(223);
+	var CommandCreator_1 = __webpack_require__(230);
+	var Search_1 = __webpack_require__(233);
+	var DummyCommands_1 = __webpack_require__(234);
+	exports.appReducer = function (state, action) {
+	    if (state === void 0) { state = InitState_1.initState; }
 	    switch (action.type) {
 	        case Actions_1.ACTION.PANEL_EXECUTE_COMMAND: {
 	            Sender_1.sendAction(state.commands[state.offset].action);
@@ -23898,8 +23887,8 @@
 	        case Actions_1.ACTION.SEARCH_CHANGE: {
 	            var searchValue = action.value.toLowerCase(); // Don't care about case
 	            var commandsGroupsChars = Object.keys(state.commandsGroups); // REFACTOR: don't calculate all object keys everytime
-	            var charBelongsToGroup = (commandsGroupsChars.indexOf(action.value[0]) > -1);
-	            if (charBelongsToGroup) {
+	            var commandsGroupExists = (commandsGroupsChars.indexOf(action.value[0]) > -1);
+	            if (commandsGroupExists) {
 	                var foundCommands = Search_1.searchCommands(action.value.slice(1, action.value.length), state.commandsGroups[action.value[0]]);
 	                var hasFoundSomething = (foundCommands.length > -1);
 	                return __assign({}, state, { inputVal: action.value, commands: hasFoundSomething ? foundCommands : [DummyCommands_1.notFoundCommand] });
@@ -23907,6 +23896,7 @@
 	            return __assign({}, state, { inputVal: action.value, commands: [DummyCommands_1.notFoundCommand] });
 	        }
 	        case Messages_1.MESSAGE.SHOW_TABS: {
+	            // REFACTOR: Sort them by commands groups
 	            var favoriteCommands = action.tabs.favorites
 	                .slice(0, 10)
 	                .map(function (favorite) { return CommandCreator_1.favoriteToCommand(favorite); });
@@ -23925,7 +23915,7 @@
 
 
 /***/ },
-/* 223 */
+/* 222 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -23940,35 +23930,30 @@
 
 
 /***/ },
-/* 224 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var CommandsGroups_1 = __webpack_require__(225);
-	var Group_1 = __webpack_require__(230);
+	var CommandsGroups_1 = __webpack_require__(224);
+	var Group_1 = __webpack_require__(229);
 	exports.initState = {
-	    config: {
-	        maxCommands: 7
-	    },
-	    quickpanel: {
-	        defaultCommands: CommandsGroups_1.commandsGroups[Group_1.Group.COMMANDS],
-	        commandsGroups: CommandsGroups_1.commandsGroups,
-	        allCommands: CommandsGroups_1.commandsGroups[Group_1.Group.COMMANDS],
-	        commands: CommandsGroups_1.commandsGroups[Group_1.Group.COMMANDS],
-	        opened: false,
-	        offset: 0,
-	        inputVal: Group_1.Group.COMMANDS
-	    }
+	    defaultCommands: CommandsGroups_1.commandsGroups[Group_1.Group.COMMANDS],
+	    commandsGroups: CommandsGroups_1.commandsGroups,
+	    allCommands: CommandsGroups_1.commandsGroups[Group_1.Group.COMMANDS],
+	    commands: CommandsGroups_1.commandsGroups[Group_1.Group.COMMANDS],
+	    opened: false,
+	    offset: 0,
+	    inputVal: Group_1.Group.COMMANDS
 	};
 
 
 /***/ },
-/* 225 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Commands_1 = __webpack_require__(226);
-	var Group_1 = __webpack_require__(230);
+	var Commands_1 = __webpack_require__(225);
+	var Group_1 = __webpack_require__(229);
 	exports.commandsGroups = (_a = {},
 	    _a[Group_1.Group.HELP] = Commands_1.help,
 	    _a[Group_1.Group.COMMANDS] = Commands_1.commands,
@@ -23977,13 +23962,13 @@
 
 
 /***/ },
-/* 226 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Category_1 = __webpack_require__(227);
-	var Chrome_1 = __webpack_require__(228);
-	var ICommand_1 = __webpack_require__(229);
+	var Category_1 = __webpack_require__(226);
+	var Chrome_1 = __webpack_require__(227);
+	var ICommand_1 = __webpack_require__(228);
 	var Messages_1 = __webpack_require__(4);
 	exports.help = [
 	    {
@@ -24094,14 +24079,11 @@
 
 
 /***/ },
-/* 227 */
+/* 226 */
 /***/ function(module, exports) {
 
 	"use strict";
-	/**
-	 * Categories are used to categorize commands to be more easily found in
-	 * command panel
-	 */
+	// Categories are used to categorize commands to be more easily found in command panel
 	exports.CAT = {
 	    BOOKMARK: 'Bookmark',
 	    BROWSER: 'Browser',
@@ -24115,13 +24097,11 @@
 
 
 /***/ },
-/* 228 */
+/* 227 */
 /***/ function(module, exports) {
 
 	"use strict";
-	/**
-	 * Chrome default urls
-	 */
+	// Chrome internal urls
 	exports.CHROME = {
 	    HISTORY: 'chrome://history',
 	    DOWNLOADS: 'chrome://downloads',
@@ -24132,7 +24112,7 @@
 
 
 /***/ },
-/* 229 */
+/* 228 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -24146,10 +24126,11 @@
 
 
 /***/ },
-/* 230 */
+/* 229 */
 /***/ function(module, exports) {
 
 	"use strict";
+	// Group quickpanel's commands by char
 	exports.Group = {
 	    COMMANDS: '>',
 	    HELP: '?',
@@ -24159,14 +24140,14 @@
 
 
 /***/ },
-/* 231 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var Messages_1 = __webpack_require__(4);
-	var ICommand_1 = __webpack_require__(229);
-	var Category_1 = __webpack_require__(227);
-	var CommandHelper_1 = __webpack_require__(232);
+	var ICommand_1 = __webpack_require__(228);
+	var Category_1 = __webpack_require__(226);
+	var CommandHelper_1 = __webpack_require__(231);
 	/**
 	 * Create simple command to switch to another tab
 	 */
@@ -24183,7 +24164,7 @@
 	    };
 	};
 	/**
-	 * Create simple command to open new tab from recently closed tabs
+	 * Create simple command to open a new tab from recently closed tabs
 	 */
 	exports.closedToCommand = function (closed) { return ({
 	    type: ICommand_1.COMMAND.URL_COMMAND,
@@ -24194,7 +24175,7 @@
 	    text: CommandHelper_1.sliceOverflowTitle(closed.title)
 	}); };
 	/**
-	 * Create simple command to open new tab from favorite
+	 * Create simple command to open a new tab from favorite
 	 */
 	exports.favoriteToCommand = function (favorite) { return ({
 	    type: ICommand_1.COMMAND.URL_COMMAND,
@@ -24206,11 +24187,11 @@
 
 
 /***/ },
-/* 232 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Constants_1 = __webpack_require__(233);
+	var Constants_1 = __webpack_require__(232);
 	/**
 	 * Slice long text from command's title
 	 */
@@ -24234,7 +24215,7 @@
 
 
 /***/ },
-/* 233 */
+/* 232 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -24244,7 +24225,7 @@
 
 
 /***/ },
-/* 234 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -24256,13 +24237,16 @@
 	    }
 	    return t;
 	};
-	var ICommand_1 = __webpack_require__(229);
+	var ICommand_1 = __webpack_require__(228);
 	/**
 	 * Search for commands
 	 * Return those commands, which best suits to searchvalue.
 	 */
 	exports.searchCommands = function (searchValue, commandsGroup) {
 	    var valLen = searchValue.length;
+	    if (valLen === 0) {
+	        return commandsGroup;
+	    }
 	    var foundCommands = commandsGroup
 	        .map(function (command) {
 	        switch (command.type) {
@@ -24297,11 +24281,11 @@
 
 
 /***/ },
-/* 235 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var ICommand_1 = __webpack_require__(229);
+	var ICommand_1 = __webpack_require__(228);
 	exports.notFoundCommand = {
 	    type: ICommand_1.COMMAND.DUMMY,
 	    cat: '',
@@ -24312,16 +24296,16 @@
 
 
 /***/ },
-/* 236 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
 	var react_redux_1 = __webpack_require__(182);
-	var CommandList_1 = __webpack_require__(237);
-	var SearchInput_1 = __webpack_require__(267);
-	var Actions_1 = __webpack_require__(223);
-	var QuickPanel_style_1 = __webpack_require__(269);
+	var CommandList_1 = __webpack_require__(236);
+	var SearchInput_1 = __webpack_require__(249);
+	var Actions_1 = __webpack_require__(222);
+	var QuickPanel_style_1 = __webpack_require__(251);
 	;
 	exports.QuickPanelComponent = function (props) { return (React.createElement("div", { className: QuickPanel_style_1.quickPanelS },
 	    React.createElement("div", { className: QuickPanel_style_1.searchBoxS },
@@ -24329,27 +24313,27 @@
 	    React.createElement("div", null,
 	        React.createElement(CommandList_1.CommandList, { commands: props.commands, activeInd: props.activeInd })))); };
 	exports.QuickPanel = react_redux_1.connect(function (state) { return ({
-	    activeInd: state.quickpanel.offset,
-	    commands: state.quickpanel.commands,
-	    inputVal: state.quickpanel.inputVal,
-	    opened: state.quickpanel.opened
+	    activeInd: state.offset,
+	    commands: state.commands,
+	    inputVal: state.inputVal,
+	    opened: state.opened
 	}); }, function (dispatch) { return ({
 	    onSearchChange: function (value) { return dispatch({ type: Actions_1.ACTION.SEARCH_CHANGE, value: value }); }
 	}); })(exports.QuickPanelComponent);
 
 
 /***/ },
-/* 237 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
-	var SimpleCommand_1 = __webpack_require__(238);
-	var DummyCommand_1 = __webpack_require__(246);
-	var UrlCommand_1 = __webpack_require__(247);
-	var QuickPanelCommand_1 = __webpack_require__(248);
-	var ICommand_1 = __webpack_require__(229);
-	var CommandList_style_1 = __webpack_require__(249);
+	var SimpleCommand_1 = __webpack_require__(237);
+	var DummyCommand_1 = __webpack_require__(245);
+	var UrlCommand_1 = __webpack_require__(246);
+	var QuickPanelCommand_1 = __webpack_require__(247);
+	var ICommand_1 = __webpack_require__(228);
+	var CommandList_style_1 = __webpack_require__(248);
 	var Sender_1 = __webpack_require__(2);
 	exports.CommandList = function (props) { return (React.createElement("ul", { className: CommandList_style_1.ulS }, props.commands.map(function (command, i) {
 	    switch (command.type) {
@@ -24373,12 +24357,12 @@
 
 
 /***/ },
-/* 238 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
-	var Command_style_1 = __webpack_require__(239);
+	var Command_style_1 = __webpack_require__(238);
 	;
 	exports.SimpleCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } },
 	    (props.partialText)
@@ -24393,11 +24377,11 @@
 
 
 /***/ },
-/* 239 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var typestyle_1 = __webpack_require__(240);
+	var typestyle_1 = __webpack_require__(239);
 	exports.commandS = typestyle_1.style({
 	    cursor: 'pointer',
 	    color: '#CCCCCC',
@@ -24449,20 +24433,20 @@
 
 
 /***/ },
-/* 240 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var typestyle_1 = __webpack_require__(241);
+	var typestyle_1 = __webpack_require__(240);
 	/**
 	 * All the CSS types in the 'types' namespace
 	 */
-	var types = __webpack_require__(245);
+	var types = __webpack_require__(244);
 	exports.types = types;
 	/**
 	 * Export certain utilities
 	 */
-	var utilities_1 = __webpack_require__(244);
+	var utilities_1 = __webpack_require__(243);
 	exports.extend = utilities_1.extend;
 	exports.classes = utilities_1.classes;
 	exports.media = utilities_1.media;
@@ -24526,13 +24510,13 @@
 
 
 /***/ },
-/* 241 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var formatting_1 = __webpack_require__(242);
-	var utilities_1 = __webpack_require__(244);
-	var FreeStyle = __webpack_require__(243);
+	var formatting_1 = __webpack_require__(241);
+	var utilities_1 = __webpack_require__(243);
+	var FreeStyle = __webpack_require__(242);
 	/**
 	 * Maintains a single stylesheet and keeps it in sync with requested styles
 	 */
@@ -24709,11 +24693,11 @@
 
 
 /***/ },
-/* 242 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var FreeStyle = __webpack_require__(243);
+	var FreeStyle = __webpack_require__(242);
 	/**
 	 * We need to do the following to *our* objects before passing to freestyle:
 	 * - For any `$nest` directive move up to FreeStyle style nesting
@@ -24766,7 +24750,7 @@
 
 
 /***/ },
-/* 243 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {"use strict";
@@ -25221,7 +25205,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 244 */
+/* 243 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -25309,19 +25293,19 @@
 
 
 /***/ },
-/* 245 */
+/* 244 */
 /***/ function(module, exports) {
 
 	"use strict";
 
 
 /***/ },
-/* 246 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
-	var Command_style_1 = __webpack_require__(239);
+	var Command_style_1 = __webpack_require__(238);
 	;
 	exports.DummyCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } },
 	    React.createElement("i", null,
@@ -25331,12 +25315,12 @@
 
 
 /***/ },
-/* 247 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
-	var Command_style_1 = __webpack_require__(239);
+	var Command_style_1 = __webpack_require__(238);
 	;
 	exports.UrlCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } }, (props.partialText)
 	    ? (React.createElement("span", { className: Command_style_1.textS },
@@ -25353,12 +25337,12 @@
 
 
 /***/ },
-/* 248 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
-	var Command_style_1 = __webpack_require__(239);
+	var Command_style_1 = __webpack_require__(238);
 	;
 	exports.QuickPanelCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } },
 	    React.createElement("span", { className: Command_style_1.highlightCommandS }, props.text),
@@ -25366,11 +25350,11 @@
 
 
 /***/ },
-/* 249 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var typestyle_1 = __webpack_require__(240);
+	var typestyle_1 = __webpack_require__(239);
 	exports.ulS = typestyle_1.style({
 	    fontSize: '13px',
 	    padding: '0px',
@@ -25381,24 +25365,7 @@
 
 
 /***/ },
-/* 250 */,
-/* 251 */,
-/* 252 */,
-/* 253 */,
-/* 254 */,
-/* 255 */,
-/* 256 */,
-/* 257 */,
-/* 258 */,
-/* 259 */,
-/* 260 */,
-/* 261 */,
-/* 262 */,
-/* 263 */,
-/* 264 */,
-/* 265 */,
-/* 266 */,
-/* 267 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25408,7 +25375,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(6);
-	var SearchInput_style_1 = __webpack_require__(268);
+	var SearchInput_style_1 = __webpack_require__(250);
 	var SearchInput = (function (_super) {
 	    __extends(SearchInput, _super);
 	    function SearchInput() {
@@ -25421,7 +25388,7 @@
 	    };
 	    SearchInput.prototype.render = function () {
 	        var _this = this;
-	        return (React.createElement("input", { ref: function (input) { _this.searchInput = input; }, className: SearchInput_style_1.searchInputS, type: "text", onChange: function (e) { return _this.props.onSearchChange(e.target.value); }, placeholder: "type '?' to get help", value: this.props.value }));
+	        return (React.createElement("input", { ref: function (input) { _this.searchInput = input; }, className: SearchInput_style_1.searchInputS, type: "text", onChange: function (e) { return _this.props.onSearchChange(e.target.value); }, placeholder: "type '?' to get help on actions you can take from here", value: this.props.value }));
 	    };
 	    return SearchInput;
 	}(React.Component));
@@ -25430,11 +25397,11 @@
 
 
 /***/ },
-/* 268 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var typestyle_1 = __webpack_require__(240);
+	var typestyle_1 = __webpack_require__(239);
 	exports.searchInputS = typestyle_1.style({
 	    fontSize: '14px',
 	    boxSizing: 'border-box',
@@ -25448,11 +25415,11 @@
 
 
 /***/ },
-/* 269 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var typestyle_1 = __webpack_require__(240);
+	var typestyle_1 = __webpack_require__(239);
 	exports.quickPanelS = typestyle_1.style({
 	    display: 'block',
 	    backgroundColor: '#252526',
@@ -25469,13 +25436,16 @@
 
 
 /***/ },
-/* 270 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var KeyMap_1 = __webpack_require__(271);
-	var Actions_1 = __webpack_require__(223);
+	var KeyMap_1 = __webpack_require__(253);
+	var Actions_1 = __webpack_require__(222);
 	var store_1 = __webpack_require__(220);
+	/**
+	 * Send key's belonging action to redux store
+	 */
 	var processKeyEvent = function (event) {
 	    switch (event.keyCode) {
 	        case KeyMap_1.keyMap.esc:
@@ -25499,6 +25469,7 @@
 	 */
 	exports.keyListener = function () {
 	    document.onkeydown = function (e) {
+	        // Listen only for arrows, enter and esc keys
 	        if ((e.keyCode >= 37) && (e.keyCode <= 40) || (e.keyCode === KeyMap_1.keyMap.esc) || (e.keyCode === KeyMap_1.keyMap.enter)) {
 	            processKeyEvent(e);
 	        }
@@ -25507,7 +25478,7 @@
 
 
 /***/ },
-/* 271 */
+/* 253 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -25531,7 +25502,7 @@
 
 
 /***/ },
-/* 272 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25551,7 +25522,7 @@
 	                    store_1.store.dispatch(message);
 	                    break;
 	                default: {
-	                    throw new Error("Unknown message type: " + message.type);
+	                    throw new Error("Unknown message type: " + message.type + ". Make sure that proper handler exists in message receiver");
 	                }
 	            }
 	        }

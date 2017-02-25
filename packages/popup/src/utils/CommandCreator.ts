@@ -22,7 +22,7 @@ export const tabToCommand = (tab: chrome.tabs.Tab, index: number): ICommand => {
 };
 
 /**
- * Create simple command to open new tab from recently closed tabs
+ * Create simple command to open a new tab from recently closed tabs
  */
 export const closedToCommand = (closed: chrome.tabs.Tab): ICommand => ({
 	type: COMMAND.URL_COMMAND,
@@ -34,7 +34,7 @@ export const closedToCommand = (closed: chrome.tabs.Tab): ICommand => ({
 });
 
 /**
- * Create simple command to open new tab from favorite
+ * Create simple command to open a new tab from favorite
  */
 export const favoriteToCommand = (favorite: chrome.topSites.MostVisitedURL): ICommand => ({
 	type: COMMAND.URL_COMMAND,

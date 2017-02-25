@@ -21,7 +21,7 @@ export class SearchInput extends React.Component<IProps, {}>{
 				className={ searchInputS }
 				type="text"
 				onChange={(e) => this.props.onSearchChange(e.target.value)}
-				placeholder="type '?' to get help"
+				placeholder="type '?' to get help on actions you can take from here"
 				value={this.props.value}
 			/>
 		);

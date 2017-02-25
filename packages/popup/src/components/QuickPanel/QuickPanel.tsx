@@ -28,10 +28,10 @@ export const QuickPanelComponent = (props: IProps) => (
 
 export const QuickPanel = connect(
 	(state: IAppState) => ({
-		activeInd: state.quickpanel.offset,
-		commands: state.quickpanel.commands,
-		inputVal: state.quickpanel.inputVal,
-		opened: state.quickpanel.opened
+		activeInd: state.offset,
+		commands: state.commands,
+		inputVal: state.inputVal,
+		opened: state.opened
 	}),
 	dispatch => ({
 		onSearchChange: (value: string) => dispatch({type: ACTION.SEARCH_CHANGE, value: value})

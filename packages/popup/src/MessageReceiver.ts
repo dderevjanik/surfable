@@ -6,7 +6,7 @@ import { store } from './redux/store';
 /**
  * Will listen on events/messages incoming from other parts of extension
  */
-export const messageReceiver = () => {
+export const messageReceiver = (): void => {
 	chrome.runtime.onMessage.addListener(
 		(message: MessageType) => {
 			if (message.target === ETarget.POPUP) {
@@ -18,7 +18,7 @@ export const messageReceiver = () => {
 						store.dispatch(message);
 						break;
 					default: {
-						throw new Error(`Unknown message type: ${message.type}`);
+						throw new Error(`Unknown message type: ${message.type}. Make sure that proper handler exists in message receiver`);
 					}
 				}
 			} else {
