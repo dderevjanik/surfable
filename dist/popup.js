@@ -55,8 +55,8 @@
 	var Sender_1 = __webpack_require__(2);
 	var Messages_1 = __webpack_require__(4);
 	var Index_1 = __webpack_require__(5);
-	var KeyListener_1 = __webpack_require__(247);
-	var MessageReceiver_1 = __webpack_require__(249);
+	var KeyListener_1 = __webpack_require__(270);
+	var MessageReceiver_1 = __webpack_require__(272);
 	Index_1.render();
 	KeyListener_1.keyListener();
 	MessageReceiver_1.messageReceiver();
@@ -347,7 +347,7 @@
 	var ReactDOM = __webpack_require__(36);
 	var react_redux_1 = __webpack_require__(182);
 	var store_1 = __webpack_require__(220);
-	var QuickPanel_1 = __webpack_require__(230);
+	var QuickPanel_1 = __webpack_require__(236);
 	exports.render = function () {
 	    ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store_1.store },
 	        React.createElement(QuickPanel_1.QuickPanel, null)), document.getElementById('app'));
@@ -23837,7 +23837,7 @@
 	"use strict";
 	var redux_1 = __webpack_require__(193);
 	var AppReducer_1 = __webpack_require__(221);
-	var InitState_1 = __webpack_require__(225);
+	var InitState_1 = __webpack_require__(224);
 	exports.store = redux_1.createStore(AppReducer_1.appReducer, InitState_1.initState);
 
 
@@ -23868,11 +23868,11 @@
 	};
 	var Messages_1 = __webpack_require__(4);
 	var Sender_1 = __webpack_require__(2);
-	var Actions_1 = __webpack_require__(224);
-	var InitState_1 = __webpack_require__(225);
-	var CommandCreator_1 = __webpack_require__(250);
-	var Search_1 = __webpack_require__(253);
-	var DummyCommands_1 = __webpack_require__(229);
+	var Actions_1 = __webpack_require__(223);
+	var InitState_1 = __webpack_require__(224);
+	var CommandCreator_1 = __webpack_require__(231);
+	var Search_1 = __webpack_require__(234);
+	var DummyCommands_1 = __webpack_require__(235);
 	exports.panelReducer = function (state, action) {
 	    if (state === void 0) { state = InitState_1.initState.quickpanel; }
 	    switch (action.type) {
@@ -23882,21 +23882,11 @@
 	        }
 	        case Actions_1.ACTION.PANEL_UP: {
 	            var nextOffset = (state.offset - 1);
-	            if (nextOffset < 0) {
-	                return state;
-	            }
-	            else {
-	                return __assign({}, state, { offset: nextOffset });
-	            }
+	            return (nextOffset < 0) ? state : __assign({}, state, { offset: nextOffset });
 	        }
 	        case Actions_1.ACTION.PANEL_DOWN: {
 	            var nextOffset = (state.offset + 1);
-	            if (nextOffset >= state.commands.length) {
-	                return state;
-	            }
-	            else {
-	                return __assign({}, state, { offset: nextOffset });
-	            }
+	            return (nextOffset >= state.commands.length) ? state : __assign({}, state, { offset: nextOffset });
 	        }
 	        case Actions_1.ACTION.PANEL_OPEN: {
 	            return __assign({}, state, { inputVal: '', opened: true });
@@ -23908,8 +23898,8 @@
 	        case Actions_1.ACTION.SEARCH_CHANGE: {
 	            var searchValue = action.value.toLowerCase(); // Don't care about case
 	            var commandsGroupsChars = Object.keys(state.commandsGroups); // REFACTOR: don't calculate all object keys everytime
-	            var charBelognsToGroup = commandsGroupsChars.indexOf(action.value[0]) > -1;
-	            if (charBelognsToGroup) {
+	            var charBelongsToGroup = (commandsGroupsChars.indexOf(action.value[0]) > -1);
+	            if (charBelongsToGroup) {
 	                var foundCommands = Search_1.searchCommands(action.value.slice(1, action.value.length), state.commandsGroups[action.value[0]]);
 	                var hasFoundSomething = (foundCommands.length > -1);
 	                return __assign({}, state, { inputVal: action.value, commands: hasFoundSomething ? foundCommands : [DummyCommands_1.notFoundCommand] });
@@ -23939,20 +23929,6 @@
 /***/ function(module, exports) {
 
 	"use strict";
-	exports.COMMAND = {
-	    SIMPLE: 'SIMPLE',
-	    LONG_DESC: 'LONG_DESC',
-	    DUMMY: 'DUMMY',
-	    URL_COMMAND: 'URL_COMMAND',
-	    QUICKPANEL_COMMAND: 'QUICKPANEL_COMMAND'
-	};
-
-
-/***/ },
-/* 224 */
-/***/ function(module, exports) {
-
-	"use strict";
 	exports.ACTION = {
 	    PANEL_CLOSE: 'PANEL_CLOSE',
 	    PANEL_OPEN: 'PANEL_OPEN',
@@ -23964,26 +23940,40 @@
 
 
 /***/ },
-/* 225 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Commands_1 = __webpack_require__(226);
-	var CommandsGroups_1 = __webpack_require__(254);
+	var CommandsGroups_1 = __webpack_require__(225);
+	var Group_1 = __webpack_require__(230);
 	exports.initState = {
 	    config: {
 	        maxCommands: 7
 	    },
 	    quickpanel: {
-	        defaultCommands: Commands_1.commands,
+	        defaultCommands: CommandsGroups_1.commandsGroups[Group_1.Group.COMMANDS],
 	        commandsGroups: CommandsGroups_1.commandsGroups,
-	        allCommands: Commands_1.commands,
-	        commands: Commands_1.commands,
+	        allCommands: CommandsGroups_1.commandsGroups[Group_1.Group.COMMANDS],
+	        commands: CommandsGroups_1.commandsGroups[Group_1.Group.COMMANDS],
 	        opened: false,
 	        offset: 0,
-	        inputVal: ''
+	        inputVal: Group_1.Group.COMMANDS
 	    }
 	};
+
+
+/***/ },
+/* 225 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var Commands_1 = __webpack_require__(226);
+	var Group_1 = __webpack_require__(230);
+	exports.commandsGroups = (_a = {},
+	    _a[Group_1.Group.HELP] = Commands_1.help,
+	    _a[Group_1.Group.COMMANDS] = Commands_1.commands,
+	    _a);
+	var _a;
 
 
 /***/ },
@@ -23993,7 +23983,7 @@
 	"use strict";
 	var Category_1 = __webpack_require__(227);
 	var Chrome_1 = __webpack_require__(228);
-	var ICommand_1 = __webpack_require__(223);
+	var ICommand_1 = __webpack_require__(229);
 	var Messages_1 = __webpack_require__(4);
 	exports.help = [
 	    {
@@ -24143,10 +24133,175 @@
 
 /***/ },
 /* 229 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.COMMAND = {
+	    SIMPLE: 'SIMPLE',
+	    LONG_DESC: 'LONG_DESC',
+	    DUMMY: 'DUMMY',
+	    URL_COMMAND: 'URL_COMMAND',
+	    QUICKPANEL_COMMAND: 'QUICKPANEL_COMMAND'
+	};
+
+
+/***/ },
+/* 230 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.Group = {
+	    COMMANDS: '>',
+	    HELP: '?',
+	    BOOKMARKS: '#',
+	    SWITCHTAB: '@'
+	};
+
+
+/***/ },
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var ICommand_1 = __webpack_require__(223);
+	var Messages_1 = __webpack_require__(4);
+	var ICommand_1 = __webpack_require__(229);
+	var Category_1 = __webpack_require__(227);
+	var CommandHelper_1 = __webpack_require__(232);
+	/**
+	 * Create simple command to switch to another tab
+	 */
+	exports.tabToCommand = function (tab, index) {
+	    // Show shortcut key only for first 10 tabs
+	    var description = (index < 10) ? "Ctrl + " + index : '';
+	    return {
+	        type: ICommand_1.COMMAND.SIMPLE,
+	        desc: description,
+	        cat: Category_1.CAT.GOTO,
+	        text: CommandHelper_1.sliceOverflowTitle(tab.title),
+	        imgUrl: CommandHelper_1.getFaviconUrl(tab.favIconUrl),
+	        action: { type: Messages_1.MESSAGE.TAB_SWITCH, id: tab.id, target: 0 /* BACKGROUND */ }
+	    };
+	};
+	/**
+	 * Create simple command to open new tab from recently closed tabs
+	 */
+	exports.closedToCommand = function (closed) { return ({
+	    type: ICommand_1.COMMAND.URL_COMMAND,
+	    desc: '',
+	    url: closed.url,
+	    imgUrl: CommandHelper_1.getFaviconUrl(closed.favIconUrl),
+	    action: { type: Messages_1.MESSAGE.TAB_NEW, target: 0 /* BACKGROUND */, url: closed.url },
+	    text: CommandHelper_1.sliceOverflowTitle(closed.title)
+	}); };
+	/**
+	 * Create simple command to open new tab from favorite
+	 */
+	exports.favoriteToCommand = function (favorite) { return ({
+	    type: ICommand_1.COMMAND.URL_COMMAND,
+	    desc: '',
+	    url: favorite.url,
+	    action: { type: Messages_1.MESSAGE.TAB_NEW, target: 0 /* BACKGROUND */, url: favorite.url },
+	    text: CommandHelper_1.sliceOverflowTitle(favorite.title)
+	}); };
+
+
+/***/ },
+/* 232 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var Constants_1 = __webpack_require__(233);
+	/**
+	 * Slice long text from command's title
+	 */
+	exports.sliceOverflowTitle = function (titleText) {
+	    return (titleText.length > Constants_1.MAX_COMMAND_TEXT_LENGTH)
+	        ? titleText.slice(0, Constants_1.MAX_COMMAND_TEXT_LENGTH)
+	        : titleText;
+	};
+	/**
+	 * Will get favicon url, because sometimes is favicon undefined
+	 * or it's set to chrome internals, which don't work outside
+	 * of chrome internals
+	 */
+	exports.getFaviconUrl = function (faviconUrl) {
+	    return (faviconUrl)
+	        ? (faviconUrl.indexOf(Constants_1.CHROME_PROTOCOL) === 0)
+	            ? Constants_1.BLANK_FAVICON
+	            : faviconUrl
+	        : Constants_1.BLANK_FAVICON;
+	};
+
+
+/***/ },
+/* 233 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.BLANK_FAVICON = 'https://image.flaticon.com/icons/png/128/12/12195.png';
+	exports.MAX_COMMAND_TEXT_LENGTH = 50;
+	exports.CHROME_PROTOCOL = 'chrome://';
+
+
+/***/ },
+/* 234 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __assign = (this && this.__assign) || Object.assign || function(t) {
+	    for (var s, i = 1, n = arguments.length; i < n; i++) {
+	        s = arguments[i];
+	        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+	            t[p] = s[p];
+	    }
+	    return t;
+	};
+	var ICommand_1 = __webpack_require__(229);
+	/**
+	 * Search for commands
+	 * Return those commands, which best suits to searchvalue.
+	 */
+	exports.searchCommands = function (searchValue, commandsGroup) {
+	    var valLen = searchValue.length;
+	    var foundCommands = commandsGroup
+	        .map(function (command) {
+	        switch (command.type) {
+	            case ICommand_1.COMMAND.QUICKPANEL_COMMAND: {
+	                return command;
+	            }
+	            case ICommand_1.COMMAND.SIMPLE: {
+	                var text = (command.cat + ': ' + command.text);
+	                var ind = text.toLowerCase().indexOf(searchValue);
+	                return (ind >= 0)
+	                    ? __assign({}, command, { pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)] }) : null;
+	            }
+	            case ICommand_1.COMMAND.DUMMY: {
+	                var text = command.text;
+	                var ind = text.toLowerCase().indexOf(searchValue);
+	                return (ind >= 0)
+	                    ? __assign({}, command, { pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)] }) : null;
+	            }
+	            case ICommand_1.COMMAND.URL_COMMAND: {
+	                var text = command.text;
+	                var ind = text.toLowerCase().indexOf(searchValue);
+	                return (ind >= 0)
+	                    ? __assign({}, command, { pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)] }) : null;
+	            }
+	            default: {
+	                throw new Error("Undefined command type " + command + ". Make sure that search function is implemented for '" + command + "' type.");
+	            }
+	        }
+	    }).filter(function (command) { return command; });
+	    return foundCommands;
+	};
+
+
+/***/ },
+/* 235 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var ICommand_1 = __webpack_require__(229);
 	exports.notFoundCommand = {
 	    type: ICommand_1.COMMAND.DUMMY,
 	    cat: '',
@@ -24157,16 +24312,16 @@
 
 
 /***/ },
-/* 230 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
 	var react_redux_1 = __webpack_require__(182);
-	var CommandList_1 = __webpack_require__(231);
-	var SearchInput_1 = __webpack_require__(244);
-	var Actions_1 = __webpack_require__(224);
-	var QuickPanel_style_1 = __webpack_require__(246);
+	var CommandList_1 = __webpack_require__(237);
+	var SearchInput_1 = __webpack_require__(267);
+	var Actions_1 = __webpack_require__(223);
+	var QuickPanel_style_1 = __webpack_require__(269);
 	;
 	exports.QuickPanelComponent = function (props) { return (React.createElement("div", { className: QuickPanel_style_1.quickPanelS },
 	    React.createElement("div", { className: QuickPanel_style_1.searchBoxS },
@@ -24184,47 +24339,46 @@
 
 
 /***/ },
-/* 231 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
-	var SimpleCommand_1 = __webpack_require__(232);
-	var DummyCommand_1 = __webpack_require__(240);
-	var UrlCommand_1 = __webpack_require__(241);
-	var QuickPanelCommand_1 = __webpack_require__(242);
-	var ICommand_1 = __webpack_require__(223);
-	var CommandList_style_1 = __webpack_require__(243);
+	var SimpleCommand_1 = __webpack_require__(238);
+	var DummyCommand_1 = __webpack_require__(246);
+	var UrlCommand_1 = __webpack_require__(247);
+	var QuickPanelCommand_1 = __webpack_require__(248);
+	var ICommand_1 = __webpack_require__(229);
+	var CommandList_style_1 = __webpack_require__(249);
 	var Sender_1 = __webpack_require__(2);
-	;
 	exports.CommandList = function (props) { return (React.createElement("ul", { className: CommandList_style_1.ulS }, props.commands.map(function (command, i) {
 	    switch (command.type) {
 	        case ICommand_1.COMMAND.QUICKPANEL_COMMAND: {
-	            return (React.createElement(QuickPanelCommand_1.QuickPanelCommand, { active: (props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text, group: command.group, desc: command.desc }));
+	            return (React.createElement(QuickPanelCommand_1.QuickPanelCommand, { key: i, active: (props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text, group: command.group, desc: command.desc }));
 	        }
 	        case ICommand_1.COMMAND.DUMMY: {
-	            return (React.createElement(DummyCommand_1.DummyCommand, { active: (props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text }));
+	            return (React.createElement(DummyCommand_1.DummyCommand, { key: i, active: (props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text }));
 	        }
 	        case ICommand_1.COMMAND.SIMPLE: {
-	            return (React.createElement(SimpleCommand_1.SimpleCommand, { active: (props.activeInd === i) ? true : false, category: command.cat, commandInd: i, desc: command.desc, imgUrl: command.imgUrl, key: i, name: command.text, onCommandClick: function () { return Sender_1.sendAction(command.action); }, partialText: command.pText }));
+	            return (React.createElement(SimpleCommand_1.SimpleCommand, { key: i, active: (props.activeInd === i) ? true : false, category: command.cat, commandInd: i, desc: command.desc, imgUrl: command.imgUrl, name: command.text, onCommandClick: function () { return Sender_1.sendAction(command.action); }, partialText: command.pText }));
 	        }
 	        case ICommand_1.COMMAND.URL_COMMAND: {
-	            return (React.createElement(UrlCommand_1.UrlCommand, { active: (props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text, url: command.url, partialText: command.pText, imgUrl: command.imgUrl }));
+	            return (React.createElement(UrlCommand_1.UrlCommand, { key: i, active: (props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text, url: command.url, partialText: command.pText, imgUrl: command.imgUrl }));
 	        }
 	        default: {
-	            throw new Error("Undefined command type: " + command);
+	            throw new Error("Undefined command type: " + command + ". Make sure that React component exists for command's type '" + command + "'");
 	        }
 	    }
 	}))); };
 
 
 /***/ },
-/* 232 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
-	var Command_style_1 = __webpack_require__(233);
+	var Command_style_1 = __webpack_require__(239);
 	;
 	exports.SimpleCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } },
 	    (props.partialText)
@@ -24239,11 +24393,11 @@
 
 
 /***/ },
-/* 233 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var typestyle_1 = __webpack_require__(234);
+	var typestyle_1 = __webpack_require__(240);
 	exports.commandS = typestyle_1.style({
 	    cursor: 'pointer',
 	    color: '#CCCCCC',
@@ -24252,9 +24406,9 @@
 	    lineHeight: '1.5em',
 	    overflow: 'hidden',
 	    textOverflow: 'ellipsis',
-	    display: '-webkit-box',
-	    '-webkit-line-clamp': '1',
-	    '-webkit-box-orient': 'vertical',
+	    // 	display: '-webkit-box',
+	    //    '-webkit-line-clamp': '1',
+	    //    '-webkit-box-orient': 'vertical',
 	    $nest: {
 	        '&:hover': {
 	            background: '#2A2D2E'
@@ -24295,20 +24449,20 @@
 
 
 /***/ },
-/* 234 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var typestyle_1 = __webpack_require__(235);
+	var typestyle_1 = __webpack_require__(241);
 	/**
 	 * All the CSS types in the 'types' namespace
 	 */
-	var types = __webpack_require__(239);
+	var types = __webpack_require__(245);
 	exports.types = types;
 	/**
 	 * Export certain utilities
 	 */
-	var utilities_1 = __webpack_require__(238);
+	var utilities_1 = __webpack_require__(244);
 	exports.extend = utilities_1.extend;
 	exports.classes = utilities_1.classes;
 	exports.media = utilities_1.media;
@@ -24372,13 +24526,13 @@
 
 
 /***/ },
-/* 235 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var formatting_1 = __webpack_require__(236);
-	var utilities_1 = __webpack_require__(238);
-	var FreeStyle = __webpack_require__(237);
+	var formatting_1 = __webpack_require__(242);
+	var utilities_1 = __webpack_require__(244);
+	var FreeStyle = __webpack_require__(243);
 	/**
 	 * Maintains a single stylesheet and keeps it in sync with requested styles
 	 */
@@ -24555,11 +24709,11 @@
 
 
 /***/ },
-/* 236 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var FreeStyle = __webpack_require__(237);
+	var FreeStyle = __webpack_require__(243);
 	/**
 	 * We need to do the following to *our* objects before passing to freestyle:
 	 * - For any `$nest` directive move up to FreeStyle style nesting
@@ -24612,7 +24766,7 @@
 
 
 /***/ },
-/* 237 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {"use strict";
@@ -25067,7 +25221,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 238 */
+/* 244 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -25155,19 +25309,19 @@
 
 
 /***/ },
-/* 239 */
+/* 245 */
 /***/ function(module, exports) {
 
 	"use strict";
 
 
 /***/ },
-/* 240 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
-	var Command_style_1 = __webpack_require__(233);
+	var Command_style_1 = __webpack_require__(239);
 	;
 	exports.DummyCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } },
 	    React.createElement("i", null,
@@ -25177,12 +25331,12 @@
 
 
 /***/ },
-/* 241 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
-	var Command_style_1 = __webpack_require__(233);
+	var Command_style_1 = __webpack_require__(239);
 	;
 	exports.UrlCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } }, (props.partialText)
 	    ? (React.createElement("span", { className: Command_style_1.textS },
@@ -25199,12 +25353,12 @@
 
 
 /***/ },
-/* 242 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
-	var Command_style_1 = __webpack_require__(233);
+	var Command_style_1 = __webpack_require__(239);
 	;
 	exports.QuickPanelCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } },
 	    React.createElement("span", { className: Command_style_1.highlightCommandS }, props.text),
@@ -25212,11 +25366,11 @@
 
 
 /***/ },
-/* 243 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var typestyle_1 = __webpack_require__(234);
+	var typestyle_1 = __webpack_require__(240);
 	exports.ulS = typestyle_1.style({
 	    fontSize: '13px',
 	    padding: '0px',
@@ -25227,7 +25381,24 @@
 
 
 /***/ },
-/* 244 */
+/* 250 */,
+/* 251 */,
+/* 252 */,
+/* 253 */,
+/* 254 */,
+/* 255 */,
+/* 256 */,
+/* 257 */,
+/* 258 */,
+/* 259 */,
+/* 260 */,
+/* 261 */,
+/* 262 */,
+/* 263 */,
+/* 264 */,
+/* 265 */,
+/* 266 */,
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25237,7 +25408,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(6);
-	var SearchInput_style_1 = __webpack_require__(245);
+	var SearchInput_style_1 = __webpack_require__(268);
 	var SearchInput = (function (_super) {
 	    __extends(SearchInput, _super);
 	    function SearchInput() {
@@ -25259,11 +25430,11 @@
 
 
 /***/ },
-/* 245 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var typestyle_1 = __webpack_require__(234);
+	var typestyle_1 = __webpack_require__(240);
 	exports.searchInputS = typestyle_1.style({
 	    fontSize: '14px',
 	    boxSizing: 'border-box',
@@ -25277,11 +25448,11 @@
 
 
 /***/ },
-/* 246 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var typestyle_1 = __webpack_require__(234);
+	var typestyle_1 = __webpack_require__(240);
 	exports.quickPanelS = typestyle_1.style({
 	    display: 'block',
 	    backgroundColor: '#252526',
@@ -25298,12 +25469,12 @@
 
 
 /***/ },
-/* 247 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var KeyMap_1 = __webpack_require__(248);
-	var Actions_1 = __webpack_require__(224);
+	var KeyMap_1 = __webpack_require__(271);
+	var Actions_1 = __webpack_require__(223);
 	var store_1 = __webpack_require__(220);
 	var processKeyEvent = function (event) {
 	    switch (event.keyCode) {
@@ -25336,7 +25507,7 @@
 
 
 /***/ },
-/* 248 */
+/* 271 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -25360,7 +25531,7 @@
 
 
 /***/ },
-/* 249 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25387,152 +25558,6 @@
 	        else {
 	        }
 	    });
-	};
-
-
-/***/ },
-/* 250 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var Messages_1 = __webpack_require__(4);
-	var ICommand_1 = __webpack_require__(223);
-	var Category_1 = __webpack_require__(227);
-	var CommandHelper_1 = __webpack_require__(251);
-	/**
-	 * Create simple command to switch to another tab
-	 */
-	exports.tabToCommand = function (tab, index) {
-	    // Show shortcut key only for first 10 tabs
-	    var description = (index < 10) ? "Ctrl + " + index : '';
-	    return {
-	        type: ICommand_1.COMMAND.SIMPLE,
-	        desc: description,
-	        cat: Category_1.CAT.GOTO,
-	        text: CommandHelper_1.sliceOverflowTitle(tab.title),
-	        imgUrl: CommandHelper_1.getFaviconUrl(tab.favIconUrl),
-	        action: { type: Messages_1.MESSAGE.TAB_SWITCH, id: tab.id, target: 0 /* BACKGROUND */ }
-	    };
-	};
-	/**
-	 * Create simple command to open new tab from recently closed tabs
-	 */
-	exports.closedToCommand = function (closed) { return ({
-	    type: ICommand_1.COMMAND.URL_COMMAND,
-	    desc: '',
-	    url: closed.url,
-	    imgUrl: CommandHelper_1.getFaviconUrl(closed.favIconUrl),
-	    action: { type: Messages_1.MESSAGE.TAB_NEW, target: 0 /* BACKGROUND */, url: closed.url },
-	    text: CommandHelper_1.sliceOverflowTitle(closed.title)
-	}); };
-	/**
-	 * Create simple command to open new tab from favorite
-	 */
-	exports.favoriteToCommand = function (favorite) { return ({
-	    type: ICommand_1.COMMAND.URL_COMMAND,
-	    desc: '',
-	    url: favorite.url,
-	    action: { type: Messages_1.MESSAGE.TAB_NEW, target: 0 /* BACKGROUND */, url: favorite.url },
-	    text: CommandHelper_1.sliceOverflowTitle(favorite.title)
-	}); };
-
-
-/***/ },
-/* 251 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var Constants_1 = __webpack_require__(252);
-	/**
-	 * Slice long text from command's title
-	 */
-	exports.sliceOverflowTitle = function (titleText) {
-	    return (titleText.length > Constants_1.MAX_COMMAND_TEXT_LENGTH)
-	        ? titleText.slice(0, Constants_1.MAX_COMMAND_TEXT_LENGTH)
-	        : titleText;
-	};
-	/**
-	 * Will get favicon url, because sometimes is favicon undefined
-	 * or it's set to chrome internals, which don't work outside
-	 * of chrome internals
-	 */
-	exports.getFaviconUrl = function (faviconUrl) {
-	    return (faviconUrl)
-	        ? (faviconUrl.indexOf(Constants_1.CHROME_PROTOCOL) === 0)
-	            ? Constants_1.BLANK_FAVICON
-	            : faviconUrl
-	        : Constants_1.BLANK_FAVICON;
-	};
-
-
-/***/ },
-/* 252 */
-/***/ function(module, exports) {
-
-	"use strict";
-	exports.BLANK_FAVICON = 'https://image.flaticon.com/icons/png/128/12/12195.png';
-	exports.MAX_COMMAND_TEXT_LENGTH = 50;
-	exports.CHROME_PROTOCOL = 'chrome://';
-
-
-/***/ },
-/* 253 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __assign = (this && this.__assign) || Object.assign || function(t) {
-	    for (var s, i = 1, n = arguments.length; i < n; i++) {
-	        s = arguments[i];
-	        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-	            t[p] = s[p];
-	    }
-	    return t;
-	};
-	var ICommand_1 = __webpack_require__(223);
-	exports.searchCommands = function (searchValue, commandsGroup) {
-	    var valLen = searchValue.length;
-	    var foundCommands = commandsGroup
-	        .map(function (command) {
-	        switch (command.type) {
-	            case ICommand_1.COMMAND.QUICKPANEL_COMMAND: {
-	                return command;
-	            }
-	            case ICommand_1.COMMAND.SIMPLE: {
-	                var text = (command.cat + ': ' + command.text);
-	                var ind = text.toLowerCase().indexOf(searchValue);
-	                return (ind >= 0)
-	                    ? __assign({}, command, { pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)] }) : null;
-	            }
-	            case ICommand_1.COMMAND.DUMMY: {
-	                var text = command.text;
-	                var ind = text.toLowerCase().indexOf(searchValue);
-	                return (ind >= 0)
-	                    ? __assign({}, command, { pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)] }) : null;
-	            }
-	            case ICommand_1.COMMAND.URL_COMMAND: {
-	                var text = command.text;
-	                var ind = text.toLowerCase().indexOf(searchValue);
-	                return (ind >= 0)
-	                    ? __assign({}, command, { pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)] }) : null;
-	            }
-	            default: {
-	                throw new Error("Undefined command type " + command);
-	            }
-	        }
-	    }).filter(function (command) { return command; });
-	    return foundCommands;
-	};
-
-
-/***/ },
-/* 254 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var Commands_1 = __webpack_require__(226);
-	exports.commandsGroups = {
-	    '?': Commands_1.help,
-	    '>': Commands_1.commands
 	};
 
 

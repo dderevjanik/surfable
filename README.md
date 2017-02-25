@@ -73,3 +73,7 @@ Content is script, which is executed on every page user visits.
 Used to share interfaces, types a common data between subprojects. Events (redux's
 actions), which are used among subprojects are stored in common to avoid type
 errors and common javascript mistakes.
+
+# 2. Credits
+
+- [vscode](https://github.com/Microsoft/vscode) for providing such a beautifull IDE and best implementation of quickpanel/command palette.

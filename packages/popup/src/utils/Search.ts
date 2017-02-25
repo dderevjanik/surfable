@@ -1,5 +1,9 @@
 import { ICommand, COMMAND } from './../interfaces/ICommand';
 
+/**
+ * Search for commands
+ * Return those commands, which best suits to searchvalue.
+ */
 export const searchCommands = (searchValue: string, commandsGroup: ICommand[]): ICommand[] => {
 	const valLen = searchValue.length;
 	const foundCommands = commandsGroup
@@ -13,24 +17,24 @@ export const searchCommands = (searchValue: string, commandsGroup: ICommand[]): 
 					const ind = text.toLowerCase().indexOf(searchValue);
 					return (ind >= 0)
 						? { ...command, pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)] }
-						: null
+						: null;
 				}
 				case COMMAND.DUMMY: {
 					const text = command.text;
 					const ind = text.toLowerCase().indexOf(searchValue);
 					return (ind >= 0)
 						? { ...command, pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)] }
-						: null
+						: null;
 				}
 				case COMMAND.URL_COMMAND: {
 					const text = command.text;
 					const ind = text.toLowerCase().indexOf(searchValue);
 					return (ind >= 0)
 						? { ...command, pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)] }
-						: null
+						: null;
 				}
 				default: {
-					throw new Error(`Undefined command type ${command}`);
+					throw new Error(`Undefined command type ${command}. Make sure that search function is implemented for '${command}' type.`);
 				}
 			}
 		}).filter(command => command);

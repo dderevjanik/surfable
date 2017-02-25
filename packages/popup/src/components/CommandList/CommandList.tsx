@@ -6,11 +6,12 @@ import { QuickPanelCommand } from './../Command/QuickPanelCommand';
 import { ICommand, COMMAND } from './../../interfaces/ICommand';
 import { ulS } from './CommandList.style';
 import { sendAction } from 'surfable-common/src/Sender';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 interface IProps {
 	readonly commands: ICommand[];
 	readonly activeInd: number;
-};
+}
 
 export const CommandList = (props: IProps) => (
 	<ul className={ ulS }>
@@ -20,6 +21,7 @@ export const CommandList = (props: IProps) => (
 					case COMMAND.QUICKPANEL_COMMAND: {
 						return (
 							<QuickPanelCommand
+								key={i}
 								active={(props.activeInd === i) ? true : false}
 								onCommandClick={() => sendAction(command.action)}
 								commandInd={i}
@@ -32,6 +34,7 @@ export const CommandList = (props: IProps) => (
 					case COMMAND.DUMMY: {
 						return (
 							<DummyCommand
+								key={i}
 								active={(props.activeInd === i) ? true : false}
 								onCommandClick={() => sendAction(command.action)}
 								commandInd={i}
@@ -42,12 +45,12 @@ export const CommandList = (props: IProps) => (
 					case COMMAND.SIMPLE: {
 						return (
 							<SimpleCommand
+								key={i}
 								active={(props.activeInd === i) ? true : false}
 								category={command.cat}
 								commandInd={i}
 								desc={command.desc}
 								imgUrl={command.imgUrl}
-								key={i}
 								name={command.text}
 								onCommandClick={() => sendAction(command.action)}
 								partialText={command.pText}
@@ -57,6 +60,7 @@ export const CommandList = (props: IProps) => (
 					case COMMAND.URL_COMMAND: {
 						return (
 							<UrlCommand
+								key={i}
 								active={(props.activeInd === i) ? true : false}
 								onCommandClick={() => sendAction(command.action)}
 								commandInd={i}
@@ -68,7 +72,7 @@ export const CommandList = (props: IProps) => (
 						)
 					}
 					default: {
-						throw new Error(`Undefined command type: ${command}`);
+						throw new Error(`Undefined command type: ${command}. Make sure that React component exists for command's type '${command}'`);
 					}
 				}
 			})

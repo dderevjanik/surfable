@@ -2,18 +2,19 @@ import { IAppState } from './../interfaces/IAppState';
 import { commands } from './../data/Commands';
 import { ICommand } from './../interfaces/ICommand';
 import { commandsGroups } from './../data/CommandsGroups';
+import { Group } from './../data/Group';
 
 export const initState: IAppState = {
 	config: {
 		maxCommands: 7
 	},
 	quickpanel: {
-		defaultCommands: commands,
+		defaultCommands: commandsGroups[Group.COMMANDS],
 		commandsGroups: commandsGroups,
-		allCommands: commands,
-		commands: commands,
+		allCommands: commandsGroups[Group.COMMANDS],
+		commands: commandsGroups[Group.COMMANDS],
 		opened: false,
 		offset: 0,
-		inputVal: ''
+		inputVal: Group.COMMANDS
 	}
 };
