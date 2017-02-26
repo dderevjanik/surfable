@@ -23891,9 +23891,8 @@
 	            var commandsGroupExists = (commandsGroupsChars.indexOf(action.value[0]) > -1);
 	            if (commandsGroupExists) {
 	                var foundCommands = Search_1.searchCommands(action.value.slice(1, action.value.length), state.commandsGroups[action.value[0]]);
-	                console.log(foundCommands);
 	                var hasFoundSomething = (foundCommands.length > -1);
-	                return __assign({}, state, { inputVal: action.value, commands: hasFoundSomething ? foundCommands : [DummyCommands_1.notFoundCommand] });
+	                return __assign({}, state, { offset: 0, inputVal: action.value, commands: hasFoundSomething ? foundCommands : [DummyCommands_1.notFoundCommand] });
 	            }
 	            return __assign({}, state, { inputVal: action.value, commands: [DummyCommands_1.notFoundCommand] });
 	        }

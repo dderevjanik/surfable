@@ -41,10 +41,10 @@ export const appReducer = (state: IAppState = initState, action: ActionType|Mess
 
 			if (commandsGroupExists) {
 				const foundCommands = searchCommands(action.value.slice(1, action.value.length), state.commandsGroups[action.value[0]]);
-				console.log(foundCommands);
 				const hasFoundSomething = (foundCommands.length > -1);
 				return {
 					...state,
+					offset: 0,
 					inputVal: action.value,
 					commands: hasFoundSomething ? foundCommands : [notFoundCommand]
 				};
