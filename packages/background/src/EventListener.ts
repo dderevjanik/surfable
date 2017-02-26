@@ -14,4 +14,13 @@ export const eventListener = () => {
 	chrome.tabs.onUpdated.addListener((tabId: number, _info: chrome.tabs.TabChangeInfo, tab: chrome.tabs.Tab) => {
 		store.dispatch({type: ACTION.TAB_UPDATED, tabId: tabId, tab: tab});
 	});
+	chrome.bookmarks.onCreated.addListener(() => {
+		store.dispatch({type: ACTION.BOOKMARKS_UPDATED});
+	});
+	chrome.bookmarks.onChanged.addListener(() => {
+		store.dispatch({type: ACTION.BOOKMARKS_UPDATED});
+	});
+	chrome.bookmarks.onRemoved.addListener(() => {
+		store.dispatch({type: ACTION.BOOKMARKS_UPDATED});
+	});
 };

@@ -27,6 +27,10 @@ export const appReducer = (state: AppState = initState, action: ActionType): App
 				closedTabs: addToStack(state.closedTabs, state.openedTabs[tabIndex], MAX_RECENT_TABS)
 			};
 		}
+		case ACTION.BOOKMARKS_UPDATED: {
+			// TODO: Add bookmarks handler
+			return { ...state };
+		}
 		default: {
 			return state;
 		}

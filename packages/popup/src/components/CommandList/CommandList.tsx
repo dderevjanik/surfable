@@ -61,6 +61,7 @@ export const CommandList = (props: IProps) => (
 						return (
 							<UrlCommand
 								key={i}
+								desc={command.desc}
 								active={(props.activeInd === i) ? true : false}
 								onCommandClick={() => sendAction(command.action)}
 								commandInd={i}

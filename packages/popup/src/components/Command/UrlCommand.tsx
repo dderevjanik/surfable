@@ -4,6 +4,7 @@ import { iconS, commandS, commandHighlightS, textS, descS, highlightS, SSmallTex
 interface IProps {
 	readonly active: boolean;
 	readonly commandInd: number;
+	readonly desc: string;
 	readonly text: string;
 	readonly partialText?: string[];
 	readonly url: string;
@@ -22,6 +23,6 @@ export const UrlCommand = (props: IProps) => (
 				</span>)
 			: <span className={textS}>{props.imgUrl ? <img className={iconS} src={props.imgUrl} /> : null} {props.text} <span className={SSmallText}>{props.url}</span></span>
 		}
-
+		<small className={descS}>{props.desc}</small>
 	</li>
 );

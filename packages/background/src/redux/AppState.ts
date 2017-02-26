@@ -5,7 +5,8 @@ export type AppState = ITabs;
 export const initState: AppState = {
 	openedTabs: [],
 	closedTabs: [],
-	favorites: []
+	favorites: [],
+	bookmarks: []
 };
 
 chrome.tabs.query({currentWindow: true}, tabs => {
@@ -14,4 +15,8 @@ chrome.tabs.query({currentWindow: true}, tabs => {
 
 chrome.topSites.get(mostVisited => {
 	initState.favorites = mostVisited;
+});
+
+chrome.bookmarks.getTree(bookmarkTree => {
+	console.log(bookmarkTree);
 });

@@ -1,5 +1,6 @@
 import { MESSAGE, MessageType } from 'surfable-common/src/Messages';
 import { ETarget } from 'surfable-common/src/enums/ETarget';
+import { Group } from './../data/Group';
 import { sendAction } from 'surfable-common/src/Sender';
 import { IAppState } from './../interfaces/IAppState';
 import { ICommand, COMMAND } from './../interfaces/ICommand';
@@ -27,18 +28,11 @@ export const appReducer = (state: IAppState = initState, action: ActionType|Mess
 			return (nextOffset >= state.commands.length) ? state : {...state, offset: nextOffset };
 		}
 		case ACTION.PANEL_OPEN: {
-			return {
-				...state,
-				inputVal: '',
-				opened: true
-			};
+			return { ...state, inputVal: '', opened: true };
 		}
 		case ACTION.PANEL_CLOSE: {
 			document.body.focus();
-			return {
-				...state,
-				opened: false
-			};
+			return { ...state, opened: false };
 		}
 		case ACTION.SEARCH_CHANGE: {
 			const searchValue = action.value.toLowerCase(); // Don't care about case
@@ -60,7 +54,7 @@ export const appReducer = (state: IAppState = initState, action: ActionType|Mess
 				commands: [notFoundCommand]
 			};
 		}
-		case MESSAGE.SHOW_TABS: {
+		case MESSAGE.SYNC_TABS: {
 			// REFACTOR: Sort them by commands groups
 			const favoriteCommands: ICommand[] = action.tabs.favorites
 				.slice(0, 10)
@@ -72,8 +66,10 @@ export const appReducer = (state: IAppState = initState, action: ActionType|Mess
 			const allNewCommands = favoriteCommands.concat(openedTabCommands.concat(closedTabCommands));
 			return {
 				...state,
-				allCommands: state.defaultCommands.concat(allNewCommands),
-				commands: state.defaultCommands.concat(allNewCommands)
+				commandsGroups: {
+					...state.commandsGroups,
+					[Group.SWITCHTAB]: openedTabCommands
+				}
 			};
 		}
 		default: {

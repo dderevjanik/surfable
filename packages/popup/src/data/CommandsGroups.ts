@@ -4,5 +4,7 @@ import { Group } from './Group';
 
 export const commandsGroups: {[key: string]: ICommand[]} = {
 	[Group.HELP]: help,
-	[Group.COMMANDS]: commands
+	[Group.COMMANDS]: commands,
+	[Group.SWITCHTAB]: [],
+	[Group.BOOKMARKS]: []
 };

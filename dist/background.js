@@ -72,9 +72,9 @@
 	 * Will listen on events/messages incoming from other parts of extension
 	 */
 	exports.messageReceiver = function () {
-	    console.log('ready to listen');
 	    chrome.runtime.onMessage.addListener(function (message) {
 	        if (message.target === 0 /* BACKGROUND */) {
+	            console.debug("Message '" + message.type + "' received");
 	            switch (message.type) {
 	                case Messages_1.MESSAGE.TAB_CLOSE: {
 	                    chrome.tabs.query({ active: true }, function (payload) {
@@ -144,8 +144,8 @@
 	                    });
 	                    break;
 	                }
-	                case Messages_1.MESSAGE.GET_CURRENT_TABS: {
-	                    Sender_1.sendToPopup({ type: Messages_1.MESSAGE.SHOW_TABS, tabs: Store_1.store.getState() });
+	                case Messages_1.MESSAGE.SYNC_TABS_REQUEST: {
+	                    Sender_1.sendToPopup({ type: Messages_1.MESSAGE.SYNC_TABS, tabs: Store_1.store.getState() });
 	                    break;
 	                }
 	                case Messages_1.MESSAGE.TAB_SWITCH: {
@@ -202,11 +202,11 @@
 	    ZOOM: 'ZOOM',
 	    CAPTURE: 'CAPTURE',
 	    SHOW_FAVORITES: 'SHOW_FAVORITES',
-	    SHOW_TABS: 'SHOW_TABS',
 	    GET_FAVORITES: 'GET_FAVORITES',
-	    GET_CURRENT_TABS: 'GET_CURRENT_TABS',
 	    SYNC_TABS: 'SYNC_TABS',
-	    SHOW_TOAST: 'SHOW_TOAST'
+	    SYNC_TABS_REQUEST: 'SYNC_TABS_REQUEST',
+	    SHOW_TOAST: 'SHOW_TOAST',
+	    SEARCH_CHANGE: 'SEARCH_CHANGE'
 	};
 
 
@@ -1533,6 +1533,10 @@
 	            var tabIndex = Utils_1.findTabIndexById(state, action.tabId);
 	            return __assign({}, state, { openedTabs: Immutable_1.removeItem(state.openedTabs, tabIndex), closedTabs: Immutable_1.addToStack(state.closedTabs, state.openedTabs[tabIndex], Constants_1.MAX_RECENT_TABS) });
 	        }
+	        case Actions_1.ACTION.BOOKMARKS_UPDATED: {
+	            // TODO: Add bookmarks handler
+	            return __assign({}, state);
+	        }
 	        default: {
 	            return state;
 	        }
@@ -1548,13 +1552,17 @@
 	exports.initState = {
 	    openedTabs: [],
 	    closedTabs: [],
-	    favorites: []
+	    favorites: [],
+	    bookmarks: []
 	};
 	chrome.tabs.query({ currentWindow: true }, function (tabs) {
 	    exports.initState.openedTabs = tabs;
 	});
 	chrome.topSites.get(function (mostVisited) {
 	    exports.initState.favorites = mostVisited;
+	});
+	chrome.bookmarks.getTree(function (bookmarkTree) {
+	    console.log(bookmarkTree);
 	});
 
 
@@ -1566,7 +1574,8 @@
 	exports.ACTION = {
 	    TAB_CREATED: 'TAB_CREATED',
 	    TAB_REMOVED: 'TAB_REMOVED',
-	    TAB_UPDATED: 'TAB_UPDATED'
+	    TAB_UPDATED: 'TAB_UPDATED',
+	    BOOKMARKS_UPDATED: 'BOOKMARKS_UPDATED'
 	};
 
 
@@ -1628,6 +1637,8 @@
 
 	"use strict";
 	exports.MAX_RECENT_TABS = 10;
+	exports.MAX_TEXT_LENGTH = 90; // REFACTOR: if command doesn't have icon, it should be longer
+	exports.MAX_TEXT_LENGTH_ICON = 90;
 
 
 /***/ },
@@ -1650,6 +1661,15 @@
 	    chrome.tabs.onUpdated.addListener(function (tabId, _info, tab) {
 	        Store_1.store.dispatch({ type: Actions_1.ACTION.TAB_UPDATED, tabId: tabId, tab: tab });
 	    });
+	    chrome.bookmarks.onCreated.addListener(function () {
+	        Store_1.store.dispatch({ type: Actions_1.ACTION.BOOKMARKS_UPDATED });
+	    });
+	    chrome.bookmarks.onChanged.addListener(function () {
+	        Store_1.store.dispatch({ type: Actions_1.ACTION.BOOKMARKS_UPDATED });
+	    });
+	    chrome.bookmarks.onRemoved.addListener(function () {
+	        Store_1.store.dispatch({ type: Actions_1.ACTION.BOOKMARKS_UPDATED });
+	    });
 	};
 
 
@@ -1661,10 +1681,12 @@
 	var Store_1 = __webpack_require__(6);
 	var Messages_1 = __webpack_require__(3);
 	var Sender_1 = __webpack_require__(4);
+	/**
+	 * On every store change, it'll synchronize it with other parts
+	 */
 	exports.synchronizeTabs = function () {
 	    Store_1.store.subscribe(function () {
-	        console.log('sending');
-	        Sender_1.sendToPopup({ type: Messages_1.MESSAGE.SHOW_TABS, tabs: Store_1.store.getState() });
+	        Sender_1.sendToPopup({ type: Messages_1.MESSAGE.SYNC_TABS, tabs: Store_1.store.getState() });
 	    });
 	};
 

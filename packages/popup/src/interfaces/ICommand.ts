@@ -8,7 +8,13 @@ export const COMMAND = {
 	QUICKPANEL_COMMAND: 'QUICKPANEL_COMMAND' as 'QUICKPANEL_COMMAND'
 };
 
-export interface IQuickPanelCommand {
+interface ICommandBase {
+	// REFACTOR: Try to find proper way how to add 'type' property to this interface
+	readonly text: string;
+	readonly action: MessageType;
+}
+
+export interface IQuickPanelCommand extends ICommandBase {
 	readonly type: typeof COMMAND.QUICKPANEL_COMMAND;
 	readonly text: string;
 	readonly desc: string;
@@ -16,26 +22,21 @@ export interface IQuickPanelCommand {
 	readonly group: string;
 }
 
-export interface ISimpleCommand {
+export interface ISimpleCommand extends ICommandBase {
 	readonly type: typeof COMMAND.SIMPLE;
-	readonly text: string;
 	readonly desc: string;
 	readonly cat: string;
 	readonly imgUrl?: string;
 	readonly pText?: string[]; // Refactor, please :-)
-	readonly action: MessageType;
 }
 
-export interface IDummyCommand {
+export interface IDummyCommand extends ICommandBase {
 	readonly type: typeof COMMAND.DUMMY;
-	readonly text: string;
-	readonly action: MessageType;
 }
 
-export interface IUrlCommand {
+export interface IUrlCommand extends ICommandBase {
 	readonly type: typeof COMMAND.URL_COMMAND;
-	readonly text: string;
-	readonly action: MessageType;
+	readonly desc: string;
 	readonly url: string;
 	readonly imgUrl?: string;
 	readonly pText?: string[];

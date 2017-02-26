@@ -61,7 +61,7 @@
 	KeyListener_1.keyListener();
 	MessageReceiver_1.messageReceiver();
 	// Synchronize current window's tabs with popup's state
-	Sender_1.sendToBackground({ type: Messages_1.MESSAGE.GET_CURRENT_TABS });
+	Sender_1.sendToBackground({ type: Messages_1.MESSAGE.SYNC_TABS_REQUEST });
 
 
 /***/ },
@@ -331,10 +331,9 @@
 	    ZOOM: 'ZOOM',
 	    CAPTURE: 'CAPTURE',
 	    SHOW_FAVORITES: 'SHOW_FAVORITES',
-	    SHOW_TABS: 'SHOW_TABS',
 	    GET_FAVORITES: 'GET_FAVORITES',
-	    GET_CURRENT_TABS: 'GET_CURRENT_TABS',
 	    SYNC_TABS: 'SYNC_TABS',
+	    SYNC_TABS_REQUEST: 'SYNC_TABS_REQUEST',
 	    SHOW_TOAST: 'SHOW_TOAST',
 	    SEARCH_CHANGE: 'SEARCH_CHANGE'
 	};
@@ -23857,6 +23856,7 @@
 	    return t;
 	};
 	var Messages_1 = __webpack_require__(4);
+	var Group_1 = __webpack_require__(229);
 	var Sender_1 = __webpack_require__(2);
 	var Actions_1 = __webpack_require__(222);
 	var InitState_1 = __webpack_require__(223);
@@ -23896,7 +23896,7 @@
 	            }
 	            return __assign({}, state, { inputVal: action.value, commands: [DummyCommands_1.notFoundCommand] });
 	        }
-	        case Messages_1.MESSAGE.SHOW_TABS: {
+	        case Messages_1.MESSAGE.SYNC_TABS: {
 	            // REFACTOR: Sort them by commands groups
 	            var favoriteCommands = action.tabs.favorites
 	                .slice(0, 10)
@@ -23906,12 +23906,13 @@
 	            var closedTabCommands = action.tabs.closedTabs
 	                .map(function (tab) { return CommandCreator_1.closedToCommand(tab); });
 	            var allNewCommands = favoriteCommands.concat(openedTabCommands.concat(closedTabCommands));
-	            return __assign({}, state, { allCommands: state.defaultCommands.concat(allNewCommands), commands: state.defaultCommands.concat(allNewCommands) });
+	            return __assign({}, state, { commandsGroups: __assign({}, state.commandsGroups, (_a = {}, _a[Group_1.Group.SWITCHTAB] = openedTabCommands, _a)) });
 	        }
 	        default: {
 	            return state;
 	        }
 	    }
+	    var _a;
 	};
 
 
@@ -23958,6 +23959,8 @@
 	exports.commandsGroups = (_a = {},
 	    _a[Group_1.Group.HELP] = Commands_1.help,
 	    _a[Group_1.Group.COMMANDS] = Commands_1.commands,
+	    _a[Group_1.Group.SWITCHTAB] = [],
+	    _a[Group_1.Group.BOOKMARKS] = [],
 	    _a);
 	var _a;
 
@@ -24147,7 +24150,6 @@
 	"use strict";
 	var Messages_1 = __webpack_require__(4);
 	var ICommand_1 = __webpack_require__(228);
-	var Category_1 = __webpack_require__(226);
 	var CommandHelper_1 = __webpack_require__(231);
 	/**
 	 * Create simple command to switch to another tab
@@ -24156,10 +24158,10 @@
 	    // Show shortcut key only for first 10 tabs
 	    var description = (index < 10) ? "Ctrl + " + index : '';
 	    return {
-	        type: ICommand_1.COMMAND.SIMPLE,
+	        type: ICommand_1.COMMAND.URL_COMMAND,
 	        desc: description,
-	        cat: Category_1.CAT.GOTO,
 	        text: CommandHelper_1.sliceOverflowTitle(tab.title),
+	        url: tab.url,
 	        imgUrl: CommandHelper_1.getFaviconUrl(tab.favIconUrl),
 	        action: { type: Messages_1.MESSAGE.TAB_SWITCH, id: tab.id, target: 0 /* BACKGROUND */ }
 	    };
@@ -24349,7 +24351,7 @@
 	            return (React.createElement(SimpleCommand_1.SimpleCommand, { key: i, active: (props.activeInd === i) ? true : false, category: command.cat, commandInd: i, desc: command.desc, imgUrl: command.imgUrl, name: command.text, onCommandClick: function () { return Sender_1.sendAction(command.action); }, partialText: command.pText }));
 	        }
 	        case ICommand_1.COMMAND.URL_COMMAND: {
-	            return (React.createElement(UrlCommand_1.UrlCommand, { key: i, active: (props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text, url: command.url, partialText: command.pText, imgUrl: command.imgUrl }));
+	            return (React.createElement(UrlCommand_1.UrlCommand, { key: i, desc: command.desc, active: (props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text, url: command.url, partialText: command.pText, imgUrl: command.imgUrl }));
 	        }
 	        default: {
 	            throw new Error("Undefined command type: " + command + ". Make sure that React component exists for command's type '" + command + "'");
@@ -25324,18 +25326,20 @@
 	var React = __webpack_require__(6);
 	var Command_style_1 = __webpack_require__(238);
 	;
-	exports.UrlCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } }, (props.partialText)
-	    ? (React.createElement("span", { className: Command_style_1.textS },
-	        props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null,
-	        React.createElement("span", null, props.partialText[0]),
-	        React.createElement("span", { className: Command_style_1.highlightS }, props.partialText[1]),
-	        React.createElement("span", null, props.partialText[2])))
-	    : React.createElement("span", { className: Command_style_1.textS },
-	        props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null,
-	        " ",
-	        props.text,
-	        " ",
-	        React.createElement("span", { className: Command_style_1.SSmallText }, props.url)))); };
+	exports.UrlCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } },
+	    (props.partialText)
+	        ? (React.createElement("span", { className: Command_style_1.textS },
+	            props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null,
+	            React.createElement("span", null, props.partialText[0]),
+	            React.createElement("span", { className: Command_style_1.highlightS }, props.partialText[1]),
+	            React.createElement("span", null, props.partialText[2])))
+	        : React.createElement("span", { className: Command_style_1.textS },
+	            props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null,
+	            " ",
+	            props.text,
+	            " ",
+	            React.createElement("span", { className: Command_style_1.SSmallText }, props.url)),
+	    React.createElement("small", { className: Command_style_1.descS }, props.desc))); };
 
 
 /***/ },
@@ -25516,11 +25520,12 @@
 	exports.messageReceiver = function () {
 	    chrome.runtime.onMessage.addListener(function (message) {
 	        if (message.target === 2 /* POPUP */) {
+	            console.debug("Message '" + message.type + "' received");
 	            switch (message.type) {
 	                case Messages_1.MESSAGE.SHOW_FAVORITES:
 	                    store_1.store.dispatch({ type: message.type, favorites: message.favorites });
 	                    break;
-	                case Messages_1.MESSAGE.SHOW_TABS:
+	                case Messages_1.MESSAGE.SYNC_TABS:
 	                    store_1.store.dispatch(message);
 	                    break;
 	                case Messages_1.MESSAGE.SEARCH_CHANGE:

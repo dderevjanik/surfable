@@ -10,11 +10,12 @@ export const messageReceiver = (): void => {
 	chrome.runtime.onMessage.addListener(
 		(message: MessageType) => {
 			if (message.target === ETarget.POPUP) {
+				console.debug(`Message '${message.type}' received`);
 				switch(message.type) {
 					case MESSAGE.SHOW_FAVORITES:
 						store.dispatch({type: message.type, favorites: message.favorites});
 						break;
-					case MESSAGE.SHOW_TABS:
+					case MESSAGE.SYNC_TABS:
 						store.dispatch(message);
 						break;
 					case MESSAGE.SEARCH_CHANGE:

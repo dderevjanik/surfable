@@ -8,9 +8,9 @@ import { store } from './redux/Store';
  * Will listen on events/messages incoming from other parts of extension
  */
 export const messageReceiver = () => {
-	console.log('ready to listen')
 	chrome.runtime.onMessage.addListener((message: MessageType) => {
 		if (message.target === ETarget.BACKGROUND) {
+			console.debug(`Message '${message.type}' received`);
 			switch(message.type) {
 				case MESSAGE.TAB_CLOSE: {
 					chrome.tabs.query({active: true}, payload => {
@@ -80,8 +80,8 @@ export const messageReceiver = () => {
 					});
 					break;
 				}
-				case MESSAGE.GET_CURRENT_TABS: {
-					sendToPopup({type: MESSAGE.SHOW_TABS, tabs: store.getState()});
+				case MESSAGE.SYNC_TABS_REQUEST: {
+					sendToPopup({type: MESSAGE.SYNC_TABS, tabs: store.getState()});
 					break;
 				}
 				case MESSAGE.TAB_SWITCH: {

@@ -12,10 +12,10 @@ export const tabToCommand = (tab: chrome.tabs.Tab, index: number): ICommand => {
 	// Show shortcut key only for first 10 tabs
 	const description = (index < 10) ? `Ctrl + ${index}` : '';
 	return {
-		type: COMMAND.SIMPLE,
+		type: COMMAND.URL_COMMAND,
 		desc: description,
-		cat: CAT.GOTO,
 		text: sliceOverflowTitle(tab.title),
+		url: tab.url,
 		imgUrl: getFaviconUrl(tab.favIconUrl),
 		action: {type: MESSAGE.TAB_SWITCH, id: tab.id, target: ETarget.BACKGROUND}
 	};
