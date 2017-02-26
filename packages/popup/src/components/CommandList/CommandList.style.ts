@@ -5,5 +5,7 @@ export const ulS = style({
 	padding: '0px',
 	listStyle: 'none',
 	marginTop: '3px',
-	marginBottom: '0px'
+	marginBottom: '0px',
+	overflowY: 'scroll',
+	height: '300px'
 });
