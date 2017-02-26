@@ -23939,9 +23939,7 @@
 	var CommandsGroups_1 = __webpack_require__(224);
 	var Group_1 = __webpack_require__(229);
 	exports.initState = {
-	    defaultCommands: CommandsGroups_1.commandsGroups[Group_1.Group.COMMANDS],
 	    commandsGroups: CommandsGroups_1.commandsGroups,
-	    allCommands: CommandsGroups_1.commandsGroups[Group_1.Group.COMMANDS],
 	    commands: CommandsGroups_1.commandsGroups[Group_1.Group.COMMANDS],
 	    opened: false,
 	    offset: 0,
