@@ -1546,9 +1546,10 @@
 
 /***/ },
 /* 29 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var Bookmarks_1 = __webpack_require__(36);
 	exports.initState = {
 	    openedTabs: [],
 	    closedTabs: [],
@@ -1562,7 +1563,9 @@
 	    exports.initState.favorites = mostVisited;
 	});
 	chrome.bookmarks.getTree(function (bookmarkTree) {
-	    console.log(bookmarkTree);
+	    var bookmarks = Bookmarks_1.getBookmarks(bookmarkTree);
+	    console.log(bookmarks);
+	    exports.initState.bookmarks = bookmarks;
 	});
 
 
@@ -1688,6 +1691,23 @@
 	    Store_1.store.subscribe(function () {
 	        Sender_1.sendToPopup({ type: Messages_1.MESSAGE.SYNC_TABS, tabs: Store_1.store.getState() });
 	    });
+	};
+
+
+/***/ },
+/* 36 */
+/***/ function(module, exports) {
+
+	"use strict";
+	// REFACTOR: reduce can lead to performance issues, maybe muttability will help here to boost performance
+	var extractBookmarks = function (bookmarkNode) {
+	    return bookmarkNode.children.reduce(function (acc, node) { return node.url ? acc.concat([node]) : acc.concat(extractBookmarks(node)); }, []);
+	};
+	/**
+	 * Get one array of bookmarks
+	 */
+	exports.getBookmarks = function (bookmarkTree) {
+	    return bookmarkTree.reduce(function (acc, node) { return node.url ? acc.concat([node]) : acc.concat(extractBookmarks(node)); }, []);
 	};
 
 

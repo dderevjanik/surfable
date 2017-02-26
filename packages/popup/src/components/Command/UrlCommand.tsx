@@ -20,9 +20,9 @@ export const UrlCommand = (props: IProps) => (
 					<span>{props.partialText[0]}</span>
 					<span className={highlightS}>{props.partialText[1]}</span>
 					<span>{props.partialText[2]}</span>
+					<span className={SSmallText}>{props.url}</span>
 				</span>)
 			: <span className={textS}>{props.imgUrl ? <img className={iconS} src={props.imgUrl} /> : null} {props.text} <span className={SSmallText}>{props.url}</span></span>
 		}
-		<small className={descS}>{props.desc}</small>
 	</li>
 );

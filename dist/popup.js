@@ -23891,6 +23891,7 @@
 	            var commandsGroupExists = (commandsGroupsChars.indexOf(action.value[0]) > -1);
 	            if (commandsGroupExists) {
 	                var foundCommands = Search_1.searchCommands(action.value.slice(1, action.value.length), state.commandsGroups[action.value[0]]);
+	                console.log(foundCommands);
 	                var hasFoundSomething = (foundCommands.length > -1);
 	                return __assign({}, state, { inputVal: action.value, commands: hasFoundSomething ? foundCommands : [DummyCommands_1.notFoundCommand] });
 	            }
@@ -23905,8 +23906,9 @@
 	                .map(function (tab, index) { return CommandCreator_1.tabToCommand(tab, index); });
 	            var closedTabCommands = action.tabs.closedTabs
 	                .map(function (tab) { return CommandCreator_1.closedToCommand(tab); });
-	            var allNewCommands = favoriteCommands.concat(openedTabCommands.concat(closedTabCommands));
-	            return __assign({}, state, { commandsGroups: __assign({}, state.commandsGroups, (_a = {}, _a[Group_1.Group.SWITCHTAB] = openedTabCommands, _a)) });
+	            var bookmarks = action.tabs.bookmarks
+	                .map(function (tab) { return CommandCreator_1.bookmarkToCommand(tab); });
+	            return __assign({}, state, { commandsGroups: __assign({}, state.commandsGroups, (_a = {}, _a[Group_1.Group.SWITCHTAB] = openedTabCommands, _a[Group_1.Group.BOOKMARKS] = bookmarks, _a)) });
 	        }
 	        default: {
 	            return state;
@@ -24184,6 +24186,16 @@
 	    url: favorite.url,
 	    action: { type: Messages_1.MESSAGE.TAB_NEW, target: 0 /* BACKGROUND */, url: favorite.url },
 	    text: CommandHelper_1.sliceOverflowTitle(favorite.title)
+	}); };
+	/**
+	 * Create bookmark command to open a new tab
+	 */
+	exports.bookmarkToCommand = function (bookmark) { return ({
+	    type: ICommand_1.COMMAND.URL_COMMAND,
+	    desc: '',
+	    url: bookmark.url,
+	    action: { type: Messages_1.MESSAGE.TAB_NEW, target: 0 /* BACKGROUND */, url: bookmark.url },
+	    text: CommandHelper_1.sliceOverflowTitle(bookmark.title)
 	}); };
 
 
@@ -25324,20 +25336,19 @@
 	var React = __webpack_require__(6);
 	var Command_style_1 = __webpack_require__(238);
 	;
-	exports.UrlCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } },
-	    (props.partialText)
-	        ? (React.createElement("span", { className: Command_style_1.textS },
-	            props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null,
-	            React.createElement("span", null, props.partialText[0]),
-	            React.createElement("span", { className: Command_style_1.highlightS }, props.partialText[1]),
-	            React.createElement("span", null, props.partialText[2])))
-	        : React.createElement("span", { className: Command_style_1.textS },
-	            props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null,
-	            " ",
-	            props.text,
-	            " ",
-	            React.createElement("span", { className: Command_style_1.SSmallText }, props.url)),
-	    React.createElement("small", { className: Command_style_1.descS }, props.desc))); };
+	exports.UrlCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } }, (props.partialText)
+	    ? (React.createElement("span", { className: Command_style_1.textS },
+	        props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null,
+	        React.createElement("span", null, props.partialText[0]),
+	        React.createElement("span", { className: Command_style_1.highlightS }, props.partialText[1]),
+	        React.createElement("span", null, props.partialText[2]),
+	        React.createElement("span", { className: Command_style_1.SSmallText }, props.url)))
+	    : React.createElement("span", { className: Command_style_1.textS },
+	        props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null,
+	        " ",
+	        props.text,
+	        " ",
+	        React.createElement("span", { className: Command_style_1.SSmallText }, props.url)))); };
 
 
 /***/ },

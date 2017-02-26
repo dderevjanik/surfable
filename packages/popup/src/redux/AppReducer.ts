@@ -6,7 +6,7 @@ import { IAppState } from './../interfaces/IAppState';
 import { ICommand, COMMAND } from './../interfaces/ICommand';
 import { ACTION, ActionType } from './Actions';
 import { initState } from './InitState';
-import { favoriteToCommand, tabToCommand, closedToCommand } from './../utils/CommandCreator';
+import { favoriteToCommand, tabToCommand, closedToCommand, bookmarkToCommand } from './../utils/CommandCreator';
 import { searchCommands } from './../utils/Search';
 import { notFoundCommand } from './../utils/DummyCommands';
 
@@ -41,6 +41,7 @@ export const appReducer = (state: IAppState = initState, action: ActionType|Mess
 
 			if (commandsGroupExists) {
 				const foundCommands = searchCommands(action.value.slice(1, action.value.length), state.commandsGroups[action.value[0]]);
+				console.log(foundCommands);
 				const hasFoundSomething = (foundCommands.length > -1);
 				return {
 					...state,
@@ -63,12 +64,14 @@ export const appReducer = (state: IAppState = initState, action: ActionType|Mess
 				.map((tab, index) => tabToCommand(tab, index));
 			const closedTabCommands: ICommand[] = action.tabs.closedTabs
 				.map(tab => closedToCommand(tab));
-			const allNewCommands = favoriteCommands.concat(openedTabCommands.concat(closedTabCommands));
+			const bookmarks: ICommand[] = action.tabs.bookmarks
+			.map(tab => bookmarkToCommand(tab));
 			return {
 				...state,
 				commandsGroups: {
 					...state.commandsGroups,
-					[Group.SWITCHTAB]: openedTabCommands
+					[Group.SWITCHTAB]: openedTabCommands,
+					[Group.BOOKMARKS]: bookmarks
 				}
 			};
 		}

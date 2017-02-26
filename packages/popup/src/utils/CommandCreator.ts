@@ -43,3 +43,14 @@ export const favoriteToCommand = (favorite: chrome.topSites.MostVisitedURL): ICo
 	action: {type: MESSAGE.TAB_NEW, target: ETarget.BACKGROUND, url: favorite.url},
 	text: sliceOverflowTitle(favorite.title)
 });
+
+/**
+ * Create bookmark command to open a new tab
+ */
+export const bookmarkToCommand = (bookmark: chrome.bookmarks.BookmarkTreeNode): ICommand => ({
+	type: COMMAND.URL_COMMAND,
+	desc: '',
+	url: bookmark.url,
+	action: {type: MESSAGE.TAB_NEW, target: ETarget.BACKGROUND, url: bookmark.url},
+	text: sliceOverflowTitle(bookmark.title)
+});
