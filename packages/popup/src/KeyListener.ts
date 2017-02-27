@@ -11,9 +11,11 @@ const processKeyEvent = (event: KeyboardEvent): void => {
 			store.dispatch({type: ACTION.PANEL_CLOSE});
 			break;
 		case keyMap.up:
+			event.preventDefault(); // Prevent from moving input's cursor
 			store.dispatch({type: ACTION.PANEL_UP});
 			break;
 		case keyMap.down:
+			event.preventDefault(); // Prevet from moving input's cursor
 			store.dispatch({type: ACTION.PANEL_DOWN});
 			break;
 		case keyMap.enter:

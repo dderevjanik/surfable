@@ -40,7 +40,7 @@ export const CommandList = (props: IProps) => (
 								commandInd={i}
 								text={command.text}
 							/>
-						)
+						);
 					}
 					case COMMAND.SIMPLE: {
 						return (
@@ -70,7 +70,7 @@ export const CommandList = (props: IProps) => (
 								partialText={command.pText}
 								imgUrl={command.imgUrl}
 							/>
-						)
+						);
 					}
 					default: {
 						throw new Error(`Undefined command type: ${command}. Make sure that React component exists for command's type '${command}'`);

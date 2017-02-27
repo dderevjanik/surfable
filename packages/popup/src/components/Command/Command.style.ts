@@ -5,7 +5,7 @@ export const commandS = style({
 	color: '#CCCCCC',
 	padding: '2px 8px',
 	textAlign: 'left',
-	lineHeight: '1.5em',
+	lineHeight: '20px',
 	overflow: 'hidden',
 	textOverflow: 'ellipsis',
 // 	display: '-webkit-box',

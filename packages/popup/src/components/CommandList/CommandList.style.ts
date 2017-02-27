@@ -7,5 +7,5 @@ export const ulS = style({
 	marginTop: '3px',
 	marginBottom: '0px',
 	overflowY: 'scroll',
-	height: '300px'
+	maxHeight: '300px'
 });

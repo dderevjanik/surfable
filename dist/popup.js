@@ -23838,7 +23838,7 @@
 	"use strict";
 	var redux_1 = __webpack_require__(193);
 	var AppReducer_1 = __webpack_require__(221);
-	var InitState_1 = __webpack_require__(223);
+	var InitState_1 = __webpack_require__(224);
 	exports.store = redux_1.createStore(AppReducer_1.appReducer, InitState_1.initState);
 
 
@@ -23856,10 +23856,10 @@
 	    return t;
 	};
 	var Messages_1 = __webpack_require__(4);
-	var Group_1 = __webpack_require__(229);
+	var Group_1 = __webpack_require__(222);
 	var Sender_1 = __webpack_require__(2);
-	var Actions_1 = __webpack_require__(222);
-	var InitState_1 = __webpack_require__(223);
+	var Actions_1 = __webpack_require__(223);
+	var InitState_1 = __webpack_require__(224);
 	var CommandCreator_1 = __webpack_require__(230);
 	var Search_1 = __webpack_require__(233);
 	var DummyCommands_1 = __webpack_require__(234);
@@ -23891,7 +23891,7 @@
 	            var commandsGroupExists = (commandsGroupsChars.indexOf(action.value[0]) > -1);
 	            if (commandsGroupExists) {
 	                var foundCommands = Search_1.searchCommands(action.value.slice(1, action.value.length), state.commandsGroups[action.value[0]]);
-	                var hasFoundSomething = (foundCommands.length > -1);
+	                var hasFoundSomething = (foundCommands.length > 0);
 	                return __assign({}, state, { offset: 0, inputVal: action.value, commands: hasFoundSomething ? foundCommands : [DummyCommands_1.notFoundCommand] });
 	            }
 	            return __assign({}, state, { inputVal: action.value, commands: [DummyCommands_1.notFoundCommand] });
@@ -23922,6 +23922,20 @@
 /***/ function(module, exports) {
 
 	"use strict";
+	// Group quickpanel's commands by char
+	exports.Group = {
+	    COMMANDS: '>',
+	    HELP: '?',
+	    BOOKMARKS: '#',
+	    SWITCHTAB: '@'
+	};
+
+
+/***/ },
+/* 223 */
+/***/ function(module, exports) {
+
+	"use strict";
 	exports.ACTION = {
 	    PANEL_CLOSE: 'PANEL_CLOSE',
 	    PANEL_OPEN: 'PANEL_OPEN',
@@ -23933,12 +23947,12 @@
 
 
 /***/ },
-/* 223 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var CommandsGroups_1 = __webpack_require__(224);
-	var Group_1 = __webpack_require__(229);
+	var CommandsGroups_1 = __webpack_require__(225);
+	var Group_1 = __webpack_require__(222);
 	exports.initState = {
 	    commandsGroups: CommandsGroups_1.commandsGroups,
 	    commands: CommandsGroups_1.commandsGroups[Group_1.Group.COMMANDS],
@@ -23949,12 +23963,12 @@
 
 
 /***/ },
-/* 224 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Commands_1 = __webpack_require__(225);
-	var Group_1 = __webpack_require__(229);
+	var Commands_1 = __webpack_require__(226);
+	var Group_1 = __webpack_require__(222);
 	exports.commandsGroups = (_a = {},
 	    _a[Group_1.Group.HELP] = Commands_1.help,
 	    _a[Group_1.Group.COMMANDS] = Commands_1.commands,
@@ -23965,13 +23979,13 @@
 
 
 /***/ },
-/* 225 */
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Category_1 = __webpack_require__(226);
-	var Chrome_1 = __webpack_require__(227);
-	var ICommand_1 = __webpack_require__(228);
+	var Category_1 = __webpack_require__(227);
+	var Chrome_1 = __webpack_require__(228);
+	var ICommand_1 = __webpack_require__(229);
 	var Messages_1 = __webpack_require__(4);
 	exports.help = [
 	    {
@@ -24082,7 +24096,7 @@
 
 
 /***/ },
-/* 226 */
+/* 227 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -24100,7 +24114,7 @@
 
 
 /***/ },
-/* 227 */
+/* 228 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -24115,7 +24129,7 @@
 
 
 /***/ },
-/* 228 */
+/* 229 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -24129,26 +24143,12 @@
 
 
 /***/ },
-/* 229 */
-/***/ function(module, exports) {
-
-	"use strict";
-	// Group quickpanel's commands by char
-	exports.Group = {
-	    COMMANDS: '>',
-	    HELP: '?',
-	    BOOKMARKS: '#',
-	    SWITCHTAB: '@'
-	};
-
-
-/***/ },
 /* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var Messages_1 = __webpack_require__(4);
-	var ICommand_1 = __webpack_require__(228);
+	var ICommand_1 = __webpack_require__(229);
 	var CommandHelper_1 = __webpack_require__(231);
 	/**
 	 * Create simple command to switch to another tab
@@ -24249,7 +24249,7 @@
 	    }
 	    return t;
 	};
-	var ICommand_1 = __webpack_require__(228);
+	var ICommand_1 = __webpack_require__(229);
 	/**
 	 * Search for commands
 	 * Return those commands, which best suits to searchvalue.
@@ -24298,7 +24298,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var ICommand_1 = __webpack_require__(228);
+	var ICommand_1 = __webpack_require__(229);
 	exports.notFoundCommand = {
 	    type: ICommand_1.COMMAND.DUMMY,
 	    cat: '',
@@ -24317,7 +24317,7 @@
 	var react_redux_1 = __webpack_require__(182);
 	var CommandList_1 = __webpack_require__(236);
 	var SearchInput_1 = __webpack_require__(249);
-	var Actions_1 = __webpack_require__(222);
+	var Actions_1 = __webpack_require__(223);
 	var QuickPanel_style_1 = __webpack_require__(251);
 	;
 	exports.QuickPanelComponent = function (props) { return (React.createElement("div", { className: QuickPanel_style_1.quickPanelS },
@@ -24345,7 +24345,7 @@
 	var DummyCommand_1 = __webpack_require__(245);
 	var UrlCommand_1 = __webpack_require__(246);
 	var QuickPanelCommand_1 = __webpack_require__(247);
-	var ICommand_1 = __webpack_require__(228);
+	var ICommand_1 = __webpack_require__(229);
 	var CommandList_style_1 = __webpack_require__(248);
 	var Sender_1 = __webpack_require__(2);
 	exports.CommandList = function (props) { return (React.createElement("ul", { className: CommandList_style_1.ulS }, props.commands.map(function (command, i) {
@@ -24400,7 +24400,7 @@
 	    color: '#CCCCCC',
 	    padding: '2px 8px',
 	    textAlign: 'left',
-	    lineHeight: '1.5em',
+	    lineHeight: '20px',
 	    overflow: 'hidden',
 	    textOverflow: 'ellipsis',
 	    // 	display: '-webkit-box',
@@ -25376,7 +25376,7 @@
 	    marginTop: '3px',
 	    marginBottom: '0px',
 	    overflowY: 'scroll',
-	    height: '300px'
+	    maxHeight: '300px'
 	});
 
 
@@ -25457,7 +25457,7 @@
 
 	"use strict";
 	var KeyMap_1 = __webpack_require__(253);
-	var Actions_1 = __webpack_require__(222);
+	var Actions_1 = __webpack_require__(223);
 	var store_1 = __webpack_require__(220);
 	/**
 	 * Send key's belonging action to redux store
@@ -25468,9 +25468,11 @@
 	            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_CLOSE });
 	            break;
 	        case KeyMap_1.keyMap.up:
+	            event.preventDefault(); // Prevent from moving input's cursor
 	            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_UP });
 	            break;
 	        case KeyMap_1.keyMap.down:
+	            event.preventDefault(); // Prevet from moving input's cursor
 	            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_DOWN });
 	            break;
 	        case KeyMap_1.keyMap.enter:
