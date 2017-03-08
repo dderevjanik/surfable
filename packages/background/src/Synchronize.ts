@@ -5,8 +5,8 @@ import { sendToPopup } from '../../common/src/Sender';
 /**
  * On every store change, it'll synchronize it with other parts
  */
-export const synchronizeTabs = () => {
+export const synchronizeTabs = (): void => {
 	store.subscribe(() => {
-		sendToPopup({type: MESSAGE.SYNC_TABS, tabs: store.getState()});
+		sendToPopup({ type: MESSAGE.SYNC_TABS, tabs: store.getState() });
 	});
-}
+};

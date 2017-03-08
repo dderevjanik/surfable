@@ -1,5 +1,5 @@
 import { ITabs } from 'surfable-common/src/interfaces/ITabs';
-import { getBookmarks}  from './../Bookmarks';
+import { getBookmarks } from './../Bookmarks';
 
 export type AppState = ITabs;
 
@@ -10,7 +10,7 @@ export const initState: AppState = {
 	bookmarks: []
 };
 
-chrome.tabs.query({currentWindow: true}, tabs => {
+chrome.tabs.query({ currentWindow: true }, tabs => {
 	initState.openedTabs = tabs;
 });
 
@@ -20,6 +20,5 @@ chrome.topSites.get(mostVisited => {
 
 chrome.bookmarks.getTree(bookmarkTree => {
 	const bookmarks = getBookmarks(bookmarkTree);
-	console.log(bookmarks);
 	initState.bookmarks = bookmarks;
 });

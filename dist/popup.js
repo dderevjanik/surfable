@@ -24160,7 +24160,7 @@
 	        type: ICommand_1.COMMAND.URL_COMMAND,
 	        desc: description,
 	        text: CommandHelper_1.sliceOverflowTitle(tab.title),
-	        url: tab.url,
+	        url: CommandHelper_1.shortenUrl(tab.url),
 	        imgUrl: CommandHelper_1.getFaviconUrl(tab.favIconUrl),
 	        action: { type: Messages_1.MESSAGE.TAB_SWITCH, id: tab.id, target: 0 /* BACKGROUND */ }
 	    };
@@ -24171,7 +24171,7 @@
 	exports.closedToCommand = function (closed) { return ({
 	    type: ICommand_1.COMMAND.URL_COMMAND,
 	    desc: '',
-	    url: closed.url,
+	    url: CommandHelper_1.shortenUrl(closed.url),
 	    imgUrl: CommandHelper_1.getFaviconUrl(closed.favIconUrl),
 	    action: { type: Messages_1.MESSAGE.TAB_NEW, target: 0 /* BACKGROUND */, url: closed.url },
 	    text: CommandHelper_1.sliceOverflowTitle(closed.title)
@@ -24182,7 +24182,7 @@
 	exports.favoriteToCommand = function (favorite) { return ({
 	    type: ICommand_1.COMMAND.URL_COMMAND,
 	    desc: '',
-	    url: favorite.url,
+	    url: CommandHelper_1.shortenUrl(favorite.url),
 	    action: { type: Messages_1.MESSAGE.TAB_NEW, target: 0 /* BACKGROUND */, url: favorite.url },
 	    text: CommandHelper_1.sliceOverflowTitle(favorite.title)
 	}); };
@@ -24192,7 +24192,8 @@
 	exports.bookmarkToCommand = function (bookmark) { return ({
 	    type: ICommand_1.COMMAND.URL_COMMAND,
 	    desc: '',
-	    url: bookmark.url,
+	    url: CommandHelper_1.shortenUrl(bookmark.url),
+	    imgUrl: "https://www.google.com/s2/favicons?domain=" + bookmark.url,
 	    action: { type: Messages_1.MESSAGE.TAB_NEW, target: 0 /* BACKGROUND */, url: bookmark.url },
 	    text: CommandHelper_1.sliceOverflowTitle(bookmark.title)
 	}); };
@@ -24223,6 +24224,19 @@
 	            ? Constants_1.BLANK_FAVICON
 	            : faviconUrl
 	        : Constants_1.BLANK_FAVICON;
+	};
+	/**
+	 * Shorten url, because most of time it's not necessery to see
+	 * http:// or https://.
+	 */
+	exports.shortenUrl = function (url) {
+	    if (url.indexOf('http://') === 0) {
+	        return url.slice(7, url.length);
+	    }
+	    if (url.indexOf('https://') === 0) {
+	        return url.slice(8, url.length);
+	    }
+	    return url;
 	};
 
 

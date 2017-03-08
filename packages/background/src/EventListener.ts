@@ -6,21 +6,21 @@ import { ACTION } from './redux/Actions';
  */
 export const eventListener = () => {
 	chrome.tabs.onCreated.addListener((tab: chrome.tabs.Tab) => {
-		store.dispatch({type: ACTION.TAB_CREATED, tab: tab});
+		store.dispatch({ type: ACTION.TAB_CREATED, tab: tab });
 	});
 	chrome.tabs.onRemoved.addListener((tabId: number) => {
-		store.dispatch({type: ACTION.TAB_REMOVED, tabId: tabId});
+		store.dispatch({ type: ACTION.TAB_REMOVED, tabId: tabId });
 	});
 	chrome.tabs.onUpdated.addListener((tabId: number, _info: chrome.tabs.TabChangeInfo, tab: chrome.tabs.Tab) => {
-		store.dispatch({type: ACTION.TAB_UPDATED, tabId: tabId, tab: tab});
+		store.dispatch({ type: ACTION.TAB_UPDATED, tabId: tabId, tab: tab });
 	});
 	chrome.bookmarks.onCreated.addListener(() => {
-		store.dispatch({type: ACTION.BOOKMARKS_UPDATED});
+		store.dispatch({ type: ACTION.BOOKMARKS_UPDATED });
 	});
 	chrome.bookmarks.onChanged.addListener(() => {
-		store.dispatch({type: ACTION.BOOKMARKS_UPDATED});
+		store.dispatch({ type: ACTION.BOOKMARKS_UPDATED });
 	});
 	chrome.bookmarks.onRemoved.addListener(() => {
-		store.dispatch({type: ACTION.BOOKMARKS_UPDATED});
+		store.dispatch({ type: ACTION.BOOKMARKS_UPDATED });
 	});
 };

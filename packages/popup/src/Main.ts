@@ -9,5 +9,4 @@ keyListener();
 messageReceiver();
 
 // Synchronize current window's tabs with popup's state
-sendToBackground({type: MESSAGE.SYNC_TABS_REQUEST});
-
+sendToBackground({ type: MESSAGE.SYNC_TABS_REQUEST });
