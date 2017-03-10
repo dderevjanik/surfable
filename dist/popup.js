@@ -55,8 +55,8 @@
 	var Sender_1 = __webpack_require__(2);
 	var Messages_1 = __webpack_require__(4);
 	var Index_1 = __webpack_require__(5);
-	var KeyListener_1 = __webpack_require__(252);
-	var MessageReceiver_1 = __webpack_require__(254);
+	var KeyListener_1 = __webpack_require__(253);
+	var MessageReceiver_1 = __webpack_require__(255);
 	Index_1.render();
 	KeyListener_1.keyListener();
 	MessageReceiver_1.messageReceiver();
@@ -24330,9 +24330,9 @@
 	var React = __webpack_require__(6);
 	var react_redux_1 = __webpack_require__(182);
 	var CommandList_1 = __webpack_require__(236);
-	var SearchInput_1 = __webpack_require__(249);
+	var SearchInput_1 = __webpack_require__(250);
 	var Actions_1 = __webpack_require__(223);
-	var QuickPanel_style_1 = __webpack_require__(251);
+	var QuickPanel_style_1 = __webpack_require__(252);
 	;
 	exports.QuickPanelComponent = function (props) { return (React.createElement("div", { className: QuickPanel_style_1.quickPanelS },
 	    React.createElement("div", { className: QuickPanel_style_1.searchBoxS },
@@ -24354,33 +24354,74 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
 	var React = __webpack_require__(6);
-	var SimpleCommand_1 = __webpack_require__(237);
-	var DummyCommand_1 = __webpack_require__(245);
-	var UrlCommand_1 = __webpack_require__(246);
-	var QuickPanelCommand_1 = __webpack_require__(247);
-	var ICommand_1 = __webpack_require__(229);
-	var CommandList_style_1 = __webpack_require__(248);
 	var Sender_1 = __webpack_require__(2);
-	exports.CommandList = function (props) { return (React.createElement("ul", { className: CommandList_style_1.ulS }, props.commands.map(function (command, i) {
-	    switch (command.type) {
-	        case ICommand_1.COMMAND.QUICKPANEL_COMMAND: {
-	            return (React.createElement(QuickPanelCommand_1.QuickPanelCommand, { key: i, active: (props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text, group: command.group, desc: command.desc }));
-	        }
-	        case ICommand_1.COMMAND.DUMMY: {
-	            return (React.createElement(DummyCommand_1.DummyCommand, { key: i, active: (props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text }));
-	        }
-	        case ICommand_1.COMMAND.SIMPLE: {
-	            return (React.createElement(SimpleCommand_1.SimpleCommand, { key: i, active: (props.activeInd === i) ? true : false, category: command.cat, commandInd: i, desc: command.desc, imgUrl: command.imgUrl, name: command.text, onCommandClick: function () { return Sender_1.sendAction(command.action); }, partialText: command.pText }));
-	        }
-	        case ICommand_1.COMMAND.URL_COMMAND: {
-	            return (React.createElement(UrlCommand_1.UrlCommand, { key: i, desc: command.desc, active: (props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text, url: command.url, partialText: command.pText, imgUrl: command.imgUrl }));
-	        }
-	        default: {
-	            throw new Error("Undefined command type: " + command + ". Make sure that React component exists for command's type '" + command + "'");
-	        }
+	var CommandList_style_1 = __webpack_require__(237);
+	var SimpleCommand_1 = __webpack_require__(244);
+	var DummyCommand_1 = __webpack_require__(246);
+	var UrlCommand_1 = __webpack_require__(247);
+	var QuickPanelCommand_1 = __webpack_require__(248);
+	var ICommand_1 = __webpack_require__(229);
+	var Command_style_1 = __webpack_require__(245);
+	var PanelSideeffects_1 = __webpack_require__(249);
+	var CommandList = (function (_super) {
+	    __extends(CommandList, _super);
+	    function CommandList(props) {
+	        var _this = _super.call(this, props) || this;
+	        _this.state = {
+	            activeChanged: true
+	        };
+	        return _this;
 	    }
-	}))); };
+	    CommandList.prototype.componentWillReceiveProps = function (nextProps) {
+	        if (this.props.activeInd !== nextProps.activeInd) {
+	            // If we used arrows to navigate between commands
+	            this.setState({
+	                activeChanged: true
+	            });
+	        }
+	    };
+	    CommandList.prototype.componentDidUpdate = function () {
+	        if (this.state.activeChanged) {
+	            var commandlist = document.querySelector('.' + CommandList_style_1.ulS);
+	            var activeCommand = document.querySelector('.' + Command_style_1.commandHighlightS);
+	            var state = PanelSideeffects_1.isScrolledIntoView(commandlist, activeCommand);
+	            if (state !== 0) {
+	                PanelSideeffects_1.scrollIntoElement(commandlist, activeCommand, state);
+	            }
+	        }
+	        this.state.activeChanged = false;
+	    };
+	    CommandList.prototype.render = function () {
+	        var _this = this;
+	        return (React.createElement("ul", { className: CommandList_style_1.ulS, ref: "commandList" }, this.props.commands.map(function (command, i) {
+	            switch (command.type) {
+	                case ICommand_1.COMMAND.QUICKPANEL_COMMAND: {
+	                    return (React.createElement(QuickPanelCommand_1.QuickPanelCommand, { key: i, active: (_this.props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text, group: command.group, desc: command.desc }));
+	                }
+	                case ICommand_1.COMMAND.DUMMY: {
+	                    return (React.createElement(DummyCommand_1.DummyCommand, { key: i, active: (_this.props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text }));
+	                }
+	                case ICommand_1.COMMAND.SIMPLE: {
+	                    return (React.createElement(SimpleCommand_1.SimpleCommand, { key: i, active: (_this.props.activeInd === i) ? true : false, category: command.cat, commandInd: i, desc: command.desc, imgUrl: command.imgUrl, name: command.text, onCommandClick: function () { return Sender_1.sendAction(command.action); }, partialText: command.pText }));
+	                }
+	                case ICommand_1.COMMAND.URL_COMMAND: {
+	                    return (React.createElement(UrlCommand_1.UrlCommand, { key: i, desc: command.desc, active: (_this.props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text, url: command.url, partialText: command.pText, imgUrl: command.imgUrl }));
+	                }
+	                default: {
+	                    throw new Error("Undefined command type: " + command + ". Make sure that React component exists for command's type '" + command + "'");
+	                }
+	            }
+	        })));
+	    };
+	    return CommandList;
+	}(React.Component));
+	exports.CommandList = CommandList;
 
 
 /***/ },
@@ -24388,19 +24429,16 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var React = __webpack_require__(6);
-	var Command_style_1 = __webpack_require__(238);
-	;
-	exports.SimpleCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } },
-	    (props.partialText)
-	        ? (React.createElement("span", { className: Command_style_1.textS },
-	            props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null,
-	            React.createElement("span", null, props.partialText[0]),
-	            React.createElement("span", { className: Command_style_1.highlightS }, props.partialText[1]),
-	            React.createElement("span", null, props.partialText[2])))
-	        : React.createElement("span", { className: Command_style_1.textS },
-	            props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null, props.category + ": " + props.name),
-	    React.createElement("small", { className: Command_style_1.descS }, props.desc))); };
+	var typestyle_1 = __webpack_require__(238);
+	exports.ulS = typestyle_1.style({
+	    fontSize: '13px',
+	    padding: '0px',
+	    listStyle: 'none',
+	    marginTop: '3px',
+	    marginBottom: '0px',
+	    overflowY: 'scroll',
+	    maxHeight: '300px'
+	});
 
 
 /***/ },
@@ -24409,71 +24447,15 @@
 
 	"use strict";
 	var typestyle_1 = __webpack_require__(239);
-	exports.commandS = typestyle_1.style({
-	    cursor: 'pointer',
-	    color: '#CCCCCC',
-	    padding: '2px 8px',
-	    textAlign: 'left',
-	    lineHeight: '20px',
-	    overflow: 'hidden',
-	    textOverflow: 'ellipsis',
-	    // 	display: '-webkit-box',
-	    //    '-webkit-line-clamp': '1',
-	    //    '-webkit-box-orient': 'vertical',
-	    $nest: {
-	        '&:hover': {
-	            background: '#2A2D2E'
-	        }
-	    }
-	});
-	exports.commandHighlightS = typestyle_1.style({
-	    backgroundColor: '#073655',
-	    $nest: {
-	        '&:hover': {
-	            background: '#073655'
-	        }
-	    }
-	});
-	exports.textS = typestyle_1.style({
-	    textAlign: 'left'
-	});
-	exports.highlightS = typestyle_1.style({
-	    color: '#0096FA',
-	    fontWeight: 'bold'
-	});
-	exports.highlightCommandS = typestyle_1.style({
-	    textAlign: 'left',
-	    color: '#0096FA'
-	});
-	exports.descS = typestyle_1.style({
-	    fontSize: '13px',
-	    float: 'right'
-	});
-	exports.iconS = typestyle_1.style({
-	    height: '1.1em',
-	    marginRight: '5px'
-	});
-	exports.SSmallText = typestyle_1.style({
-	    color: 'grey',
-	    marginLeft: '5px'
-	});
-
-
-/***/ },
-/* 239 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var typestyle_1 = __webpack_require__(240);
 	/**
 	 * All the CSS types in the 'types' namespace
 	 */
-	var types = __webpack_require__(244);
+	var types = __webpack_require__(243);
 	exports.types = types;
 	/**
 	 * Export certain utilities
 	 */
-	var utilities_1 = __webpack_require__(243);
+	var utilities_1 = __webpack_require__(242);
 	exports.extend = utilities_1.extend;
 	exports.classes = utilities_1.classes;
 	exports.media = utilities_1.media;
@@ -24537,13 +24519,13 @@
 
 
 /***/ },
-/* 240 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var formatting_1 = __webpack_require__(241);
-	var utilities_1 = __webpack_require__(243);
-	var FreeStyle = __webpack_require__(242);
+	var formatting_1 = __webpack_require__(240);
+	var utilities_1 = __webpack_require__(242);
+	var FreeStyle = __webpack_require__(241);
 	/**
 	 * Maintains a single stylesheet and keeps it in sync with requested styles
 	 */
@@ -24720,11 +24702,11 @@
 
 
 /***/ },
-/* 241 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var FreeStyle = __webpack_require__(242);
+	var FreeStyle = __webpack_require__(241);
 	/**
 	 * We need to do the following to *our* objects before passing to freestyle:
 	 * - For any `$nest` directive move up to FreeStyle style nesting
@@ -24777,7 +24759,7 @@
 
 
 /***/ },
-/* 242 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {"use strict";
@@ -25232,7 +25214,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 243 */
+/* 242 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -25320,10 +25302,30 @@
 
 
 /***/ },
-/* 244 */
+/* 243 */
 /***/ function(module, exports) {
 
 	"use strict";
+
+
+/***/ },
+/* 244 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var React = __webpack_require__(6);
+	var Command_style_1 = __webpack_require__(245);
+	;
+	exports.SimpleCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } },
+	    (props.partialText)
+	        ? (React.createElement("span", { className: Command_style_1.textS },
+	            props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null,
+	            React.createElement("span", null, props.partialText[0]),
+	            React.createElement("span", { className: Command_style_1.highlightS }, props.partialText[1]),
+	            React.createElement("span", null, props.partialText[2])))
+	        : React.createElement("span", { className: Command_style_1.textS },
+	            props.imgUrl ? React.createElement("img", { className: Command_style_1.iconS, src: props.imgUrl }) : null, props.category + ": " + props.name),
+	    React.createElement("small", { className: Command_style_1.descS }, props.desc))); };
 
 
 /***/ },
@@ -25331,8 +25333,64 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
+	var typestyle_1 = __webpack_require__(238);
+	exports.commandS = typestyle_1.style({
+	    cursor: 'pointer',
+	    color: '#CCCCCC',
+	    padding: '2px 8px',
+	    textAlign: 'left',
+	    lineHeight: '20px',
+	    overflow: 'hidden',
+	    textOverflow: 'ellipsis',
+	    // 	display: '-webkit-box',
+	    //    '-webkit-line-clamp': '1',
+	    //    '-webkit-box-orient': 'vertical',
+	    $nest: {
+	        '&:hover': {
+	            background: '#2A2D2E'
+	        }
+	    }
+	});
+	exports.commandHighlightS = typestyle_1.style({
+	    backgroundColor: '#073655',
+	    $nest: {
+	        '&:hover': {
+	            background: '#073655'
+	        }
+	    }
+	});
+	exports.textS = typestyle_1.style({
+	    textAlign: 'left'
+	});
+	exports.highlightS = typestyle_1.style({
+	    color: '#0096FA',
+	    fontWeight: 'bold'
+	});
+	exports.highlightCommandS = typestyle_1.style({
+	    textAlign: 'left',
+	    color: '#0096FA'
+	});
+	exports.descS = typestyle_1.style({
+	    fontSize: '13px',
+	    float: 'right'
+	});
+	exports.iconS = typestyle_1.style({
+	    height: '1.1em',
+	    marginRight: '5px'
+	});
+	exports.SSmallText = typestyle_1.style({
+	    color: 'grey',
+	    marginLeft: '5px'
+	});
+
+
+/***/ },
+/* 246 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
 	var React = __webpack_require__(6);
-	var Command_style_1 = __webpack_require__(238);
+	var Command_style_1 = __webpack_require__(245);
 	;
 	exports.DummyCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } },
 	    React.createElement("i", null,
@@ -25342,12 +25400,12 @@
 
 
 /***/ },
-/* 246 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
-	var Command_style_1 = __webpack_require__(238);
+	var Command_style_1 = __webpack_require__(245);
 	;
 	exports.UrlCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } }, (props.partialText)
 	    ? (React.createElement("span", { className: Command_style_1.textS },
@@ -25365,12 +25423,12 @@
 
 
 /***/ },
-/* 247 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
-	var Command_style_1 = __webpack_require__(238);
+	var Command_style_1 = __webpack_require__(245);
 	;
 	exports.QuickPanelCommand = function (props) { return (React.createElement("li", { className: Command_style_1.commandS + " + " + (props.active ? Command_style_1.commandHighlightS : ''), onClick: function () { return props.onCommandClick(); } },
 	    React.createElement("span", { className: Command_style_1.highlightCommandS }, props.text),
@@ -25378,24 +25436,39 @@
 
 
 /***/ },
-/* 248 */
-/***/ function(module, exports, __webpack_require__) {
+/* 249 */
+/***/ function(module, exports) {
 
 	"use strict";
-	var typestyle_1 = __webpack_require__(239);
-	exports.ulS = typestyle_1.style({
-	    fontSize: '13px',
-	    padding: '0px',
-	    listStyle: 'none',
-	    marginTop: '3px',
-	    marginBottom: '0px',
-	    overflowY: 'scroll',
-	    maxHeight: '300px'
-	});
+	/**
+	 * Check if active item is inside view
+	 */
+	exports.isScrolledIntoView = function (scrollWindow, scrollItem) {
+	    var scrollViewY1 = scrollWindow.scrollTop;
+	    var scrollViewY2 = (scrollViewY1 + scrollWindow.clientHeight);
+	    var elemY1 = (scrollItem.offsetTop - scrollWindow.offsetTop);
+	    var elemY2 = (elemY1 + scrollItem.clientHeight);
+	    if (elemY1 < scrollViewY1) {
+	        return 1 /* ABOVE */;
+	    }
+	    if (elemY2 > scrollViewY2) {
+	        return -1 /* BELOW */;
+	    }
+	    return 0 /* INSIDE */;
+	    // return ((elemY1 > scrollViewY1) || (elemY2 < scrollViewY2));
+	};
+	exports.scrollIntoElement = function (scrollWindow, scrollItem, activeState) {
+	    if (activeState === 1 /* ABOVE */) {
+	        scrollWindow.scrollTop = (scrollItem.offsetTop - scrollWindow.offsetTop);
+	    }
+	    else {
+	        scrollWindow.scrollTop = (scrollItem.offsetTop - scrollWindow.offsetTop - scrollWindow.clientHeight + scrollItem.clientHeight);
+	    }
+	};
 
 
 /***/ },
-/* 249 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25405,7 +25478,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(6);
-	var SearchInput_style_1 = __webpack_require__(250);
+	var SearchInput_style_1 = __webpack_require__(251);
 	var SearchInput = (function (_super) {
 	    __extends(SearchInput, _super);
 	    function SearchInput() {
@@ -25427,11 +25500,11 @@
 
 
 /***/ },
-/* 250 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var typestyle_1 = __webpack_require__(239);
+	var typestyle_1 = __webpack_require__(238);
 	exports.searchInputS = typestyle_1.style({
 	    fontSize: '14px',
 	    boxSizing: 'border-box',
@@ -25445,11 +25518,11 @@
 
 
 /***/ },
-/* 251 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var typestyle_1 = __webpack_require__(239);
+	var typestyle_1 = __webpack_require__(238);
 	exports.quickPanelS = typestyle_1.style({
 	    display: 'block',
 	    backgroundColor: '#252526',
@@ -25466,11 +25539,11 @@
 
 
 /***/ },
-/* 252 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var KeyMap_1 = __webpack_require__(253);
+	var KeyMap_1 = __webpack_require__(254);
 	var Actions_1 = __webpack_require__(223);
 	var store_1 = __webpack_require__(220);
 	/**
@@ -25510,7 +25583,7 @@
 
 
 /***/ },
-/* 253 */
+/* 254 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -25534,7 +25607,7 @@
 
 
 /***/ },
-/* 254 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
