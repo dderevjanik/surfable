@@ -10,8 +10,8 @@ import { favoriteToCommand, tabToCommand, closedToCommand, bookmarkToCommand } f
 import { searchCommands } from './../utils/Search';
 import { notFoundCommand } from './../utils/DummyCommands';
 
-export const appReducer = (state: IAppState = initState, action: ActionType|MessageType): IAppState => {
-	switch(action.type) {
+export const appReducer = (state: IAppState = initState, action: ActionType | MessageType): IAppState => {
+	switch (action.type) {
 		case ACTION.PANEL_EXECUTE_COMMAND: {
 			sendAction(state.commands[state.offset].action);
 			return {
@@ -21,11 +21,15 @@ export const appReducer = (state: IAppState = initState, action: ActionType|Mess
 		}
 		case ACTION.PANEL_UP: {
 			const nextOffset = (state.offset - 1);
-			return (nextOffset < 0) ? state : {...state, offset: nextOffset };
+			return (nextOffset < 0)
+				? { ...state, offset: (state.commands.length - 1) }
+				: { ...state, offset: nextOffset };
 		}
 		case ACTION.PANEL_DOWN: {
 			const nextOffset = (state.offset + 1);
-			return (nextOffset >= state.commands.length) ? state : {...state, offset: nextOffset };
+			return (nextOffset >= state.commands.length)
+				? { ...state, offset: 0 }
+				: { ...state, offset: nextOffset };
 		}
 		case ACTION.PANEL_OPEN: {
 			return { ...state, inputVal: '', opened: true };
@@ -65,7 +69,7 @@ export const appReducer = (state: IAppState = initState, action: ActionType|Mess
 			const closedTabCommands: ICommand[] = action.tabs.closedTabs
 				.map(tab => closedToCommand(tab));
 			const bookmarks: ICommand[] = action.tabs.bookmarks
-			.map(tab => bookmarkToCommand(tab));
+				.map(tab => bookmarkToCommand(tab));
 			return {
 				...state,
 				commandsGroups: {
