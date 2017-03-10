@@ -23,7 +23,6 @@ export const isScrolledIntoView = (scrollWindow: HTMLElement, scrollItem: HTMLEl
 		return EActiveState.BELOW;
 	}
 	return EActiveState.INSIDE;
-	// return ((elemY1 > scrollViewY1) || (elemY2 < scrollViewY2));
 };
 
 export const scrollIntoElement = (scrollWindow: HTMLElement, scrollItem: HTMLElement, activeState: EActiveState): void => {

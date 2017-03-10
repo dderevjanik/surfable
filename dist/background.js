@@ -52,9 +52,9 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var MessageReceiver_1 = __webpack_require__(2);
-	var EventListener_1 = __webpack_require__(35);
-	var Synchronize_1 = __webpack_require__(36);
+	const MessageReceiver_1 = __webpack_require__(2);
+	const EventListener_1 = __webpack_require__(35);
+	const Synchronize_1 = __webpack_require__(36);
 	EventListener_1.eventListener();
 	MessageReceiver_1.messageReceiver();
 	Synchronize_1.synchronizeTabs();
@@ -65,120 +65,117 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Messages_1 = __webpack_require__(3);
-	var Sender_1 = __webpack_require__(4);
-	var Store_1 = __webpack_require__(6);
-	/**
+	var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+	    return new (P || (P = Promise))(function (resolve, reject) {
+	        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+	        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+	        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+	        step((generator = generator.apply(thisArg, _arguments || [])).next());
+	    });
+	};
+	const Messages_1 = __webpack_require__(3);
+	const Sender_1 = __webpack_require__(4);
+	const Constants_1 = __webpack_require__(37);
+	const ChromeWrapper_1 = __webpack_require__(38);
+	const Store_1 = __webpack_require__(6);
+	/*
 	 * Will listen on events/messages incoming from other parts of extension
 	 */
-	exports.messageReceiver = function () {
+	exports.messageReceiver = () => {
 	    chrome.runtime.onMessage.addListener(function (message) {
-	        if (message.target === 0 /* BACKGROUND */) {
-	            console.debug("Message '" + message.type + "' received");
-	            switch (message.type) {
-	                case Messages_1.MESSAGE.TAB_CLOSE: {
-	                    chrome.tabs.query({ active: true }, function (payload) {
-	                        chrome.tabs.remove(payload[0].id);
-	                    });
-	                    break;
-	                }
-	                case Messages_1.MESSAGE.TAB_NEW: {
-	                    if (message.url.length > 0) {
-	                        chrome.tabs.create({ url: message.url });
+	        return __awaiter(this, void 0, void 0, function* () {
+	            if (message.target === 0 /* BACKGROUND */) {
+	                console.debug(`Message '${message.type}' received`);
+	                switch (message.type) {
+	                    case Messages_1.MESSAGE.TAB_CLOSE: {
+	                        const activeTab = yield ChromeWrapper_1.getActiveTab();
+	                        chrome.tabs.remove(activeTab.id);
+	                        break;
 	                    }
-	                    else {
-	                        chrome.tabs.create({});
+	                    case Messages_1.MESSAGE.TAB_NEW: {
+	                        if (message.url.length > 0) {
+	                            chrome.tabs.create({ url: message.url });
+	                        }
+	                        else {
+	                            chrome.tabs.create({});
+	                        }
+	                        break;
 	                    }
-	                    break;
-	                }
-	                case Messages_1.MESSAGE.BOOKMARK_ADD: {
-	                    chrome.tabs.query({ active: true }, function (payload) {
-	                        var activeTab = payload[0];
+	                    case Messages_1.MESSAGE.BOOKMARK_ADD: {
+	                        const activeTab = yield ChromeWrapper_1.getActiveTab();
 	                        chrome.bookmarks.create({ title: activeTab.title, url: activeTab.url });
-	                    });
-	                    break;
-	                }
-	                case Messages_1.MESSAGE.TAB_RELOAD: {
-	                    chrome.tabs.query({ active: true }, function (payload) {
-	                        chrome.tabs.reload(payload[0].id);
-	                    });
-	                    break;
-	                }
-	                case Messages_1.MESSAGE.TAB_DUPLICATE: {
-	                    chrome.tabs.query({ active: true }, function (payload) {
-	                        chrome.tabs.duplicate(payload[0].id);
-	                    });
-	                    break;
-	                }
-	                case Messages_1.MESSAGE.ZOOM: {
-	                    chrome.tabs.query({ active: true }, function (payload) {
-	                        chrome.tabs.getZoom(payload[0].id, function (zoomFactor) {
+	                        break;
+	                    }
+	                    case Messages_1.MESSAGE.TAB_RELOAD: {
+	                        const activeTab = yield ChromeWrapper_1.getActiveTab();
+	                        chrome.tabs.reload(activeTab.id);
+	                        break;
+	                    }
+	                    case Messages_1.MESSAGE.TAB_DUPLICATE: {
+	                        const activeTab = yield ChromeWrapper_1.getActiveTab();
+	                        chrome.tabs.duplicate(activeTab.id);
+	                        break;
+	                    }
+	                    case Messages_1.MESSAGE.ZOOM: {
+	                        const activeTab = yield ChromeWrapper_1.getActiveTab();
+	                        chrome.tabs.getZoom(activeTab.id, zoomFactor => {
 	                            switch (message.zoomType) {
 	                                case 0 /* IN */: {
-	                                    chrome.tabs.setZoom(payload[0].id, zoomFactor + 0.2);
+	                                    chrome.tabs.setZoom(activeTab.id, zoomFactor + 0.2);
 	                                    break;
 	                                }
 	                                case 1 /* OUT */: {
-	                                    chrome.tabs.setZoom(payload[0].id, zoomFactor - 0.2);
+	                                    chrome.tabs.setZoom(activeTab.id, zoomFactor - 0.2);
 	                                    break;
 	                                }
 	                                case 2 /* RESET */: {
-	                                    chrome.tabs.setZoom(payload[0].id, 1);
+	                                    chrome.tabs.setZoom(activeTab.id, 1);
 	                                    break;
 	                                }
 	                                default: {
-	                                    throw new Error('unknown EZoomType: ' + message.zoomType);
+	                                    throw new Error('Unknown EZoomType: ' + message.zoomType);
 	                                }
 	                            }
 	                        });
-	                    });
-	                    break;
-	                }
-	                case Messages_1.MESSAGE.CAPTURE: {
-	                    break;
-	                }
-	                case Messages_1.MESSAGE.PRINT_PAGE: {
-	                    var actionUrl_1 = 'javascript:window.print();';
-	                    chrome.tabs.query({ active: true }, function (payload) {
-	                        chrome.tabs.update(payload[0].id, { url: actionUrl_1 });
-	                    });
-	                    break;
-	                }
-	                case Messages_1.MESSAGE.SYNC_TABS_REQUEST: {
-	                    Sender_1.sendToPopup({ type: Messages_1.MESSAGE.SYNC_TABS, tabs: Store_1.store.getState() });
-	                    break;
-	                }
-	                case Messages_1.MESSAGE.TAB_SWITCH: {
-	                    chrome.tabs.update(message.id, { active: true });
-	                    break;
-	                }
-	                case Messages_1.MESSAGE.TAB_CLOSE_ALL: {
-	                    chrome.tabs.query({ currentWindow: true }, function (payload) {
-	                        // First open a new tab to avoid closing chrome
-	                        chrome.tabs.create({});
-	                        payload.forEach(function (tab) { return chrome.tabs.remove(tab.id); });
-	                    });
-	                }
-	                case Messages_1.MESSAGE.WINDOW_CLOSE: {
-	                    chrome.windows.getCurrent(function (window) {
-	                        chrome.windows.remove(window.id);
-	                    });
-	                    break;
-	                }
-	                case Messages_1.MESSAGE.BOOKMARK_ADD: {
-	                    chrome.tabs.query({ active: true }, function (payload) {
-	                        var activeTab = payload[0];
-	                        chrome.bookmarks.create({ title: activeTab.title, url: activeTab.url });
-	                        chrome.tabs.sendMessage(activeTab.id, { type: Messages_1.MESSAGE.SHOW_TOAST, title: 'dsadas', text: 'sdadsa', level: 0 });
-	                    });
-	                }
-	                default: {
-	                    throw new Error("Unknown message type: " + message.type);
+	                        break;
+	                    }
+	                    case Messages_1.MESSAGE.CAPTURE: {
+	                        break;
+	                    }
+	                    case Messages_1.MESSAGE.PRINT_PAGE: {
+	                        const activeTab = yield ChromeWrapper_1.getActiveTab();
+	                        chrome.tabs.update(activeTab.id, { url: Constants_1.JAVASCRIPT_PRINT_PAGE });
+	                        break;
+	                    }
+	                    case Messages_1.MESSAGE.SYNC_TABS_REQUEST: {
+	                        Sender_1.sendToPopup({ type: Messages_1.MESSAGE.SYNC_TABS, tabs: Store_1.store.getState() });
+	                        break;
+	                    }
+	                    case Messages_1.MESSAGE.TAB_SWITCH: {
+	                        chrome.tabs.update(message.id, { active: true });
+	                        break;
+	                    }
+	                    case Messages_1.MESSAGE.TAB_CLOSE_ALL: {
+	                        chrome.tabs.query({ currentWindow: true }, payload => {
+	                            // First open a new tab to avoid closing chrome
+	                            chrome.tabs.create({});
+	                            payload.forEach(tab => chrome.tabs.remove(tab.id));
+	                        });
+	                    }
+	                    case Messages_1.MESSAGE.WINDOW_CLOSE: {
+	                        chrome.windows.getCurrent(window => {
+	                            chrome.windows.remove(window.id);
+	                        });
+	                        break;
+	                    }
+	                    default: {
+	                        throw new Error(`Unknown message type: ${message.type}`);
+	                    }
 	                }
 	            }
-	        }
-	        else {
-	        }
+	            else {
+	            }
+	        });
 	    });
 	};
 
@@ -223,34 +220,28 @@
 	    }
 	    return t;
 	};
-	var sendMessage = function (message) {
+	const sendMessage = (message) => {
 	    if (process.env.dev) {
-	        console.log("Message '" + message.type + "' sent");
+	        console.log(`Message '${message.type}' sent`);
 	    }
 	    chrome.runtime.sendMessage(message);
 	};
 	/**
 	 * Send specific message to Background
 	 */
-	exports.sendToBackground = function (message) {
-	    return sendMessage(__assign({}, message, { target: 0 /* BACKGROUND */ }));
-	};
+	exports.sendToBackground = (message) => sendMessage(__assign({}, message, { target: 0 /* BACKGROUND */ }));
 	/**
 	 * Send specific message to Popup
 	 */
-	exports.sendToPopup = function (message) {
-	    return sendMessage(__assign({}, message, { target: 2 /* POPUP */ }));
-	};
+	exports.sendToPopup = (message) => sendMessage(__assign({}, message, { target: 2 /* POPUP */ }));
 	/**
 	 * Send specific message to Content
 	 */
-	exports.sendToContent = function (message) {
-	    return sendMessage(__assign({}, message, { target: 1 /* CONTENT */ }));
-	};
+	exports.sendToContent = (message) => sendMessage(__assign({}, message, { target: 1 /* CONTENT */ }));
 	/**
 	 * Dispatch message between Background, Popup and Content
 	 */
-	exports.sendAction = function (message) {
+	exports.sendAction = (message) => {
 	    switch (message.target) {
 	        case 0 /* BACKGROUND */: {
 	            sendMessage(message);
@@ -265,7 +256,7 @@
 	            break;
 	        }
 	        default: {
-	            throw new Error("Unexpected target '" + message.target + "' for message '" + message.type + "'");
+	            throw new Error(`Unexpected target '${message.target}' for message '${message.type}'`);
 	        }
 	    }
 	};
@@ -463,9 +454,9 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var redux_1 = __webpack_require__(7);
-	var AppReducer_1 = __webpack_require__(28);
-	var AppState_1 = __webpack_require__(29);
+	const redux_1 = __webpack_require__(7);
+	const AppReducer_1 = __webpack_require__(28);
+	const AppState_1 = __webpack_require__(29);
 	exports.store = redux_1.createStore(AppReducer_1.appReducer, AppState_1.initState);
 
 
@@ -1514,23 +1505,22 @@
 	    }
 	    return t;
 	};
-	var AppState_1 = __webpack_require__(29);
-	var Actions_1 = __webpack_require__(31);
-	var Utils_1 = __webpack_require__(32);
-	var Immutable_1 = __webpack_require__(33);
-	var Constants_1 = __webpack_require__(34);
-	exports.appReducer = function (state, action) {
-	    if (state === void 0) { state = AppState_1.initState; }
+	const AppState_1 = __webpack_require__(29);
+	const Actions_1 = __webpack_require__(31);
+	const Utils_1 = __webpack_require__(32);
+	const Immutable_1 = __webpack_require__(33);
+	const Constants_1 = __webpack_require__(34);
+	exports.appReducer = (state = AppState_1.initState, action) => {
 	    switch (action.type) {
 	        case Actions_1.ACTION.TAB_CREATED: {
 	            return __assign({}, state, { openedTabs: Immutable_1.addItem(state.openedTabs, action.tab) });
 	        }
 	        case Actions_1.ACTION.TAB_UPDATED: {
-	            var tabIndex = Utils_1.findTabIndexById(state, action.tabId);
+	            const tabIndex = Utils_1.findTabIndexById(state, action.tabId);
 	            return __assign({}, state, { openedTabs: Immutable_1.updateItem(state.openedTabs, action.tab, tabIndex) });
 	        }
 	        case Actions_1.ACTION.TAB_REMOVED: {
-	            var tabIndex = Utils_1.findTabIndexById(state, action.tabId);
+	            const tabIndex = Utils_1.findTabIndexById(state, action.tabId);
 	            return __assign({}, state, { openedTabs: Immutable_1.removeItem(state.openedTabs, tabIndex), closedTabs: Immutable_1.addToStack(state.closedTabs, state.openedTabs[tabIndex], Constants_1.MAX_RECENT_TABS) });
 	        }
 	        case Actions_1.ACTION.BOOKMARKS_UPDATED: {
@@ -1549,21 +1539,22 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Bookmarks_1 = __webpack_require__(30);
+	const Bookmarks_1 = __webpack_require__(30);
 	exports.initState = {
 	    openedTabs: [],
 	    closedTabs: [],
 	    favorites: [],
 	    bookmarks: []
 	};
-	chrome.tabs.query({ currentWindow: true }, function (tabs) {
+	// Fill store
+	chrome.tabs.query({ currentWindow: true }, tabs => {
 	    exports.initState.openedTabs = tabs;
 	});
-	chrome.topSites.get(function (mostVisited) {
+	chrome.topSites.get(mostVisited => {
 	    exports.initState.favorites = mostVisited;
 	});
-	chrome.bookmarks.getTree(function (bookmarkTree) {
-	    var bookmarks = Bookmarks_1.getBookmarks(bookmarkTree);
+	chrome.bookmarks.getTree(bookmarkTree => {
+	    const bookmarks = Bookmarks_1.getBookmarks(bookmarkTree);
 	    exports.initState.bookmarks = bookmarks;
 	});
 
@@ -1574,15 +1565,11 @@
 
 	"use strict";
 	// REFACTOR: reduce can lead to performance issues, maybe muttability will help here to boost performance
-	var extractBookmarks = function (bookmarkNode) {
-	    return bookmarkNode.children.reduce(function (acc, node) { return node.url ? acc.concat([node]) : acc.concat(extractBookmarks(node)); }, []);
-	};
+	const extractBookmarks = (bookmarkNode) => bookmarkNode.children.reduce((acc, node) => node.url ? [...acc, node] : acc.concat(extractBookmarks(node)), []);
 	/**
 	 * Get one array of bookmarks
 	 */
-	exports.getBookmarks = function (bookmarkTree) {
-	    return bookmarkTree.reduce(function (acc, node) { return node.url ? acc.concat([node]) : acc.concat(extractBookmarks(node)); }, []);
-	};
+	exports.getBookmarks = (bookmarkTree) => bookmarkTree.reduce((acc, node) => node.url ? [...acc, node] : acc.concat(extractBookmarks(node)), []);
 
 
 /***/ },
@@ -1603,11 +1590,7 @@
 /***/ function(module, exports) {
 
 	"use strict";
-	exports.findTabIndexById = function (state, tabId) {
-	    return state.openedTabs.reduce(function (acc, tab, index) {
-	        return (tab.id === tabId) ? index : acc;
-	    }, -1);
-	};
+	exports.findTabIndexById = (state, tabId) => state.openedTabs.reduce((acc, tab, index) => (tab.id === tabId) ? index : acc, -1);
 
 
 /***/ },
@@ -1618,35 +1601,37 @@
 	/**
 	 * Add item to limited stack
 	 */
-	exports.addToStack = function (stack, item, stackSize) {
-	    return (stack.length > stackSize)
-	        ? [item].concat(stack.slice(1, stack.length)) : stack.concat([item]);
-	};
+	exports.addToStack = (stack, item, stackSize) => (stack.length > stackSize)
+	    ? [item, ...stack.slice(1, stack.length)]
+	    : [...stack, item];
 	/**
 	 * Add new item to array
 	 */
-	exports.addItem = function (array, item) {
-	    return array.concat([item]);
-	};
+	exports.addItem = (array, item) => [...array, item];
 	/**
 	 * Remove item from specific index
 	 */
-	exports.removeItem = function (array, index) {
+	exports.removeItem = (array, index) => {
 	    if (index === -1) {
-	        throw new Error("Index '" + index + "' is longer than array");
+	        throw new Error(`Index '${index}' is longer than array`);
 	    }
-	    return array.slice(0, index).concat(array.slice(index + 1, array.length));
+	    return [
+	        ...array.slice(0, index),
+	        ...array.slice(index + 1, array.length)
+	    ];
 	};
 	/**
 	 * Update item on specific index
 	 */
-	exports.updateItem = function (array, item, index) {
+	exports.updateItem = (array, item, index) => {
 	    if (index === -1) {
-	        throw new Error("Index '" + index + "' is longer than array");
+	        throw new Error(`Index '${index}' is longer than array`);
 	    }
-	    return array.slice(0, index).concat([
-	        item
-	    ], array.slice(index + 1, array.length));
+	    return [
+	        ...array.slice(0, index),
+	        item,
+	        ...array.slice(index + 1, array.length)
+	    ];
 	};
 
 
@@ -1665,28 +1650,28 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Store_1 = __webpack_require__(6);
-	var Actions_1 = __webpack_require__(31);
+	const Store_1 = __webpack_require__(6);
+	const Actions_1 = __webpack_require__(31);
 	/**
 	 * Will listen on events incoming from chrome
 	 */
-	exports.eventListener = function () {
-	    chrome.tabs.onCreated.addListener(function (tab) {
+	exports.eventListener = () => {
+	    chrome.tabs.onCreated.addListener((tab) => {
 	        Store_1.store.dispatch({ type: Actions_1.ACTION.TAB_CREATED, tab: tab });
 	    });
-	    chrome.tabs.onRemoved.addListener(function (tabId) {
+	    chrome.tabs.onRemoved.addListener((tabId) => {
 	        Store_1.store.dispatch({ type: Actions_1.ACTION.TAB_REMOVED, tabId: tabId });
 	    });
-	    chrome.tabs.onUpdated.addListener(function (tabId, _info, tab) {
+	    chrome.tabs.onUpdated.addListener((tabId, _info, tab) => {
 	        Store_1.store.dispatch({ type: Actions_1.ACTION.TAB_UPDATED, tabId: tabId, tab: tab });
 	    });
-	    chrome.bookmarks.onCreated.addListener(function () {
+	    chrome.bookmarks.onCreated.addListener(() => {
 	        Store_1.store.dispatch({ type: Actions_1.ACTION.BOOKMARKS_UPDATED });
 	    });
-	    chrome.bookmarks.onChanged.addListener(function () {
+	    chrome.bookmarks.onChanged.addListener(() => {
 	        Store_1.store.dispatch({ type: Actions_1.ACTION.BOOKMARKS_UPDATED });
 	    });
-	    chrome.bookmarks.onRemoved.addListener(function () {
+	    chrome.bookmarks.onRemoved.addListener(() => {
 	        Store_1.store.dispatch({ type: Actions_1.ACTION.BOOKMARKS_UPDATED });
 	    });
 	};
@@ -1697,17 +1682,46 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Store_1 = __webpack_require__(6);
-	var Messages_1 = __webpack_require__(3);
-	var Sender_1 = __webpack_require__(4);
+	const Store_1 = __webpack_require__(6);
+	const Messages_1 = __webpack_require__(3);
+	const Sender_1 = __webpack_require__(4);
 	/**
 	 * On every store change, it'll synchronize it with other parts
 	 */
-	exports.synchronizeTabs = function () {
-	    Store_1.store.subscribe(function () {
+	exports.synchronizeTabs = () => {
+	    Store_1.store.subscribe(() => {
 	        Sender_1.sendToPopup({ type: Messages_1.MESSAGE.SYNC_TABS, tabs: Store_1.store.getState() });
 	    });
 	};
+
+
+/***/ },
+/* 37 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.JAVASCRIPT_PRINT_PAGE = 'javascript:window.print();';
+
+
+/***/ },
+/* 38 */
+/***/ function(module, exports) {
+
+	"use strict";
+	function getActiveTab() {
+	    return new Promise(resolve => {
+	        chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
+	            if (tabs.length === 0) {
+	                throw new Error('no active tab in current window');
+	            }
+	            if (tabs.length > 1) {
+	                throw new Error('cannot have more than one active tab per window');
+	            }
+	            resolve(tabs[0]);
+	        });
+	    });
+	}
+	exports.getActiveTab = getActiveTab;
 
 
 /***/ }

@@ -2,71 +2,66 @@ import { EZoomType } from 'surfable-common/src/enums/EZoomType';
 import { ETarget } from 'surfable-common/src/enums/ETarget';
 import { MessageType, MESSAGE } from 'surfable-common/src/Messages';
 import { sendToPopup, sendToContent } from 'surfable-common/src/Sender';
+import { JAVASCRIPT_PRINT_PAGE } from './Constants';
+import { getActiveTab } from './ChromeWrapper';
 import { store } from './redux/Store';
 
-/**
+/*
  * Will listen on events/messages incoming from other parts of extension
  */
 export const messageReceiver = () => {
-	chrome.runtime.onMessage.addListener((message: MessageType) => {
+	chrome.runtime.onMessage.addListener(async function (message: MessageType) {
 		if (message.target === ETarget.BACKGROUND) {
 			console.debug(`Message '${message.type}' received`);
-			switch(message.type) {
+			switch (message.type) {
 				case MESSAGE.TAB_CLOSE: {
-					chrome.tabs.query({active: true}, payload => {
-						chrome.tabs.remove(payload[0].id);
-					});
+					const activeTab = await getActiveTab();
+					chrome.tabs.remove(activeTab.id);
 					break;
 				}
 				case MESSAGE.TAB_NEW: {
 					if (message.url.length > 0) {
-						chrome.tabs.create({url: message.url});
+						chrome.tabs.create({ url: message.url });
 					} else {
 						chrome.tabs.create({});
 					}
 					break;
 				}
-				case MESSAGE.BOOKMARK_ADD : {
-					chrome.tabs.query({active: true}, payload => {
-						const activeTab = payload[0];
-						chrome.bookmarks.create({title: activeTab.title, url: activeTab.url});
-					});
-
+				case MESSAGE.BOOKMARK_ADD: {
+					const activeTab = await getActiveTab();
+					chrome.bookmarks.create({ title: activeTab.title, url: activeTab.url });
 					break;
 				}
 				case MESSAGE.TAB_RELOAD: {
-					chrome.tabs.query({active: true}, payload => {
-						chrome.tabs.reload(payload[0].id);
-					});
+					const activeTab = await getActiveTab();
+					chrome.tabs.reload(activeTab.id);
 					break;
 				}
 				case MESSAGE.TAB_DUPLICATE: {
-					chrome.tabs.query({active: true}, payload => {
-						chrome.tabs.duplicate(payload[0].id);
-					});
+					const activeTab = await getActiveTab();
+					chrome.tabs.duplicate(activeTab.id);
 					break;
 				}
 				case MESSAGE.ZOOM: {
-					chrome.tabs.query({active: true}, payload => {
-						chrome.tabs.getZoom(payload[0].id, zoomFactor => {
-							switch(message.zoomType) {
-								case EZoomType.IN: {
-									chrome.tabs.setZoom(payload[0].id, zoomFactor + 0.2);
-									break;
-								}
-								case EZoomType.OUT: {
-									chrome.tabs.setZoom(payload[0].id, zoomFactor - 0.2);
-									break;
-								}
-								case EZoomType.RESET: {
-									chrome.tabs.setZoom(payload[0].id, 1);
-									break;
-								}
-								default: {
-									throw new Error('unknown EZoomType: ' + message.zoomType);
-								}
+					const activeTab = await getActiveTab();
+					chrome.tabs.getZoom(activeTab.id, zoomFactor => {
+						switch (message.zoomType) {
+							case EZoomType.IN: {
+								chrome.tabs.setZoom(activeTab.id, zoomFactor + 0.2);
+								break;
 							}
-						});
+							case EZoomType.OUT: {
+								chrome.tabs.setZoom(activeTab.id, zoomFactor - 0.2);
+								break;
+							}
+							case EZoomType.RESET: {
+								chrome.tabs.setZoom(activeTab.id, 1);
+								break;
+							}
+							default: {
+								throw new Error('Unknown EZoomType: ' + message.zoomType);
+							}
+						}
 					});
 					break;
 				}
@@ -74,22 +69,20 @@ export const messageReceiver = () => {
 					break;
 				}
 				case MESSAGE.PRINT_PAGE: {
-					const actionUrl = 'javascript:window.print();';
-					chrome.tabs.query({active: true}, payload => {
-						chrome.tabs.update(payload[0].id, {url: actionUrl});
-					});
+					const activeTab = await getActiveTab();
+					chrome.tabs.update(activeTab.id, { url: JAVASCRIPT_PRINT_PAGE });
 					break;
 				}
 				case MESSAGE.SYNC_TABS_REQUEST: {
-					sendToPopup({type: MESSAGE.SYNC_TABS, tabs: store.getState()});
+					sendToPopup({ type: MESSAGE.SYNC_TABS, tabs: store.getState() });
 					break;
 				}
 				case MESSAGE.TAB_SWITCH: {
-					chrome.tabs.update(message.id, {active: true});
+					chrome.tabs.update(message.id, { active: true });
 					break;
 				}
 				case MESSAGE.TAB_CLOSE_ALL: {
-					chrome.tabs.query({currentWindow: true}, payload => {
+					chrome.tabs.query({ currentWindow: true }, payload => {
 						// First open a new tab to avoid closing chrome
 						chrome.tabs.create({});
 						payload.forEach(tab => chrome.tabs.remove(tab.id));
@@ -100,13 +93,6 @@ export const messageReceiver = () => {
 						chrome.windows.remove(window.id);
 					});
 					break;
-				}
-				case MESSAGE.BOOKMARK_ADD: {
-					chrome.tabs.query({active: true}, payload => {
-						const activeTab = payload[0];
-						chrome.bookmarks.create({title: activeTab.title, url: activeTab.url});
-						chrome.tabs.sendMessage(activeTab.id, {type: MESSAGE.SHOW_TOAST, title: 'dsadas', text: 'sdadsa', level: 0});
-					});
 				}
 				default: {
 					throw new Error(`Unknown message type: ${message.type}`);

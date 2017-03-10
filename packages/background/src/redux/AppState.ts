@@ -10,6 +10,7 @@ export const initState: AppState = {
 	bookmarks: []
 };
 
+// Fill store
 chrome.tabs.query({ currentWindow: true }, tabs => {
 	initState.openedTabs = tabs;
 });
