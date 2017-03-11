@@ -9,7 +9,7 @@ import { store } from './redux/Store';
 /*
  * Will listen on events/messages incoming from other parts of extension
  */
-export const messageReceiver = () => {
+export const messageReceiver = (): void => {
 	chrome.runtime.onMessage.addListener(async function (message: MessageType) {
 		if (message.target === ETarget.BACKGROUND) {
 			console.debug(`Message '${message.type}' received`);
@@ -23,7 +23,7 @@ export const messageReceiver = () => {
 					if (message.url.length > 0) {
 						chrome.tabs.create({ url: message.url });
 					} else {
-						// If urls isn't specified, open a new empty tab
+						// If urls isn't specified, open an empty tab
 						chrome.tabs.create({});
 					}
 					break;

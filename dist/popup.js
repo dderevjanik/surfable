@@ -23889,7 +23889,7 @@
 	        }
 	        case Actions_1.ACTION.SEARCH_CHANGE: {
 	            var searchValue = action.value.toLowerCase(); // Don't care about case
-	            var commandsGroupsChars = Object.keys(state.commandsGroups); // REFACTOR: don't calculate all object keys everytime
+	            var commandsGroupsChars = Object.keys(state.commandsGroups); // @TODO don't calculate all object keys everytime
 	            var commandsGroupExists = (commandsGroupsChars.indexOf(action.value[0]) > -1);
 	            if (commandsGroupExists) {
 	                var foundCommands = Search_1.searchCommands(action.value.slice(1, action.value.length), state.commandsGroups[action.value[0]]);
@@ -23899,7 +23899,7 @@
 	            return __assign({}, state, { inputVal: action.value, commands: [DummyCommands_1.notFoundCommand] });
 	        }
 	        case Messages_1.MESSAGE.SYNC_TABS: {
-	            // REFACTOR: Sort them by commands groups
+	            // @TODO Sort them by commands groups
 	            var favoriteCommands = action.tabs.favorites
 	                .slice(0, 10)
 	                .map(function (favorite) { return CommandCreator_1.favoriteToCommand(favorite); });
@@ -24216,9 +24216,9 @@
 	        : titleText;
 	};
 	/**
-	 * Will get favicon url, because sometimes is favicon undefined
+	 * Will get favicon url, because sometimes favicon is undefined
 	 * or it's set to chrome internals, which don't work outside
-	 * of chrome internals
+	 * of chrome internals (in extensions)
 	 */
 	exports.getFaviconUrl = function (faviconUrl) {
 	    return (faviconUrl)
@@ -25344,9 +25344,6 @@
 	    lineHeight: '20px',
 	    overflow: 'hidden',
 	    textOverflow: 'ellipsis',
-	    // 	display: '-webkit-box',
-	    //    '-webkit-line-clamp': '1',
-	    //    '-webkit-box-orient': 'vertical',
 	    $nest: {
 	        '&:hover': {
 	            background: '#2A2D2E'

@@ -9,9 +9,9 @@ export const sliceOverflowTitle = (titleText: string): string =>
 		: titleText;
 
 /**
- * Will get favicon url, because sometimes is favicon undefined
+ * Will get favicon url, because sometimes favicon is undefined
  * or it's set to chrome internals, which don't work outside
- * of chrome internals
+ * of chrome internals (in extensions)
  */
 export const getFaviconUrl = (faviconUrl: string): string =>
 	(faviconUrl)

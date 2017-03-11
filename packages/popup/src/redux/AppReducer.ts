@@ -40,7 +40,7 @@ export const appReducer = (state: IAppState = initState, action: ActionType | Me
 		}
 		case ACTION.SEARCH_CHANGE: {
 			const searchValue = action.value.toLowerCase(); // Don't care about case
-			const commandsGroupsChars = Object.keys(state.commandsGroups); // REFACTOR: don't calculate all object keys everytime
+			const commandsGroupsChars = Object.keys(state.commandsGroups); // @TODO don't calculate all object keys everytime
 			const commandsGroupExists = (commandsGroupsChars.indexOf(action.value[0]) > -1);
 
 			if (commandsGroupExists) {
@@ -60,7 +60,7 @@ export const appReducer = (state: IAppState = initState, action: ActionType | Me
 			};
 		}
 		case MESSAGE.SYNC_TABS: {
-			// REFACTOR: Sort them by commands groups
+			// @TODO Sort them by commands groups
 			const favoriteCommands: ICommand[] = action.tabs.favorites
 				.slice(0, 10)
 				.map(favorite => favoriteToCommand(favorite));

@@ -97,7 +97,7 @@
 	                            chrome.tabs.create({ url: message.url });
 	                        }
 	                        else {
-	                            // If urls isn't specified, open a new empty tab
+	                            // If urls isn't specified, open an empty tab
 	                            chrome.tabs.create({});
 	                        }
 	                        break;
@@ -1563,10 +1563,11 @@
 /***/ function(module, exports) {
 
 	"use strict";
-	// REFACTOR: reduce can lead to performance issues, maybe muttability will help here to boost performance
+	// @TODO reduce can lead to performance issues here, maybe muttability will help to boost performance
 	const extractBookmarks = (bookmarkNode) => bookmarkNode.children.reduce((acc, node) => node.url ? [...acc, node] : acc.concat(extractBookmarks(node)), []);
 	/**
-	 * Get one array of bookmarks
+	 * Get array of all bookmarks available
+	 * @TODO remove duplicates
 	 */
 	exports.getBookmarks = (bookmarkTree) => bookmarkTree.reduce((acc, node) => node.url ? [...acc, node] : acc.concat(extractBookmarks(node)), []);
 
@@ -1589,6 +1590,10 @@
 /***/ function(module, exports) {
 
 	"use strict";
+	/**
+	 * Return index of tab in openedtabs with specific id
+	 * @TODO extends to access more than just openedtabs
+	 */
 	exports.findTabIndexById = (state, tabId) => state.openedTabs.reduce((acc, tab, index) => (tab.id === tabId) ? index : acc, -1);
 
 

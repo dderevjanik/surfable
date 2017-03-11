@@ -4,7 +4,7 @@ import { ETarget } from './enums/ETarget';
 declare const chrome;
 declare const process;
 
-const sendMessage = (message: MessageType) => {
+const sendMessage = (message: MessageType): void => {
 	if (process.env.dev) {
 		console.log(`Message '${message.type}' sent`);
 	}
@@ -14,7 +14,7 @@ const sendMessage = (message: MessageType) => {
 /**
  * Send specific message to Background
  */
-export const sendToBackground = (message: MessageType) =>
+export const sendToBackground = (message: MessageType): void =>
 	sendMessage({
 		...message,
 		target: ETarget.BACKGROUND
@@ -23,7 +23,7 @@ export const sendToBackground = (message: MessageType) =>
 /**
  * Send specific message to Popup
  */
-export const sendToPopup = (message: MessageType) =>
+export const sendToPopup = (message: MessageType): void =>
 	sendMessage({
 		...message,
 		target: ETarget.POPUP
@@ -32,7 +32,7 @@ export const sendToPopup = (message: MessageType) =>
 /**
  * Send specific message to Content
  */
-export const sendToContent = (message: MessageType) =>
+export const sendToContent = (message: MessageType): void =>
 	sendMessage({
 		...message,
 		target: ETarget.CONTENT
@@ -41,8 +41,8 @@ export const sendToContent = (message: MessageType) =>
 /**
  * Dispatch message between Background, Popup and Content
  */
-export const sendAction = (message: MessageType) => {
-	switch(message.target) {
+export const sendAction = (message: MessageType): void => {
+	switch (message.target) {
 		case ETarget.BACKGROUND: {
 			sendMessage(message);
 			break;

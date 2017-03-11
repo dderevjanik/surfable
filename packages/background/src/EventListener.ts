@@ -4,7 +4,7 @@ import { ACTION } from './redux/Actions';
 /**
  * Will listen on events incoming from chrome
  */
-export const eventListener = () => {
+export const eventListener = (): void => {
 	chrome.tabs.onCreated.addListener((tab: chrome.tabs.Tab) => {
 		store.dispatch({ type: ACTION.TAB_CREATED, tab: tab });
 	});

@@ -8,9 +8,6 @@ export const commandS = style({
 	lineHeight: '20px',
 	overflow: 'hidden',
 	textOverflow: 'ellipsis',
-// 	display: '-webkit-box',
-//    '-webkit-line-clamp': '1',
-//    '-webkit-box-orient': 'vertical',
 	$nest: {
 		'&:hover': {
 			background: '#2A2D2E'
