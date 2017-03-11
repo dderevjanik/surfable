@@ -3,7 +3,7 @@ import { ETarget } from 'surfable-common/src/enums/ETarget';
 import { MessageType, MESSAGE } from 'surfable-common/src/Messages';
 import { sendToPopup, sendToContent } from 'surfable-common/src/Sender';
 import { JAVASCRIPT_PRINT_PAGE } from './Constants';
-import { getActiveTab } from './ChromeWrapper';
+import { getActiveTab, getTabZoomFactor, getCurrentWindowTabs, getCurrentWindow } from './ChromeWrapper';
 import { store } from './redux/Store';
 
 /*
@@ -23,6 +23,7 @@ export const messageReceiver = () => {
 					if (message.url.length > 0) {
 						chrome.tabs.create({ url: message.url });
 					} else {
+						// If urls isn't specified, open a new empty tab
 						chrome.tabs.create({});
 					}
 					break;
@@ -44,25 +45,24 @@ export const messageReceiver = () => {
 				}
 				case MESSAGE.ZOOM: {
 					const activeTab = await getActiveTab();
-					chrome.tabs.getZoom(activeTab.id, zoomFactor => {
-						switch (message.zoomType) {
-							case EZoomType.IN: {
-								chrome.tabs.setZoom(activeTab.id, zoomFactor + 0.2);
-								break;
-							}
-							case EZoomType.OUT: {
-								chrome.tabs.setZoom(activeTab.id, zoomFactor - 0.2);
-								break;
-							}
-							case EZoomType.RESET: {
-								chrome.tabs.setZoom(activeTab.id, 1);
-								break;
-							}
-							default: {
-								throw new Error('Unknown EZoomType: ' + message.zoomType);
-							}
+					const zoomFactor = await getTabZoomFactor(activeTab.id);
+					switch (message.zoomType) {
+						case EZoomType.IN: {
+							chrome.tabs.setZoom(activeTab.id, zoomFactor + 0.2);
+							break;
 						}
-					});
+						case EZoomType.OUT: {
+							chrome.tabs.setZoom(activeTab.id, zoomFactor - 0.2);
+							break;
+						}
+						case EZoomType.RESET: {
+							chrome.tabs.setZoom(activeTab.id, 1);
+							break;
+						}
+						default: {
+							throw new Error('Unknown EZoomType: ' + message.zoomType);
+						}
+					}
 					break;
 				}
 				case MESSAGE.CAPTURE: {
@@ -82,16 +82,15 @@ export const messageReceiver = () => {
 					break;
 				}
 				case MESSAGE.TAB_CLOSE_ALL: {
-					chrome.tabs.query({ currentWindow: true }, payload => {
-						// First open a new tab to avoid closing chrome
-						chrome.tabs.create({});
-						payload.forEach(tab => chrome.tabs.remove(tab.id));
-					});
+					const tabs = await getCurrentWindowTabs();
+					// First open a new tab to avoid closing chrome's window
+					chrome.tabs.create({});
+					tabs.forEach(tab => chrome.tabs.remove(tab.id));
+					break;
 				}
 				case MESSAGE.WINDOW_CLOSE: {
-					chrome.windows.getCurrent(window => {
-						chrome.windows.remove(window.id);
-					});
+					const currentWindow = await getCurrentWindow();
+					chrome.windows.remove(currentWindow.id);
 					break;
 				}
 				default: {

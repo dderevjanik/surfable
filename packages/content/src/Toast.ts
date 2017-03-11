@@ -1,7 +1,8 @@
 import { ELevel } from 'surfable-common/src/enums/ELevel';
 
 const style = (level: ELevel) => {
-	switch(level) {
+	console.log('creting elvels');
+	switch (level) {
 		case ELevel.ERROR: {
 			return "";
 		}

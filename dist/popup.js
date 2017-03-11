@@ -23872,11 +23872,13 @@
 	        }
 	        case Actions_1.ACTION.PANEL_UP: {
 	            var nextOffset = (state.offset - 1);
-	            return (nextOffset < 0) ? state : __assign({}, state, { offset: nextOffset });
+	            return (nextOffset < 0)
+	                ? __assign({}, state, { offset: (state.commands.length - 1) }) : __assign({}, state, { offset: nextOffset });
 	        }
 	        case Actions_1.ACTION.PANEL_DOWN: {
 	            var nextOffset = (state.offset + 1);
-	            return (nextOffset >= state.commands.length) ? state : __assign({}, state, { offset: nextOffset });
+	            return (nextOffset >= state.commands.length)
+	                ? __assign({}, state, { offset: 0 }) : __assign({}, state, { offset: nextOffset });
 	        }
 	        case Actions_1.ACTION.PANEL_OPEN: {
 	            return __assign({}, state, { inputVal: '', opened: true });
@@ -25455,7 +25457,6 @@
 	        return -1 /* BELOW */;
 	    }
 	    return 0 /* INSIDE */;
-	    // return ((elemY1 > scrollViewY1) || (elemY2 < scrollViewY2));
 	};
 	exports.scrollIntoElement = function (scrollWindow, scrollItem, activeState) {
 	    if (activeState === 1 /* ABOVE */) {

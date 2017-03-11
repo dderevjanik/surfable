@@ -18,10 +18,11 @@ export const messageReceiver = () => {
 		console.log('message');
 		if (message.target === ETarget.CONTENT) {
 			console.log('targeted');
-			switch(message.type) {
+			switch (message.type) {
 				case MESSAGE.SHOW_TOAST: {
 					const toast = Toast(message.title, message.text, message.level);
 					body.insertAdjacentHTML('beforeend', toast);
+					break;
 				}
 				default: {
 					throw new Error(`Unexpected message's type: ${message.type}`);

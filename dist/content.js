@@ -79,6 +79,7 @@
 	                case Messages_1.MESSAGE.SHOW_TOAST: {
 	                    var toast = Toast_1.Toast(message.title, message.text, message.level);
 	                    body.insertAdjacentHTML('beforeend', toast);
+	                    break;
 	                }
 	                default: {
 	                    throw new Error("Unexpected message's type: " + message.type);
@@ -110,11 +111,11 @@
 	    ZOOM: 'ZOOM',
 	    CAPTURE: 'CAPTURE',
 	    SHOW_FAVORITES: 'SHOW_FAVORITES',
-	    SHOW_TABS: 'SHOW_TABS',
 	    GET_FAVORITES: 'GET_FAVORITES',
-	    GET_CURRENT_TABS: 'GET_CURRENT_TABS',
 	    SYNC_TABS: 'SYNC_TABS',
-	    SHOW_TOAST: 'SHOW_TOAST'
+	    SYNC_TABS_REQUEST: 'SYNC_TABS_REQUEST',
+	    SHOW_TOAST: 'SHOW_TOAST',
+	    SEARCH_CHANGE: 'SEARCH_CHANGE'
 	};
 
 
@@ -124,6 +125,7 @@
 
 	"use strict";
 	var style = function (level) {
+	    console.log('creting elvels');
 	    switch (level) {
 	        case 3 /* ERROR */: {
 	            return "";

@@ -97,6 +97,7 @@
 	                            chrome.tabs.create({ url: message.url });
 	                        }
 	                        else {
+	                            // If urls isn't specified, open a new empty tab
 	                            chrome.tabs.create({});
 	                        }
 	                        break;
@@ -118,25 +119,24 @@
 	                    }
 	                    case Messages_1.MESSAGE.ZOOM: {
 	                        const activeTab = yield ChromeWrapper_1.getActiveTab();
-	                        chrome.tabs.getZoom(activeTab.id, zoomFactor => {
-	                            switch (message.zoomType) {
-	                                case 0 /* IN */: {
-	                                    chrome.tabs.setZoom(activeTab.id, zoomFactor + 0.2);
-	                                    break;
-	                                }
-	                                case 1 /* OUT */: {
-	                                    chrome.tabs.setZoom(activeTab.id, zoomFactor - 0.2);
-	                                    break;
-	                                }
-	                                case 2 /* RESET */: {
-	                                    chrome.tabs.setZoom(activeTab.id, 1);
-	                                    break;
-	                                }
-	                                default: {
-	                                    throw new Error('Unknown EZoomType: ' + message.zoomType);
-	                                }
+	                        const zoomFactor = yield ChromeWrapper_1.getTabZoomFactor(activeTab.id);
+	                        switch (message.zoomType) {
+	                            case 0 /* IN */: {
+	                                chrome.tabs.setZoom(activeTab.id, zoomFactor + 0.2);
+	                                break;
 	                            }
-	                        });
+	                            case 1 /* OUT */: {
+	                                chrome.tabs.setZoom(activeTab.id, zoomFactor - 0.2);
+	                                break;
+	                            }
+	                            case 2 /* RESET */: {
+	                                chrome.tabs.setZoom(activeTab.id, 1);
+	                                break;
+	                            }
+	                            default: {
+	                                throw new Error('Unknown EZoomType: ' + message.zoomType);
+	                            }
+	                        }
 	                        break;
 	                    }
 	                    case Messages_1.MESSAGE.CAPTURE: {
@@ -156,16 +156,15 @@
 	                        break;
 	                    }
 	                    case Messages_1.MESSAGE.TAB_CLOSE_ALL: {
-	                        chrome.tabs.query({ currentWindow: true }, payload => {
-	                            // First open a new tab to avoid closing chrome
-	                            chrome.tabs.create({});
-	                            payload.forEach(tab => chrome.tabs.remove(tab.id));
-	                        });
+	                        const tabs = yield ChromeWrapper_1.getCurrentWindowTabs();
+	                        // First open a new tab to avoid closing chrome's window
+	                        chrome.tabs.create({});
+	                        tabs.forEach(tab => chrome.tabs.remove(tab.id));
+	                        break;
 	                    }
 	                    case Messages_1.MESSAGE.WINDOW_CLOSE: {
-	                        chrome.windows.getCurrent(window => {
-	                            chrome.windows.remove(window.id);
-	                        });
+	                        const currentWindow = yield ChromeWrapper_1.getCurrentWindow();
+	                        chrome.windows.remove(currentWindow.id);
 	                        break;
 	                    }
 	                    default: {
@@ -1707,7 +1706,26 @@
 /* 38 */
 /***/ function(module, exports) {
 
+	// @TODO: add reject
+	// @TODO: try to solve all Promises with abstract wrapper
 	"use strict";
+	function getCurrentWindow() {
+	    return new Promise(resolve => {
+	        chrome.windows.getCurrent(window => {
+	            resolve(window);
+	        });
+	    });
+	}
+	exports.getCurrentWindow = getCurrentWindow;
+	;
+	function getCurrentWindowTabs() {
+	    return new Promise(resolve => {
+	        chrome.tabs.query({ currentWindow: true }, tabs => {
+	            resolve(tabs);
+	        });
+	    });
+	}
+	exports.getCurrentWindowTabs = getCurrentWindowTabs;
 	function getActiveTab() {
 	    return new Promise(resolve => {
 	        chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
@@ -1722,6 +1740,14 @@
 	    });
 	}
 	exports.getActiveTab = getActiveTab;
+	function getTabZoomFactor(tabId) {
+	    return new Promise(resolve => {
+	        chrome.tabs.getZoom(tabId, zoomFactor => {
+	            resolve(zoomFactor);
+	        });
+	    });
+	}
+	exports.getTabZoomFactor = getTabZoomFactor;
 
 
 /***/ }
