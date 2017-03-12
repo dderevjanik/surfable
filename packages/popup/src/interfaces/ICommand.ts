@@ -40,6 +40,7 @@ export interface IUrlCommand extends ICommandBase {
 	readonly url: string;
 	readonly imgUrl?: string;
 	readonly pText?: string[];
+	readonly pUrl?: string[];
 }
 
 export type ICommand = ISimpleCommand | IDummyCommand | IUrlCommand | IQuickPanelCommand;

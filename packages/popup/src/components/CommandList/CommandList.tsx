@@ -105,6 +105,7 @@ export class CommandList extends React.Component<IProps, IState> {
 										text={command.text}
 										url={command.url}
 										partialText={command.pText}
+										partialUrl={command.pUrl}
 										imgUrl={command.imgUrl}
 									/>
 								);

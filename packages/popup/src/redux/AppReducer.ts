@@ -5,7 +5,7 @@ import { sendAction } from 'surfable-common/src/Sender';
 import { IAppState } from './../interfaces/IAppState';
 import { ICommand, COMMAND } from './../interfaces/ICommand';
 import { ACTION, ActionType } from './Actions';
-import { initState } from './InitState';
+import { initState } from './AppState';
 import { favoriteToCommand, tabToCommand, closedToCommand, bookmarkToCommand } from './../utils/CommandCreator';
 import { searchCommands } from './../utils/Search';
 import { notFoundCommand } from './../utils/DummyCommands';

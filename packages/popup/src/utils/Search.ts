@@ -1,13 +1,23 @@
 import { ICommand, COMMAND } from './../interfaces/ICommand';
 
 /**
+ * Convert string to array of sliced substrings
+ */
+const makeSlicedText = (text: string, index: number, length: number): string[] =>
+	[
+		text.slice(0, index),
+		text.slice(index, (index + length)),
+		text.slice((index + length), text.length)
+	];
+
+/**
  * Search for commands
  * Return those commands, which best suits to searchvalue.
  */
 export const searchCommands = (searchValue: string, commandsGroup: ICommand[]): ICommand[] => {
 	const valLen = searchValue.length;
 	// If there's no value to search, return all commands in group
-	if(valLen === 0) {
+	if (valLen === 0) {
 		return commandsGroup;
 	}
 	const foundCommands = commandsGroup
@@ -20,21 +30,23 @@ export const searchCommands = (searchValue: string, commandsGroup: ICommand[]): 
 					const text = (command.cat + ': ' + command.text);
 					const ind = text.toLowerCase().indexOf(searchValue);
 					return (ind >= 0)
-						? { ...command, pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)] }
+						? { ...command, pText: makeSlicedText(text, ind, valLen) }
 						: null;
 				}
 				case COMMAND.DUMMY: {
 					const text = command.text;
 					const ind = text.toLowerCase().indexOf(searchValue);
 					return (ind >= 0)
-						? { ...command, pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)] }
+						? { ...command, pText: makeSlicedText(text, ind, valLen) }
 						: null;
 				}
 				case COMMAND.URL_COMMAND: {
 					const text = command.text;
-					const ind = text.toLowerCase().indexOf(searchValue);
-					return (ind >= 0)
-						? { ...command, pText: [text.slice(0, ind), text.slice(ind, ind + valLen), text.slice(ind + valLen, text.length)] }
+					const textFoundInd = text.toLowerCase().indexOf(searchValue);
+					const url = command.url;
+					const urlFoundInd = url.toLowerCase().indexOf(searchValue);
+					return ((textFoundInd >= 0) || (urlFoundInd >= 0))
+						? { ...command, pText: makeSlicedText(text, textFoundInd, valLen), pUrl: makeSlicedText(url, urlFoundInd, valLen) }
 						: null;
 				}
 				default: {

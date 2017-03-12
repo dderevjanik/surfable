@@ -3,8 +3,7 @@
 Surfable is quick command pallete extension for chrome. It's heavly inspired
 by command pallete from Sublime Text, Atom and VS Code (thank VS Code for design).
 
-![screenshot](docs/img/screen.jpg)
-
+![screenshot](docs/img/screen.jpg
 
 ## 1. Development
 
@@ -74,6 +73,6 @@ Used to share interfaces, types a common data between subprojects. Events (redux
 actions), which are used among subprojects are stored in common to avoid type
 errors and common javascript mistakes.
 
-# 2. Credits
+## 2. Credits
 
 - [vscode](https://github.com/Microsoft/vscode) for providing such a beautifull IDE and best implementation of quickpanel/command palette.
