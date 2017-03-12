@@ -23892,7 +23892,7 @@
 	            var commandsGroupsChars = Object.keys(state.commandsGroups); // @TODO don't calculate all object keys everytime
 	            var commandsGroupExists = (commandsGroupsChars.indexOf(action.value[0]) > -1);
 	            if (commandsGroupExists) {
-	                var foundCommands = Search_1.searchCommands(action.value.slice(1, action.value.length), state.commandsGroups[action.value[0]]);
+	                var foundCommands = Search_1.searchCommands(searchValue.slice(1, searchValue.length), state.commandsGroups[searchValue[0]]);
 	                var hasFoundSomething = (foundCommands.length > 0);
 	                return __assign({}, state, { offset: 0, inputVal: action.value, commands: hasFoundSomething ? foundCommands : [DummyCommands_1.notFoundCommand] });
 	            }
@@ -24123,10 +24123,10 @@
 	                    ? __assign({}, command, { pText: makeSlicedText(text, ind, valLen) }) : null;
 	            }
 	            case ICommand_1.COMMAND.URL_COMMAND: {
-	                var text = command.text;
-	                var textFoundInd = text.toLowerCase().indexOf(searchValue);
-	                var url = command.url;
-	                var urlFoundInd = url.toLowerCase().indexOf(searchValue);
+	                var text = command.text.toLowerCase();
+	                var textFoundInd = text.indexOf(searchValue);
+	                var url = command.url.toLowerCase();
+	                var urlFoundInd = url.indexOf(searchValue);
 	                return ((textFoundInd >= 0) || (urlFoundInd >= 0))
 	                    ? __assign({}, command, { pText: makeSlicedText(text, textFoundInd, valLen), pUrl: makeSlicedText(url, urlFoundInd, valLen) }) : null;
 	            }

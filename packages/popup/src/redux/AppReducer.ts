@@ -44,7 +44,7 @@ export const appReducer = (state: IAppState = initState, action: ActionType | Me
 			const commandsGroupExists = (commandsGroupsChars.indexOf(action.value[0]) > -1);
 
 			if (commandsGroupExists) {
-				const foundCommands = searchCommands(action.value.slice(1, action.value.length), state.commandsGroups[action.value[0]]);
+				const foundCommands = searchCommands(searchValue.slice(1, searchValue.length), state.commandsGroups[searchValue[0]]);
 				const hasFoundSomething = (foundCommands.length > 0);
 				return {
 					...state,

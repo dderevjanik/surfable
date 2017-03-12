@@ -41,10 +41,10 @@ export const searchCommands = (searchValue: string, commandsGroup: ICommand[]): 
 						: null;
 				}
 				case COMMAND.URL_COMMAND: {
-					const text = command.text;
-					const textFoundInd = text.toLowerCase().indexOf(searchValue);
-					const url = command.url;
-					const urlFoundInd = url.toLowerCase().indexOf(searchValue);
+					const text = command.text.toLowerCase();
+					const textFoundInd = text.indexOf(searchValue);
+					const url = command.url.toLowerCase();
+					const urlFoundInd = url.indexOf(searchValue);
 					return ((textFoundInd >= 0) || (urlFoundInd >= 0))
 						? { ...command, pText: makeSlicedText(text, textFoundInd, valLen), pUrl: makeSlicedText(url, urlFoundInd, valLen) }
 						: null;
