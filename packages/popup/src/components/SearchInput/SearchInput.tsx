@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { searchInputS } from './SearchInput.style';
+import * as Style from './SearchInput.style';
 
 interface IProps {
 	readonly value: string;
@@ -11,14 +11,15 @@ export class SearchInput extends React.Component<IProps, {}>{
 	searchInput: HTMLInputElement = null;
 
 	componentDidMount() {
+		// Automatically focus on search input, so user will be able to type ASAP
 		this.searchInput.focus();
 	}
 
 	render() {
 		return (
 			<input
-				ref={(input) => { this.searchInput = input }}
-				className={ searchInputS }
+				ref={(input) => { this.searchInput = input; }}
+				className={Style.searchInput}
 				type="text"
 				onChange={(e) => this.props.onSearchChange(e.target.value)}
 				placeholder="type '?' to get help on actions you can take from here"

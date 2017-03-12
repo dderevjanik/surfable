@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { commandS, commandHighlightS, highlightCommandS, textS, descS, SSmallText } from './Command.style';
+import * as Style from './Command.style';
+import { Highlight } from './Highlight';
 
 interface IProps {
 	readonly active: boolean;
@@ -11,8 +12,8 @@ interface IProps {
 };
 
 export const QuickPanelCommand = (props: IProps) => (
-	<li className={ `${commandS} + ${props.active ? commandHighlightS : ''}` } onClick={() => props.onCommandClick()}>
-		<span className={highlightCommandS}>{props.text}</span>
-		<span className={SSmallText}>{props.desc}</span>
+	<li className={`${Style.command} + ${props.active ? Style.commandHighlight : ''}`} onClick={() => props.onCommandClick()}>
+		<span className={Style.text}>{props.text}</span>
+		<span className={Style.textSmall}>{props.desc}</span>
 	</li>
 );

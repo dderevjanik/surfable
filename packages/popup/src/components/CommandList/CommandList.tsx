@@ -1,13 +1,12 @@
 import * as React from 'react';
+import * as Style from './CommandList.style';
+import * as StyleCommand from './../Command/Command.style';
 import { sendAction } from 'surfable-common/src/Sender';
-import { Scrollbars } from 'react-custom-scrollbars';
-import { ulS } from './CommandList.style';
 import { SimpleCommand } from './../Command/SimpleCommand';
 import { DummyCommand } from './../Command/DummyCommand';
 import { UrlCommand } from './../Command/UrlCommand';
 import { QuickPanelCommand } from './../Command/QuickPanelCommand';
 import { ICommand, COMMAND } from './../../interfaces/ICommand';
-import { commandHighlightS } from './../Command/Command.style';
 import { isScrolledIntoView, scrollIntoElement } from './../../utils/PanelSideeffects';
 
 interface IProps {
@@ -39,10 +38,12 @@ export class CommandList extends React.Component<IProps, IState> {
 
 	componentDidUpdate() {
 		if (this.state.activeChanged) {
-			const commandlist = document.querySelector('.' + ulS) as HTMLElement;
-			const activeCommand = document.querySelector('.' + commandHighlightS) as HTMLElement;
+			// If we used arrows to navigate, check if it needs to scroll to command
+			const commandlist = document.querySelector('.' + Style.ul) as HTMLElement;
+			const activeCommand = document.querySelector('.' + StyleCommand.commandHighlight) as HTMLElement;
 			const state = isScrolledIntoView(commandlist, activeCommand);
 			if (state !== 0) {
+				// If command is out of view, scroll into it
 				scrollIntoElement(commandlist, activeCommand, state);
 			}
 		}
@@ -51,7 +52,7 @@ export class CommandList extends React.Component<IProps, IState> {
 
 	render() {
 		return (
-			<ul className={ulS} ref="commandList">
+			<ul className={Style.ul} ref="commandList">
 				{
 					this.props.commands.map((command, i) => {
 						switch (command.type) {

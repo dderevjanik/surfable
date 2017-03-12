@@ -1,6 +1,6 @@
 import { style } from 'typestyle';
 
-export const searchInputS = style({
+export const searchInput = style({
 	fontSize: '14px',
 	boxSizing: 'border-box',
 	backgroundColor: '#3C3C3C',

@@ -1,6 +1,9 @@
 import { style } from 'typestyle';
 
-export const commandS = style({
+/**
+ * Apply to command
+ */
+export const command = style({
 	cursor: 'pointer',
 	color: '#CCCCCC',
 	padding: '2px 8px',
@@ -8,6 +11,7 @@ export const commandS = style({
 	lineHeight: '20px',
 	overflow: 'hidden',
 	textOverflow: 'ellipsis',
+	whiteSpace: 'nowrap',
 	$nest: {
 		'&:hover': {
 			background: '#2A2D2E'
@@ -15,7 +19,10 @@ export const commandS = style({
 	}
 });
 
-export const commandHighlightS = style({
+/**
+ * When command is highlighted
+ */
+export const commandHighlight = style({
 	backgroundColor: '#073655',
 	$nest: {
 		'&:hover': {
@@ -24,31 +31,41 @@ export const commandHighlightS = style({
 	}
 });
 
-export const textS = style({
+/**
+ * Normal text
+ */
+export const text = style({
 	textAlign: 'left'
 });
 
-export const highlightS = style({
+/**
+ * Highlighted text - used when match with search value
+ */
+export const textHighlight = style({
 	color: '#0096FA',
 	fontWeight: 'bold'
 });
 
-export const highlightCommandS = style({
-	textAlign: 'left',
-	color: '#0096FA'
-});
-
-export const descS = style({
+/**
+ * Description, small text on right, used to show shortcuts
+ */
+export const description = style({
 	fontSize: '13px',
 	float: 'right'
 });
 
-export const iconS = style({
+/**
+ * Icon's style
+ */
+export const icon = style({
 	height: '1.1em',
 	marginRight: '5px'
 });
 
-export const SSmallText = style({
+/**
+ * Small text near normal text, used for urls and long description
+ */
+export const textSmall = style({
 	color: 'grey',
 	marginLeft: '5px'
 });

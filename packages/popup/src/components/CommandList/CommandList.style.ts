@@ -1,6 +1,6 @@
 import { style } from 'typestyle';
 
-export const ulS = style({
+export const ul = style({
 	fontSize: '13px',
 	padding: '0px',
 	listStyle: 'none',

@@ -1,6 +1,6 @@
 import { style } from 'typestyle';
 
-export const quickPanelS = style({
+export const quickPanel = style({
 	display: 'block',
 	backgroundColor: '#252526',
 	borderRadius: ['0px', '0px', '3px', '3px'],
@@ -11,6 +11,6 @@ export const quickPanelS = style({
 	paddingBottom: '6px'
 });
 
-export const searchBoxS = style({
+export const searchBox = style({
 	padding: '5px 6px'
 });

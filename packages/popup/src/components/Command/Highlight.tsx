@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { highlightS } from './Command.style';
+import * as Style from './Command.style';
 
 interface IProps {
     readonly partial: string[];
@@ -10,7 +10,7 @@ export const Highlight = ({ partial }) => (
         <span>
             {partial[0]}
         </span>
-        <span className={highlightS}>
+        <span className={Style.textHighlight}>
             {partial[1]}
         </span>
         <span>

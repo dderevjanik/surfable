@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { iconS, commandS, commandHighlightS, textS, descS, highlightS } from './Command.style';
+import * as Style from './Command.style';
 
 interface IProps {
 	readonly active: boolean;
@@ -9,7 +9,7 @@ interface IProps {
 };
 
 export const DummyCommand = (props: IProps) => (
-	<li className={ `${commandS} + ${props.active ? commandHighlightS : ''}` } onClick={() => props.onCommandClick()}>
+	<li className={`${Style.command} + ${props.active ? Style.commandHighlight : ''}`} onClick={() => props.onCommandClick()}>
 		<i> {props.text} </i>
 	</li>
 );

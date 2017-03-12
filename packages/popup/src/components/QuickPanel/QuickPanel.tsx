@@ -1,11 +1,11 @@
 import * as React from 'react';
-import {connect} from 'react-redux';
-import {CommandList} from './../CommandList/CommandList';
-import {SearchInput} from './../SearchInput/SearchInput';
-import {IAppState} from './../../interfaces/IAppState';
-import {ICommand} from './../../interfaces/ICommand';
-import {ACTION} from './../../redux/Actions';
-import {quickPanelS, searchBoxS} from './QuickPanel.style';
+import * as Style from './QuickPanel.style';
+import { connect } from 'react-redux';
+import { CommandList } from './../CommandList/CommandList';
+import { SearchInput } from './../SearchInput/SearchInput';
+import { IAppState } from './../../interfaces/IAppState';
+import { ICommand } from './../../interfaces/ICommand';
+import { ACTION } from './../../redux/Actions';
 
 interface IProps {
 	readonly activeInd: number;
@@ -16,13 +16,13 @@ interface IProps {
 };
 
 export const QuickPanelComponent = (props: IProps) => (
-	<div className={ quickPanelS }>
-		<div className={ searchBoxS }>
-			<SearchInput value={ props.inputVal } onSearchChange={ props.onSearchChange }/>
+	<div className={Style.quickPanel}>
+		<div className={Style.searchBox}>
+			<SearchInput value={props.inputVal} onSearchChange={props.onSearchChange} />
 		</div>
 		<div>
-			<CommandList commands={ props.commands } activeInd={props.activeInd}/>
-	</div>
+			<CommandList commands={props.commands} activeInd={props.activeInd} />
+		</div>
 	</div>
 );
 
@@ -34,6 +34,6 @@ export const QuickPanel = connect(
 		opened: state.opened
 	}),
 	dispatch => ({
-		onSearchChange: (value: string) => dispatch({type: ACTION.SEARCH_CHANGE, value: value})
+		onSearchChange: (value: string) => dispatch({ type: ACTION.SEARCH_CHANGE, value: value })
 	})
 )(QuickPanelComponent);

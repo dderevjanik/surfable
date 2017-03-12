@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { iconS, commandS, commandHighlightS, textS, descS, highlightS, SSmallText } from './Command.style';
+import * as Style from './Command.style';
 import { Highlight } from './Highlight';
 
 interface IProps {
@@ -15,14 +15,17 @@ interface IProps {
 };
 
 export const UrlCommand = (props: IProps) => (
-	<li className={`${commandS} + ${props.active ? commandHighlightS : ''}`} onClick={() => props.onCommandClick()}>
+	<li className={`${Style.command} + ${props.active ? Style.commandHighlight : ''}`} onClick={() => props.onCommandClick()}>
 		{((props.partialText) || (props.partialUrl))
-			? (<span className={textS}>
-				{props.imgUrl ? <img className={iconS} src={props.imgUrl} /> : null}
+			? (<span className={Style.text}>
+				{props.imgUrl ? <img className={Style.icon} src={props.imgUrl} /> : null}
 				<Highlight partial={props.partialText} />
-				<Highlight partial={props.partialUrl} />
+				<span className={Style.textSmall}><Highlight partial={props.partialUrl} /></span>
 			</span>)
-			: <span className={textS}>{props.imgUrl ? <img className={iconS} src={props.imgUrl} /> : null} {props.text} <span className={SSmallText}>{props.url}</span></span>
+			: <span className={Style.text}>
+				{props.imgUrl ? <img className={Style.icon} src={props.imgUrl} /> : null} {props.text}
+				<span className={Style.textSmall}>{props.url}</span>
+			</span>
 		}
 	</li>
 );
