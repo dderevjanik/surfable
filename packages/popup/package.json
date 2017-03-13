@@ -5,29 +5,42 @@
   "main": "dist/index.js",
   "author": "Daniel Derevjanik",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --watch",
     "dev": "webpack --colors --watch"
   },
   "license": "ISC",
   "dependencies": {
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
-    "react-scrollbar": "^0.5.1",
     "redux": "^3.6.0",
     "typestyle": "^1.0.0"
   },
   "devDependencies": {
     "@types/chrome": "0.0.39",
+    "@types/jest": "^19.2.1",
     "@types/react": "^15.0.1",
     "@types/react-dom": "^0.14.20",
     "@types/react-redux": "^4.4.35",
     "@types/redux": "^3.6.0",
+    "jest": "^19.0.2",
     "surfable-common": "0.0.1",
+    "ts-jest": "^19.0.0",
     "ts-loader": "^2.0.0",
     "tslint": "^4.4.2",
     "tslint-config-xo": "^1.1.0",
     "typescript": "^2.1.5",
     "webpack": "^1.14.0",
     "webpack-dev-server": "^1.16.2"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ]
   }
 }
