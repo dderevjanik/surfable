@@ -56,7 +56,7 @@ export const sendAction = (message: MessageType): void => {
 			break;
 		}
 		default: {
-			throw new Error(`Unexpected target '${message.target}' for message '${message.type}'`);
+			throw new Error(`Unexpected target '${message.target}' for message's type '${message.type}'`);
 		}
 	}
 }

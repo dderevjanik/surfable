@@ -3,8 +3,14 @@
  */
 export const addToStack = <T>(stack: T[], item: T, stackSize: number): T[] =>
 	(stack.length > stackSize)
-		? [item, ...stack.slice(1, stack.length)]
-		: [...stack, item];
+		? [...stack.slice(1, stack.length), item]
+		: [item, ...stack];
+
+/**
+ * Check if array includes item
+ */
+export const includes = <T>(array: T[], item: T): boolean =>
+	(array.indexOf(item) > -1);
 
 /**
  * Add new item to array
@@ -16,8 +22,8 @@ export const addItem = <T>(array: T[], item: T): T[] =>
  * Remove item from specific index
  */
 export const removeItem = <T>(array: T[], index: number): T[] => {
-	if (index === -1) {
-		throw new Error(`Index '${index}' is longer than array`);
+	if (index >= array.length) {
+		throw new Error(`Index '${index}' is longer than array's length '${array.length}'`);
 	}
 	return [
 		...array.slice(0, index),
@@ -29,8 +35,8 @@ export const removeItem = <T>(array: T[], index: number): T[] => {
  * Update item on specific index
  */
 export const updateItem = <T>(array: T[], item: T, index: number): T[] => {
-	if (index === -1) {
-		throw new Error(`Index '${index}' is longer than array`);
+	if (index >= array.length) {
+		throw new Error(`Index '${index}' is longer than array's length ${array.length}`);
 	}
 	return [
 		...array.slice(0, index),

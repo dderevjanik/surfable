@@ -5,26 +5,29 @@ import { addToStack, addItem, removeItem, updateItem } from 'surfable-common/src
 import { MAX_RECENT_TABS } from './../data/Constants';
 
 export const appReducer = (state: AppState = initState, action: ActionType): AppState => {
-	switch(action.type) {
+	switch (action.type) {
 		case ACTION.TAB_CREATED: {
+			const tabHistory = { id: action.tab.id, history: [action.tab] };
 			return {
 				...state,
-				openedTabs: addItem(state.openedTabs, action.tab)
+				openedTabs: addItem(state.openedTabs, tabHistory)
 			};
 		}
 		case ACTION.TAB_UPDATED: {
-			const tabIndex = findTabIndexById(state, action.tabId);
+			const tabIndex = state.openedTabs.map(t => t.id).indexOf(action.tabId);
+			const tabHistory = state.openedTabs[tabIndex];
+			const updatedHistory = { id: tabHistory.id, history: addToStack(tabHistory.history, action.tab, 10) };
 			return {
 				...state,
-				openedTabs: updateItem(state.openedTabs, action.tab, tabIndex)
+				openedTabs: updateItem(state.openedTabs, updatedHistory, tabIndex)
 			};
 		}
 		case ACTION.TAB_REMOVED: {
-			const tabIndex = findTabIndexById(state, action.tabId);
+			const tabIndex = state.openedTabs.map(t => t.id).indexOf(action.tabId);
 			return {
 				...state,
 				openedTabs: removeItem(state.openedTabs, tabIndex),
-				closedTabs: addToStack(state.closedTabs, state.openedTabs[tabIndex], MAX_RECENT_TABS)
+				closedTabs: addToStack(state.closedTabs, state.openedTabs[tabIndex].history[0], MAX_RECENT_TABS)
 			};
 		}
 		case ACTION.BOOKMARKS_UPDATED: {

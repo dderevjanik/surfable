@@ -119,7 +119,7 @@
 	            break;
 	        }
 	        default: {
-	            throw new Error("Unexpected target '" + message.target + "' for message '" + message.type + "'");
+	            throw new Error("Unexpected target '" + message.target + "' for message's type '" + message.type + "'");
 	        }
 	    }
 	};
@@ -325,6 +325,7 @@
 	    TAB_CLOSE: 'TAB_CLOSE',
 	    TAB_CLOSE_ALL: 'TAB_CLOSE_ALL',
 	    TAB_SWITCH: 'TAB_SWITCH',
+	    TAB_HISTORY: 'TAB_HISTORY',
 	    PRINT_PAGE: 'PRINT_PAGE',
 	    WINDOW_CLOSE: 'WINDOW_CLOSE',
 	    BOOKMARK_ADD: 'BOOKMARKD_ADD',
@@ -23867,17 +23868,17 @@
 	    if (state === void 0) { state = AppState_1.initState; }
 	    switch (action.type) {
 	        case Actions_1.ACTION.PANEL_EXECUTE_COMMAND: {
-	            Sender_1.sendAction(state.commands[state.offset].action);
+	            Sender_1.sendAction(state.foundCommands[state.offset].action);
 	            return __assign({}, state, { opened: false });
 	        }
 	        case Actions_1.ACTION.PANEL_UP: {
 	            var nextOffset = (state.offset - 1);
 	            return (nextOffset < 0)
-	                ? __assign({}, state, { offset: (state.commands.length - 1) }) : __assign({}, state, { offset: nextOffset });
+	                ? __assign({}, state, { offset: (state.foundCommands.length - 1) }) : __assign({}, state, { offset: nextOffset });
 	        }
 	        case Actions_1.ACTION.PANEL_DOWN: {
 	            var nextOffset = (state.offset + 1);
-	            return (nextOffset >= state.commands.length)
+	            return (nextOffset >= state.foundCommands.length)
 	                ? __assign({}, state, { offset: 0 }) : __assign({}, state, { offset: nextOffset });
 	        }
 	        case Actions_1.ACTION.PANEL_OPEN: {
@@ -23889,22 +23890,37 @@
 	        }
 	        case Actions_1.ACTION.SEARCH_CHANGE: {
 	            var searchValue = action.value.toLowerCase(); // Don't care about case
-	            var commandsGroupsChars = Object.keys(state.commandsGroups); // @TODO don't calculate all object keys everytime
-	            var commandsGroupExists = (commandsGroupsChars.indexOf(action.value[0]) > -1);
-	            if (commandsGroupExists) {
-	                var foundCommands = Search_1.searchCommands(searchValue.slice(1, searchValue.length), state.commandsGroups[searchValue[0]]);
-	                var hasFoundSomething = (foundCommands.length > 0);
-	                return __assign({}, state, { offset: 0, inputVal: action.value, commands: hasFoundSomething ? foundCommands : [DummyCommands_1.notFoundCommand] });
+	            if (state.searchMode === 0) {
+	                var commandsGroupsChars = Object.keys(state.commandsGroups); // @TODO don't calculate all object keys everytime
+	                var commandsGroupExists = (commandsGroupsChars.indexOf(action.value[0]) > -1); // Check if search value is from commands groups
+	                if (commandsGroupExists) {
+	                    var foundCommands = Search_1.searchCommands(searchValue.slice(1, searchValue.length), state.commandsGroups[searchValue[0]]);
+	                    var hasFoundSomething = (foundCommands.length > 0);
+	                    return __assign({}, state, { offset: 0, inputVal: action.value, foundCommands: hasFoundSomething ? foundCommands : [DummyCommands_1.notFoundCommand] });
+	                }
 	            }
-	            return __assign({}, state, { inputVal: action.value, commands: [DummyCommands_1.notFoundCommand] });
+	            else {
+	                var foundCommands = Search_1.searchCommands(searchValue.slice(1, searchValue.length), state.commands);
+	                var hasFoundSomething = (foundCommands.length > 0);
+	                return __assign({}, state, { offset: 0, inputVal: action.value, foundCommands: hasFoundSomething ? foundCommands : [DummyCommands_1.notFoundCommand] });
+	            }
+	            return __assign({}, state, { inputVal: action.value, foundCommands: [DummyCommands_1.notFoundCommand] });
+	        }
+	        case Messages_1.MESSAGE.TAB_HISTORY: {
+	            // @TODO don't use Message type here, it should be action or custom type
+	            chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+	                console.log(tabs[0].id);
+	            });
+	            return __assign({}, state, { offset: 0, inputVal: '', searchMode: 1, commands: state.foundCommands, foundCommands: state.foundCommands });
 	        }
 	        case Messages_1.MESSAGE.SYNC_TABS: {
+	            // @TODO dont create new tabs here, create them on 'background'
 	            // @TODO Sort them by commands groups
 	            var favoriteCommands = action.tabs.favorites
 	                .slice(0, 10)
 	                .map(function (favorite) { return CommandCreator_1.favoriteToCommand(favorite); });
 	            var openedTabCommands = action.tabs.openedTabs
-	                .map(function (tab, index) { return CommandCreator_1.tabToCommand(tab, index); });
+	                .map(function (tabHistory, index) { return CommandCreator_1.tabToCommand(tabHistory.history[0], index); });
 	            var closedTabCommands = action.tabs.closedTabs
 	                .map(function (tab) { return CommandCreator_1.closedToCommand(tab); });
 	            var bookmarks = action.tabs.bookmarks
@@ -23956,11 +23972,14 @@
 	var CommandsGroups_1 = __webpack_require__(225);
 	var Group_1 = __webpack_require__(222);
 	exports.initState = {
+	    searchMode: 0,
 	    commandsGroups: CommandsGroups_1.commandsGroups,
 	    commands: CommandsGroups_1.commandsGroups[Group_1.Group.COMMANDS],
+	    foundCommands: CommandsGroups_1.commandsGroups[Group_1.Group.COMMANDS],
 	    opened: false,
 	    offset: 0,
-	    inputVal: Group_1.Group.COMMANDS
+	    inputVal: Group_1.Group.COMMANDS,
+	    tabHistory: []
 	};
 
 
@@ -23989,6 +24008,9 @@
 	var Chrome_1 = __webpack_require__(228);
 	var ICommand_1 = __webpack_require__(229);
 	var Messages_1 = __webpack_require__(4);
+	/**
+	 * Help commands are showed, when '?' is presented in search input
+	 */
 	exports.help = [
 	    {
 	        type: ICommand_1.COMMAND.QUICKPANEL_COMMAND,
@@ -24061,6 +24083,11 @@
 	        type: ICommand_1.COMMAND.SIMPLE,
 	        cat: Category_1.CAT.PAGE, text: 'Zoom reset', desc: '',
 	        action: { type: Messages_1.MESSAGE.ZOOM, zoomType: 2 /* RESET */, target: 0 /* BACKGROUND */ }
+	    },
+	    {
+	        type: ICommand_1.COMMAND.SIMPLE,
+	        cat: Category_1.CAT.PAGE, text: 'Tab history', desc: '',
+	        action: { type: Messages_1.MESSAGE.TAB_HISTORY, target: 2 /* POPUP */ }
 	    },
 	    // WINDOW
 	    {
@@ -24269,7 +24296,7 @@
 	/**
 	 * Convert string to array of sliced substrings
 	 */
-	var makeSlicedText = function (text, index, length) {
+	exports.makeSlicedText = function (text, index, length) {
 	    return [
 	        text.slice(0, index),
 	        text.slice(index, (index + length)),
@@ -24296,13 +24323,13 @@
 	                var text = (command.cat + ': ' + command.text);
 	                var ind = text.toLowerCase().indexOf(searchValue);
 	                return (ind >= 0)
-	                    ? __assign({}, command, { pText: makeSlicedText(text, ind, valLen) }) : null;
+	                    ? __assign({}, command, { pText: exports.makeSlicedText(text, ind, valLen) }) : null;
 	            }
 	            case ICommand_1.COMMAND.DUMMY: {
 	                var text = command.text;
 	                var ind = text.toLowerCase().indexOf(searchValue);
 	                return (ind >= 0)
-	                    ? __assign({}, command, { pText: makeSlicedText(text, ind, valLen) }) : null;
+	                    ? __assign({}, command, { pText: exports.makeSlicedText(text, ind, valLen) }) : null;
 	            }
 	            case ICommand_1.COMMAND.URL_COMMAND: {
 	                var text = command.text.toLowerCase();
@@ -24310,7 +24337,7 @@
 	                var url = command.url.toLowerCase();
 	                var urlFoundInd = url.indexOf(searchValue);
 	                return ((textFoundInd >= 0) || (urlFoundInd >= 0))
-	                    ? __assign({}, command, { pText: makeSlicedText(text, textFoundInd, valLen), pUrl: makeSlicedText(url, urlFoundInd, valLen) }) : null;
+	                    ? __assign({}, command, { pText: exports.makeSlicedText(text, textFoundInd, valLen), pUrl: exports.makeSlicedText(url, urlFoundInd, valLen) }) : null;
 	            }
 	            default: {
 	                throw new Error("Undefined command type " + command + ". Make sure that search function is implemented for '" + command + "' type.");
@@ -24342,10 +24369,10 @@
 
 	"use strict";
 	var React = __webpack_require__(6);
-	var Style = __webpack_require__(253);
+	var Style = __webpack_require__(236);
 	var react_redux_1 = __webpack_require__(182);
-	var CommandList_1 = __webpack_require__(236);
-	var SearchInput_1 = __webpack_require__(251);
+	var CommandList_1 = __webpack_require__(243);
+	var SearchInput_1 = __webpack_require__(252);
 	var Actions_1 = __webpack_require__(223);
 	;
 	exports.QuickPanelComponent = function (props) { return (React.createElement("div", { className: Style.quickPanel },
@@ -24355,7 +24382,7 @@
 	        React.createElement(CommandList_1.CommandList, { commands: props.commands, activeInd: props.activeInd })))); };
 	exports.QuickPanel = react_redux_1.connect(function (state) { return ({
 	    activeInd: state.offset,
-	    commands: state.commands,
+	    commands: state.foundCommands,
 	    inputVal: state.inputVal,
 	    opened: state.opened
 	}); }, function (dispatch) { return ({
@@ -24368,76 +24395,20 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var React = __webpack_require__(6);
-	var Style = __webpack_require__(237);
-	var StyleCommand = __webpack_require__(244);
-	var Sender_1 = __webpack_require__(2);
-	var SimpleCommand_1 = __webpack_require__(245);
-	var DummyCommand_1 = __webpack_require__(247);
-	var UrlCommand_1 = __webpack_require__(248);
-	var QuickPanelCommand_1 = __webpack_require__(249);
-	var ICommand_1 = __webpack_require__(229);
-	var PanelSideeffects_1 = __webpack_require__(250);
-	var CommandList = (function (_super) {
-	    __extends(CommandList, _super);
-	    function CommandList(props) {
-	        var _this = _super.call(this, props) || this;
-	        _this.state = {
-	            activeChanged: true
-	        };
-	        return _this;
-	    }
-	    CommandList.prototype.componentWillReceiveProps = function (nextProps) {
-	        if (this.props.activeInd !== nextProps.activeInd) {
-	            // If we used arrows to navigate between commands
-	            this.setState({
-	                activeChanged: true
-	            });
-	        }
-	    };
-	    CommandList.prototype.componentDidUpdate = function () {
-	        if (this.state.activeChanged) {
-	            // If we used arrows to navigate, check if it needs to scroll to command
-	            var commandlist = document.querySelector('.' + Style.ul);
-	            var activeCommand = document.querySelector('.' + StyleCommand.commandHighlight);
-	            var state = PanelSideeffects_1.isScrolledIntoView(commandlist, activeCommand);
-	            if (state !== 0) {
-	                // If command is out of view, scroll into it
-	                PanelSideeffects_1.scrollIntoElement(commandlist, activeCommand, state);
-	            }
-	        }
-	        this.state.activeChanged = false;
-	    };
-	    CommandList.prototype.render = function () {
-	        var _this = this;
-	        return (React.createElement("ul", { className: Style.ul, ref: "commandList" }, this.props.commands.map(function (command, i) {
-	            switch (command.type) {
-	                case ICommand_1.COMMAND.QUICKPANEL_COMMAND: {
-	                    return (React.createElement(QuickPanelCommand_1.QuickPanelCommand, { key: i, active: (_this.props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text, group: command.group, desc: command.desc }));
-	                }
-	                case ICommand_1.COMMAND.DUMMY: {
-	                    return (React.createElement(DummyCommand_1.DummyCommand, { key: i, active: (_this.props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text }));
-	                }
-	                case ICommand_1.COMMAND.SIMPLE: {
-	                    return (React.createElement(SimpleCommand_1.SimpleCommand, { key: i, active: (_this.props.activeInd === i) ? true : false, category: command.cat, commandInd: i, desc: command.desc, imgUrl: command.imgUrl, name: command.text, onCommandClick: function () { return Sender_1.sendAction(command.action); }, partialText: command.pText }));
-	                }
-	                case ICommand_1.COMMAND.URL_COMMAND: {
-	                    return (React.createElement(UrlCommand_1.UrlCommand, { key: i, desc: command.desc, active: (_this.props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text, url: command.url, partialText: command.pText, partialUrl: command.pUrl, imgUrl: command.imgUrl }));
-	                }
-	                default: {
-	                    throw new Error("Undefined command type: " + command + ". Make sure that React component exists for command's type '" + command + "'");
-	                }
-	            }
-	        })));
-	    };
-	    return CommandList;
-	}(React.Component));
-	exports.CommandList = CommandList;
+	var typestyle_1 = __webpack_require__(237);
+	exports.quickPanel = typestyle_1.style({
+	    display: 'block',
+	    backgroundColor: '#252526',
+	    borderRadius: ['0px', '0px', '3px', '3px'],
+	    boxShadow: '0px 3px 5px dimgreyy',
+	    margin: '0 auto',
+	    textAlign: 'center',
+	    width: '100%',
+	    paddingBottom: '6px'
+	});
+	exports.searchBox = typestyle_1.style({
+	    padding: '5px 6px'
+	});
 
 
 /***/ },
@@ -24446,32 +24417,15 @@
 
 	"use strict";
 	var typestyle_1 = __webpack_require__(238);
-	exports.ul = typestyle_1.style({
-	    fontSize: '13px',
-	    padding: '0px',
-	    listStyle: 'none',
-	    marginTop: '3px',
-	    marginBottom: '0px',
-	    overflowY: 'scroll',
-	    maxHeight: '300px'
-	});
-
-
-/***/ },
-/* 238 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var typestyle_1 = __webpack_require__(239);
 	/**
 	 * All the CSS types in the 'types' namespace
 	 */
-	var types = __webpack_require__(243);
+	var types = __webpack_require__(242);
 	exports.types = types;
 	/**
 	 * Export certain utilities
 	 */
-	var utilities_1 = __webpack_require__(242);
+	var utilities_1 = __webpack_require__(241);
 	exports.extend = utilities_1.extend;
 	exports.classes = utilities_1.classes;
 	exports.media = utilities_1.media;
@@ -24535,13 +24489,13 @@
 
 
 /***/ },
-/* 239 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var formatting_1 = __webpack_require__(240);
-	var utilities_1 = __webpack_require__(242);
-	var FreeStyle = __webpack_require__(241);
+	var formatting_1 = __webpack_require__(239);
+	var utilities_1 = __webpack_require__(241);
+	var FreeStyle = __webpack_require__(240);
 	/**
 	 * Maintains a single stylesheet and keeps it in sync with requested styles
 	 */
@@ -24718,11 +24672,11 @@
 
 
 /***/ },
-/* 240 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var FreeStyle = __webpack_require__(241);
+	var FreeStyle = __webpack_require__(240);
 	/**
 	 * We need to do the following to *our* objects before passing to freestyle:
 	 * - For any `$nest` directive move up to FreeStyle style nesting
@@ -24775,7 +24729,7 @@
 
 
 /***/ },
-/* 241 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {"use strict";
@@ -25230,7 +25184,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 242 */
+/* 241 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -25318,10 +25272,87 @@
 
 
 /***/ },
-/* 243 */
+/* 242 */
 /***/ function(module, exports) {
 
 	"use strict";
+
+
+/***/ },
+/* 243 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(6);
+	var Style = __webpack_require__(244);
+	var StyleCommand = __webpack_require__(245);
+	var Sender_1 = __webpack_require__(2);
+	var SimpleCommand_1 = __webpack_require__(246);
+	var DummyCommand_1 = __webpack_require__(248);
+	var UrlCommand_1 = __webpack_require__(249);
+	var QuickPanelCommand_1 = __webpack_require__(250);
+	var ICommand_1 = __webpack_require__(229);
+	var PanelSideeffects_1 = __webpack_require__(251);
+	var CommandList = (function (_super) {
+	    __extends(CommandList, _super);
+	    function CommandList(props) {
+	        var _this = _super.call(this, props) || this;
+	        _this.state = {
+	            activeChanged: true
+	        };
+	        return _this;
+	    }
+	    CommandList.prototype.componentWillReceiveProps = function (nextProps) {
+	        if (this.props.activeInd !== nextProps.activeInd) {
+	            // If we used arrows to navigate between commands
+	            this.setState({
+	                activeChanged: true
+	            });
+	        }
+	    };
+	    CommandList.prototype.componentDidUpdate = function () {
+	        if (this.state.activeChanged) {
+	            // If we used arrows to navigate, check if it needs to scroll to command
+	            var commandlist = document.querySelector('.' + Style.ul);
+	            var activeCommand = document.querySelector('.' + StyleCommand.commandHighlight);
+	            var state = PanelSideeffects_1.isScrolledIntoView(commandlist, activeCommand);
+	            if (state !== 0) {
+	                // If command is out of view, scroll into it
+	                PanelSideeffects_1.scrollIntoElement(commandlist, activeCommand, state);
+	            }
+	        }
+	        this.state.activeChanged = false;
+	    };
+	    CommandList.prototype.render = function () {
+	        var _this = this;
+	        return (React.createElement("ul", { className: Style.ul, ref: "commandList" }, this.props.commands.map(function (command, i) {
+	            switch (command.type) {
+	                case ICommand_1.COMMAND.QUICKPANEL_COMMAND: {
+	                    return (React.createElement(QuickPanelCommand_1.QuickPanelCommand, { key: i, active: (_this.props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text, group: command.group, desc: command.desc }));
+	                }
+	                case ICommand_1.COMMAND.DUMMY: {
+	                    return (React.createElement(DummyCommand_1.DummyCommand, { key: i, active: (_this.props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text }));
+	                }
+	                case ICommand_1.COMMAND.SIMPLE: {
+	                    return (React.createElement(SimpleCommand_1.SimpleCommand, { key: i, active: (_this.props.activeInd === i) ? true : false, category: command.cat, commandInd: i, desc: command.desc, imgUrl: command.imgUrl, name: command.text, onCommandClick: function () { return Sender_1.sendAction(command.action); }, partialText: command.pText }));
+	                }
+	                case ICommand_1.COMMAND.URL_COMMAND: {
+	                    return (React.createElement(UrlCommand_1.UrlCommand, { key: i, desc: command.desc, active: (_this.props.activeInd === i) ? true : false, onCommandClick: function () { return Sender_1.sendAction(command.action); }, commandInd: i, text: command.text, url: command.url, partialText: command.pText, partialUrl: command.pUrl, imgUrl: command.imgUrl }));
+	                }
+	                default: {
+	                    throw new Error("Undefined command type: " + command + ". Make sure that React component exists for command's type '" + command + "'");
+	                }
+	            }
+	        })));
+	    };
+	    return CommandList;
+	}(React.Component));
+	exports.CommandList = CommandList;
 
 
 /***/ },
@@ -25329,7 +25360,24 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var typestyle_1 = __webpack_require__(238);
+	var typestyle_1 = __webpack_require__(237);
+	exports.ul = typestyle_1.style({
+	    fontSize: '13px',
+	    padding: '0px',
+	    listStyle: 'none',
+	    marginTop: '3px',
+	    marginBottom: '0px',
+	    overflowY: 'scroll',
+	    maxHeight: '300px'
+	});
+
+
+/***/ },
+/* 245 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var typestyle_1 = __webpack_require__(237);
 	/**
 	 * Apply to command
 	 */
@@ -25396,13 +25444,13 @@
 
 
 /***/ },
-/* 245 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
-	var Style = __webpack_require__(244);
-	var Highlight_1 = __webpack_require__(246);
+	var Style = __webpack_require__(245);
+	var Highlight_1 = __webpack_require__(247);
 	;
 	exports.SimpleCommand = function (props) { return (React.createElement("li", { className: Style.command + " + " + (props.active ? Style.commandHighlight : ''), onClick: function () { return props.onCommandClick(); } },
 	    (props.partialText)
@@ -25415,12 +25463,12 @@
 
 
 /***/ },
-/* 246 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
-	var Style = __webpack_require__(244);
+	var Style = __webpack_require__(245);
 	exports.Highlight = function (_a) {
 	    var partial = _a.partial;
 	    return (React.createElement("span", null,
@@ -25431,12 +25479,12 @@
 
 
 /***/ },
-/* 247 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
-	var Style = __webpack_require__(244);
+	var Style = __webpack_require__(245);
 	;
 	exports.DummyCommand = function (props) { return (React.createElement("li", { className: Style.command + " + " + (props.active ? Style.commandHighlight : ''), onClick: function () { return props.onCommandClick(); } },
 	    React.createElement("i", null,
@@ -25446,13 +25494,13 @@
 
 
 /***/ },
-/* 248 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
-	var Style = __webpack_require__(244);
-	var Highlight_1 = __webpack_require__(246);
+	var Style = __webpack_require__(245);
+	var Highlight_1 = __webpack_require__(247);
 	;
 	exports.UrlCommand = function (props) { return (React.createElement("li", { className: Style.command + " + " + (props.active ? Style.commandHighlight : ''), onClick: function () { return props.onCommandClick(); } }, ((props.partialText) || (props.partialUrl))
 	    ? (React.createElement("span", { className: Style.text },
@@ -25468,20 +25516,20 @@
 
 
 /***/ },
-/* 249 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var React = __webpack_require__(6);
-	var Style = __webpack_require__(244);
+	var Style = __webpack_require__(245);
 	;
 	exports.QuickPanelCommand = function (props) { return (React.createElement("li", { className: Style.command + " + " + (props.active ? Style.commandHighlight : ''), onClick: function () { return props.onCommandClick(); } },
-	    React.createElement("span", { className: Style.text }, props.text),
+	    React.createElement("span", { className: Style.textHighlight }, props.text),
 	    React.createElement("span", { className: Style.textSmall }, props.desc))); };
 
 
 /***/ },
-/* 250 */
+/* 251 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -25512,7 +25560,7 @@
 
 
 /***/ },
-/* 251 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25522,7 +25570,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(6);
-	var Style = __webpack_require__(252);
+	var Style = __webpack_require__(253);
 	var SearchInput = (function (_super) {
 	    __extends(SearchInput, _super);
 	    function SearchInput() {
@@ -25545,11 +25593,11 @@
 
 
 /***/ },
-/* 252 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var typestyle_1 = __webpack_require__(238);
+	var typestyle_1 = __webpack_require__(237);
 	exports.searchInput = typestyle_1.style({
 	    fontSize: '14px',
 	    boxSizing: 'border-box',
@@ -25559,27 +25607,6 @@
 	    lineHeight: '1.5em',
 	    padding: '3px 5px',
 	    width: '100%'
-	});
-
-
-/***/ },
-/* 253 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var typestyle_1 = __webpack_require__(238);
-	exports.quickPanel = typestyle_1.style({
-	    display: 'block',
-	    backgroundColor: '#252526',
-	    borderRadius: ['0px', '0px', '3px', '3px'],
-	    boxShadow: '0px 3px 5px dimgreyy',
-	    margin: '0 auto',
-	    textAlign: 'center',
-	    width: '100%',
-	    paddingBottom: '6px'
-	});
-	exports.searchBox = typestyle_1.style({
-	    padding: '5px 6px'
 	});
 
 
@@ -25620,7 +25647,7 @@
 	exports.keyListener = function () {
 	    document.onkeydown = function (e) {
 	        // Listen only for arrows, enter and esc keys
-	        if ((e.keyCode >= 37) && (e.keyCode <= 40) || (e.keyCode === KeyMap_1.keyMap.esc) || (e.keyCode === KeyMap_1.keyMap.enter)) {
+	        if ((e.keyCode === KeyMap_1.keyMap.up) || (e.keyCode === KeyMap_1.keyMap.down) || (e.keyCode === KeyMap_1.keyMap.enter)) {
 	            processKeyEvent(e);
 	        }
 	    };
@@ -25673,6 +25700,9 @@
 	                    store_1.store.dispatch(message);
 	                    break;
 	                case Messages_1.MESSAGE.SEARCH_CHANGE:
+	                    store_1.store.dispatch(message);
+	                    break;
+	                case Messages_1.MESSAGE.TAB_HISTORY:
 	                    store_1.store.dispatch(message);
 	                    break;
 	                default: {

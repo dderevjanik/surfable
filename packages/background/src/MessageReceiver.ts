@@ -2,7 +2,7 @@ import { EZoomType } from 'surfable-common/src/enums/EZoomType';
 import { ETarget } from 'surfable-common/src/enums/ETarget';
 import { MessageType, MESSAGE } from 'surfable-common/src/Messages';
 import { sendToPopup, sendToContent } from 'surfable-common/src/Sender';
-import { JAVASCRIPT_PRINT_PAGE } from './Constants';
+import { JAVASCRIPT_PRINT_PAGE, ZOOM_MULTIPLIER } from './data/Constants';
 import { getActiveTab, getTabZoomFactor, getCurrentWindowTabs, getCurrentWindow } from './ChromeWrapper';
 import { store } from './redux/Store';
 
@@ -23,7 +23,7 @@ export const messageReceiver = (): void => {
 					if (message.url.length > 0) {
 						chrome.tabs.create({ url: message.url });
 					} else {
-						// If urls isn't specified, open an empty tab
+						// If url isn't specified, open an empty tab
 						chrome.tabs.create({});
 					}
 					break;
@@ -48,11 +48,11 @@ export const messageReceiver = (): void => {
 					const zoomFactor = await getTabZoomFactor(activeTab.id);
 					switch (message.zoomType) {
 						case EZoomType.IN: {
-							chrome.tabs.setZoom(activeTab.id, zoomFactor + 0.2);
+							chrome.tabs.setZoom(activeTab.id, zoomFactor + ZOOM_MULTIPLIER);
 							break;
 						}
 						case EZoomType.OUT: {
-							chrome.tabs.setZoom(activeTab.id, zoomFactor - 0.2);
+							chrome.tabs.setZoom(activeTab.id, zoomFactor - ZOOM_MULTIPLIER);
 							break;
 						}
 						case EZoomType.RESET: {

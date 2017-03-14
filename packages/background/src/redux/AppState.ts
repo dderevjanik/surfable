@@ -12,7 +12,7 @@ export const initState: AppState = {
 
 // Fill store
 chrome.tabs.query({ currentWindow: true }, tabs => {
-	initState.openedTabs = tabs;
+	initState.openedTabs = tabs.map(t => ({ id: t.id, history: [t] }));
 });
 
 chrome.topSites.get(mostVisited => {

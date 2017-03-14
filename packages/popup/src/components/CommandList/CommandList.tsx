@@ -1,11 +1,11 @@
 import * as React from 'react';
 import * as Style from './CommandList.style';
-import * as StyleCommand from './../Command/Command.style';
+import * as StyleCommand from './../Commands/Command.style';
 import { sendAction } from 'surfable-common/src/Sender';
-import { SimpleCommand } from './../Command/SimpleCommand';
-import { DummyCommand } from './../Command/DummyCommand';
-import { UrlCommand } from './../Command/UrlCommand';
-import { QuickPanelCommand } from './../Command/QuickPanelCommand';
+import { SimpleCommand } from './../Commands/SimpleCommand';
+import { DummyCommand } from './../Commands/DummyCommand';
+import { UrlCommand } from './../Commands/UrlCommand';
+import { QuickPanelCommand } from './../Commands/QuickPanelCommand';
 import { ICommand, COMMAND } from './../../interfaces/ICommand';
 import { isScrolledIntoView, scrollIntoElement } from './../../utils/PanelSideeffects';
 

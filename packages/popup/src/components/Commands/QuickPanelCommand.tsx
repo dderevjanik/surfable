@@ -13,7 +13,7 @@ interface IProps {
 
 export const QuickPanelCommand = (props: IProps) => (
 	<li className={`${Style.command} + ${props.active ? Style.commandHighlight : ''}`} onClick={() => props.onCommandClick()}>
-		<span className={Style.text}>{props.text}</span>
+		<span className={Style.textHighlight}>{props.text}</span>
 		<span className={Style.textSmall}>{props.desc}</span>
 	</li>
 );

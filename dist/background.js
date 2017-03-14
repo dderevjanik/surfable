@@ -53,8 +53,8 @@
 
 	"use strict";
 	const MessageReceiver_1 = __webpack_require__(2);
-	const EventListener_1 = __webpack_require__(35);
-	const Synchronize_1 = __webpack_require__(36);
+	const EventListener_1 = __webpack_require__(37);
+	const Synchronize_1 = __webpack_require__(38);
 	EventListener_1.eventListener();
 	MessageReceiver_1.messageReceiver();
 	Synchronize_1.synchronizeTabs();
@@ -75,9 +75,9 @@
 	};
 	const Messages_1 = __webpack_require__(3);
 	const Sender_1 = __webpack_require__(4);
-	const Constants_1 = __webpack_require__(37);
-	const ChromeWrapper_1 = __webpack_require__(38);
-	const Store_1 = __webpack_require__(6);
+	const Constants_1 = __webpack_require__(36);
+	const ChromeWrapper_1 = __webpack_require__(7);
+	const Store_1 = __webpack_require__(8);
 	/*
 	 * Will listen on events/messages incoming from other parts of extension
 	 */
@@ -97,7 +97,7 @@
 	                            chrome.tabs.create({ url: message.url });
 	                        }
 	                        else {
-	                            // If urls isn't specified, open an empty tab
+	                            // If url isn't specified, open an empty tab
 	                            chrome.tabs.create({});
 	                        }
 	                        break;
@@ -122,11 +122,11 @@
 	                        const zoomFactor = yield ChromeWrapper_1.getTabZoomFactor(activeTab.id);
 	                        switch (message.zoomType) {
 	                            case 0 /* IN */: {
-	                                chrome.tabs.setZoom(activeTab.id, zoomFactor + 0.2);
+	                                chrome.tabs.setZoom(activeTab.id, zoomFactor + Constants_1.ZOOM_MULTIPLIER);
 	                                break;
 	                            }
 	                            case 1 /* OUT */: {
-	                                chrome.tabs.setZoom(activeTab.id, zoomFactor - 0.2);
+	                                chrome.tabs.setZoom(activeTab.id, zoomFactor - Constants_1.ZOOM_MULTIPLIER);
 	                                break;
 	                            }
 	                            case 2 /* RESET */: {
@@ -192,6 +192,7 @@
 	    TAB_CLOSE: 'TAB_CLOSE',
 	    TAB_CLOSE_ALL: 'TAB_CLOSE_ALL',
 	    TAB_SWITCH: 'TAB_SWITCH',
+	    TAB_HISTORY: 'TAB_HISTORY',
 	    PRINT_PAGE: 'PRINT_PAGE',
 	    WINDOW_CLOSE: 'WINDOW_CLOSE',
 	    BOOKMARK_ADD: 'BOOKMARKD_ADD',
@@ -255,7 +256,7 @@
 	            break;
 	        }
 	        default: {
-	            throw new Error(`Unexpected target '${message.target}' for message '${message.type}'`);
+	            throw new Error(`Unexpected target '${message.target}' for message's type '${message.type}'`);
 	        }
 	    }
 	};
@@ -449,18 +450,67 @@
 
 
 /***/ },
-/* 6 */
+/* 6 */,
+/* 7 */
+/***/ function(module, exports) {
+
+	"use strict";
+	// @TODO: add reject
+	// @TODO: try to solve all Promises with abstract wrapper
+	function getCurrentWindow() {
+	    return new Promise(resolve => {
+	        chrome.windows.getCurrent(window => {
+	            resolve(window);
+	        });
+	    });
+	}
+	exports.getCurrentWindow = getCurrentWindow;
+	;
+	function getCurrentWindowTabs() {
+	    return new Promise(resolve => {
+	        chrome.tabs.query({ currentWindow: true }, tabs => {
+	            resolve(tabs);
+	        });
+	    });
+	}
+	exports.getCurrentWindowTabs = getCurrentWindowTabs;
+	function getActiveTab() {
+	    return new Promise(resolve => {
+	        chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
+	            if (tabs.length === 0) {
+	                throw new Error('no active tab in current window');
+	            }
+	            if (tabs.length > 1) {
+	                throw new Error('cannot have more than one active tab per window');
+	            }
+	            resolve(tabs[0]);
+	        });
+	    });
+	}
+	exports.getActiveTab = getActiveTab;
+	function getTabZoomFactor(tabId) {
+	    return new Promise(resolve => {
+	        chrome.tabs.getZoom(tabId, zoomFactor => {
+	            resolve(zoomFactor);
+	        });
+	    });
+	}
+	exports.getTabZoomFactor = getTabZoomFactor;
+
+
+/***/ },
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	const redux_1 = __webpack_require__(7);
-	const AppReducer_1 = __webpack_require__(28);
-	const AppState_1 = __webpack_require__(29);
+	const redux_1 = __webpack_require__(9);
+	const AppReducer_1 = __webpack_require__(30);
+	const AppState_1 = __webpack_require__(31);
 	exports.store = redux_1.createStore(AppReducer_1.appReducer, AppState_1.initState);
 
 
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -468,27 +518,27 @@
 	exports.__esModule = true;
 	exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports.combineReducers = exports.createStore = undefined;
 
-	var _createStore = __webpack_require__(8);
+	var _createStore = __webpack_require__(10);
 
 	var _createStore2 = _interopRequireDefault(_createStore);
 
-	var _combineReducers = __webpack_require__(23);
+	var _combineReducers = __webpack_require__(25);
 
 	var _combineReducers2 = _interopRequireDefault(_combineReducers);
 
-	var _bindActionCreators = __webpack_require__(25);
+	var _bindActionCreators = __webpack_require__(27);
 
 	var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
 
-	var _applyMiddleware = __webpack_require__(26);
+	var _applyMiddleware = __webpack_require__(28);
 
 	var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
 
-	var _compose = __webpack_require__(27);
+	var _compose = __webpack_require__(29);
 
 	var _compose2 = _interopRequireDefault(_compose);
 
-	var _warning = __webpack_require__(24);
+	var _warning = __webpack_require__(26);
 
 	var _warning2 = _interopRequireDefault(_warning);
 
@@ -512,7 +562,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 8 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -521,11 +571,11 @@
 	exports.ActionTypes = undefined;
 	exports['default'] = createStore;
 
-	var _isPlainObject = __webpack_require__(9);
+	var _isPlainObject = __webpack_require__(11);
 
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-	var _symbolObservable = __webpack_require__(19);
+	var _symbolObservable = __webpack_require__(21);
 
 	var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
 
@@ -778,12 +828,12 @@
 	}
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(10),
-	    getPrototype = __webpack_require__(16),
-	    isObjectLike = __webpack_require__(18);
+	var baseGetTag = __webpack_require__(12),
+	    getPrototype = __webpack_require__(18),
+	    isObjectLike = __webpack_require__(20);
 
 	/** `Object#toString` result references. */
 	var objectTag = '[object Object]';
@@ -846,12 +896,12 @@
 
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(11),
-	    getRawTag = __webpack_require__(14),
-	    objectToString = __webpack_require__(15);
+	var Symbol = __webpack_require__(13),
+	    getRawTag = __webpack_require__(16),
+	    objectToString = __webpack_require__(17);
 
 	/** `Object#toString` result references. */
 	var nullTag = '[object Null]',
@@ -880,10 +930,10 @@
 
 
 /***/ },
-/* 11 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(12);
+	var root = __webpack_require__(14);
 
 	/** Built-in value references. */
 	var Symbol = root.Symbol;
@@ -892,10 +942,10 @@
 
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var freeGlobal = __webpack_require__(13);
+	var freeGlobal = __webpack_require__(15);
 
 	/** Detect free variable `self`. */
 	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
@@ -907,7 +957,7 @@
 
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
@@ -918,10 +968,10 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 14 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(11);
+	var Symbol = __webpack_require__(13);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -970,7 +1020,7 @@
 
 
 /***/ },
-/* 15 */
+/* 17 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -998,10 +1048,10 @@
 
 
 /***/ },
-/* 16 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var overArg = __webpack_require__(17);
+	var overArg = __webpack_require__(19);
 
 	/** Built-in value references. */
 	var getPrototype = overArg(Object.getPrototypeOf, Object);
@@ -1010,7 +1060,7 @@
 
 
 /***/ },
-/* 17 */
+/* 19 */
 /***/ function(module, exports) {
 
 	/**
@@ -1031,7 +1081,7 @@
 
 
 /***/ },
-/* 18 */
+/* 20 */
 /***/ function(module, exports) {
 
 	/**
@@ -1066,14 +1116,14 @@
 
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(20);
+	module.exports = __webpack_require__(22);
 
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, module) {'use strict';
@@ -1082,7 +1132,7 @@
 	  value: true
 	});
 
-	var _ponyfill = __webpack_require__(22);
+	var _ponyfill = __webpack_require__(24);
 
 	var _ponyfill2 = _interopRequireDefault(_ponyfill);
 
@@ -1105,10 +1155,10 @@
 
 	var result = (0, _ponyfill2['default'])(root);
 	exports['default'] = result;
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(21)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(23)(module)))
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -1124,7 +1174,7 @@
 
 
 /***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1152,7 +1202,7 @@
 	};
 
 /***/ },
-/* 23 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -1160,13 +1210,13 @@
 	exports.__esModule = true;
 	exports['default'] = combineReducers;
 
-	var _createStore = __webpack_require__(8);
+	var _createStore = __webpack_require__(10);
 
-	var _isPlainObject = __webpack_require__(9);
+	var _isPlainObject = __webpack_require__(11);
 
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-	var _warning = __webpack_require__(24);
+	var _warning = __webpack_require__(26);
 
 	var _warning2 = _interopRequireDefault(_warning);
 
@@ -1300,7 +1350,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 24 */
+/* 26 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1330,7 +1380,7 @@
 	}
 
 /***/ },
-/* 25 */
+/* 27 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1386,7 +1436,7 @@
 	}
 
 /***/ },
-/* 26 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1397,7 +1447,7 @@
 
 	exports['default'] = applyMiddleware;
 
-	var _compose = __webpack_require__(27);
+	var _compose = __webpack_require__(29);
 
 	var _compose2 = _interopRequireDefault(_compose);
 
@@ -1449,7 +1499,7 @@
 	}
 
 /***/ },
-/* 27 */
+/* 29 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1492,7 +1542,7 @@
 	}
 
 /***/ },
-/* 28 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1504,23 +1554,25 @@
 	    }
 	    return t;
 	};
-	const AppState_1 = __webpack_require__(29);
-	const Actions_1 = __webpack_require__(31);
-	const Utils_1 = __webpack_require__(32);
-	const Immutable_1 = __webpack_require__(33);
-	const Constants_1 = __webpack_require__(34);
+	const AppState_1 = __webpack_require__(31);
+	const Actions_1 = __webpack_require__(33);
+	const Immutable_1 = __webpack_require__(35);
+	const Constants_1 = __webpack_require__(36);
 	exports.appReducer = (state = AppState_1.initState, action) => {
 	    switch (action.type) {
 	        case Actions_1.ACTION.TAB_CREATED: {
-	            return __assign({}, state, { openedTabs: Immutable_1.addItem(state.openedTabs, action.tab) });
+	            const tabHistory = { id: action.tab.id, history: [action.tab] };
+	            return __assign({}, state, { openedTabs: Immutable_1.addItem(state.openedTabs, tabHistory) });
 	        }
 	        case Actions_1.ACTION.TAB_UPDATED: {
-	            const tabIndex = Utils_1.findTabIndexById(state, action.tabId);
-	            return __assign({}, state, { openedTabs: Immutable_1.updateItem(state.openedTabs, action.tab, tabIndex) });
+	            const tabIndex = state.openedTabs.map(t => t.id).indexOf(action.tabId);
+	            const tabHistory = state.openedTabs[tabIndex];
+	            const updatedHistory = { id: tabHistory.id, history: Immutable_1.addToStack(tabHistory.history, action.tab, 10) };
+	            return __assign({}, state, { openedTabs: Immutable_1.updateItem(state.openedTabs, updatedHistory, tabIndex) });
 	        }
 	        case Actions_1.ACTION.TAB_REMOVED: {
-	            const tabIndex = Utils_1.findTabIndexById(state, action.tabId);
-	            return __assign({}, state, { openedTabs: Immutable_1.removeItem(state.openedTabs, tabIndex), closedTabs: Immutable_1.addToStack(state.closedTabs, state.openedTabs[tabIndex], Constants_1.MAX_RECENT_TABS) });
+	            const tabIndex = state.openedTabs.map(t => t.id).indexOf(action.tabId);
+	            return __assign({}, state, { openedTabs: Immutable_1.removeItem(state.openedTabs, tabIndex), closedTabs: Immutable_1.addToStack(state.closedTabs, state.openedTabs[tabIndex].history[0], Constants_1.MAX_RECENT_TABS) });
 	        }
 	        case Actions_1.ACTION.BOOKMARKS_UPDATED: {
 	            // TODO: Add bookmarks handler
@@ -1534,11 +1586,11 @@
 
 
 /***/ },
-/* 29 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	const Bookmarks_1 = __webpack_require__(30);
+	const Bookmarks_1 = __webpack_require__(32);
 	exports.initState = {
 	    openedTabs: [],
 	    closedTabs: [],
@@ -1547,7 +1599,7 @@
 	};
 	// Fill store
 	chrome.tabs.query({ currentWindow: true }, tabs => {
-	    exports.initState.openedTabs = tabs;
+	    exports.initState.openedTabs = tabs.map(t => ({ id: t.id, history: [t] }));
 	});
 	chrome.topSites.get(mostVisited => {
 	    exports.initState.favorites = mostVisited;
@@ -1559,7 +1611,7 @@
 
 
 /***/ },
-/* 30 */
+/* 32 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1573,7 +1625,7 @@
 
 
 /***/ },
-/* 31 */
+/* 33 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1586,19 +1638,8 @@
 
 
 /***/ },
-/* 32 */
-/***/ function(module, exports) {
-
-	"use strict";
-	/**
-	 * Return index of tab in openedtabs with specific id
-	 * @TODO extends to access more than just openedtabs
-	 */
-	exports.findTabIndexById = (state, tabId) => state.openedTabs.reduce((acc, tab, index) => (tab.id === tabId) ? index : acc, -1);
-
-
-/***/ },
-/* 33 */
+/* 34 */,
+/* 35 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1606,8 +1647,12 @@
 	 * Add item to limited stack
 	 */
 	exports.addToStack = (stack, item, stackSize) => (stack.length > stackSize)
-	    ? [item, ...stack.slice(1, stack.length)]
-	    : [...stack, item];
+	    ? [...stack.slice(1, stack.length), item]
+	    : [item, ...stack];
+	/**
+	 * Check if array includes item
+	 */
+	exports.includes = (array, item) => (array.indexOf(item) > -1);
 	/**
 	 * Add new item to array
 	 */
@@ -1616,8 +1661,8 @@
 	 * Remove item from specific index
 	 */
 	exports.removeItem = (array, index) => {
-	    if (index === -1) {
-	        throw new Error(`Index '${index}' is longer than array`);
+	    if (index >= array.length) {
+	        throw new Error(`Index '${index}' is longer than array's length '${array.length}'`);
 	    }
 	    return [
 	        ...array.slice(0, index),
@@ -1628,8 +1673,8 @@
 	 * Update item on specific index
 	 */
 	exports.updateItem = (array, item, index) => {
-	    if (index === -1) {
-	        throw new Error(`Index '${index}' is longer than array`);
+	    if (index >= array.length) {
+	        throw new Error(`Index '${index}' is longer than array's length ${array.length}`);
 	    }
 	    return [
 	        ...array.slice(0, index),
@@ -1640,22 +1685,24 @@
 
 
 /***/ },
-/* 34 */
+/* 36 */
 /***/ function(module, exports) {
 
 	"use strict";
 	exports.MAX_RECENT_TABS = 10;
-	exports.MAX_TEXT_LENGTH = 90; // REFACTOR: if command doesn't have icon, it should be longer
+	exports.MAX_TEXT_LENGTH = 90; // @TODO refactor, if command doesn't have icon, it should be longer
 	exports.MAX_TEXT_LENGTH_ICON = 90;
+	exports.ZOOM_MULTIPLIER = 0.2;
+	exports.JAVASCRIPT_PRINT_PAGE = 'javascript:window.print();';
 
 
 /***/ },
-/* 35 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	const Store_1 = __webpack_require__(6);
-	const Actions_1 = __webpack_require__(31);
+	const Store_1 = __webpack_require__(8);
+	const Actions_1 = __webpack_require__(33);
 	/**
 	 * Will listen on events incoming from chrome
 	 */
@@ -1682,11 +1729,11 @@
 
 
 /***/ },
-/* 36 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	const Store_1 = __webpack_require__(6);
+	const Store_1 = __webpack_require__(8);
 	const Messages_1 = __webpack_require__(3);
 	const Sender_1 = __webpack_require__(4);
 	/**
@@ -1697,62 +1744,6 @@
 	        Sender_1.sendToPopup({ type: Messages_1.MESSAGE.SYNC_TABS, tabs: Store_1.store.getState() });
 	    });
 	};
-
-
-/***/ },
-/* 37 */
-/***/ function(module, exports) {
-
-	"use strict";
-	exports.JAVASCRIPT_PRINT_PAGE = 'javascript:window.print();';
-
-
-/***/ },
-/* 38 */
-/***/ function(module, exports) {
-
-	// @TODO: add reject
-	// @TODO: try to solve all Promises with abstract wrapper
-	"use strict";
-	function getCurrentWindow() {
-	    return new Promise(resolve => {
-	        chrome.windows.getCurrent(window => {
-	            resolve(window);
-	        });
-	    });
-	}
-	exports.getCurrentWindow = getCurrentWindow;
-	;
-	function getCurrentWindowTabs() {
-	    return new Promise(resolve => {
-	        chrome.tabs.query({ currentWindow: true }, tabs => {
-	            resolve(tabs);
-	        });
-	    });
-	}
-	exports.getCurrentWindowTabs = getCurrentWindowTabs;
-	function getActiveTab() {
-	    return new Promise(resolve => {
-	        chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
-	            if (tabs.length === 0) {
-	                throw new Error('no active tab in current window');
-	            }
-	            if (tabs.length > 1) {
-	                throw new Error('cannot have more than one active tab per window');
-	            }
-	            resolve(tabs[0]);
-	        });
-	    });
-	}
-	exports.getActiveTab = getActiveTab;
-	function getTabZoomFactor(tabId) {
-	    return new Promise(resolve => {
-	        chrome.tabs.getZoom(tabId, zoomFactor => {
-	            resolve(zoomFactor);
-	        });
-	    });
-	}
-	exports.getTabZoomFactor = getTabZoomFactor;
 
 
 /***/ }

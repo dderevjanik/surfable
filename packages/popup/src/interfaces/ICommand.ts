@@ -9,7 +9,7 @@ export const COMMAND = {
 };
 
 interface ICommandBase {
-	// REFACTOR: Try to find proper way how to add 'type' property to this interface
+	// @TODO try to find proper way how to add 'type' property to this interface
 	readonly text: string;
 	readonly action: MessageType;
 }
@@ -27,7 +27,7 @@ export interface ISimpleCommand extends ICommandBase {
 	readonly desc: string;
 	readonly cat: string;
 	readonly imgUrl?: string;
-	readonly pText?: string[]; // Refactor, please :-)
+	readonly pText?: string[]; // @TODO Refactor, please :-)
 }
 
 export interface IDummyCommand extends ICommandBase {

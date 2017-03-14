@@ -29,7 +29,7 @@ export const QuickPanelComponent = (props: IProps) => (
 export const QuickPanel = connect(
 	(state: IAppState) => ({
 		activeInd: state.offset,
-		commands: state.commands,
+		commands: state.foundCommands,
 		inputVal: state.inputVal,
 		opened: state.opened
 	}),

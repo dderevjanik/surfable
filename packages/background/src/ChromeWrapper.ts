@@ -1,8 +1,11 @@
+type Tab = chrome.tabs.Tab;
+type Window = chrome.windows.Window;
+
 // @TODO: add reject
 // @TODO: try to solve all Promises with abstract wrapper
 
 export function getCurrentWindow() {
-	return new Promise<chrome.windows.Window>(resolve => {
+	return new Promise<Window>(resolve => {
 		chrome.windows.getCurrent(window => {
 			resolve(window);
 		});
@@ -10,7 +13,7 @@ export function getCurrentWindow() {
 };
 
 export function getCurrentWindowTabs() {
-	return new Promise<chrome.tabs.Tab[]>(resolve => {
+	return new Promise<Tab[]>(resolve => {
 		chrome.tabs.query({ currentWindow: true }, tabs => {
 			resolve(tabs);
 		});
@@ -18,7 +21,7 @@ export function getCurrentWindowTabs() {
 }
 
 export function getActiveTab() {
-	return new Promise<chrome.tabs.Tab>(resolve => {
+	return new Promise<Tab>(resolve => {
 		chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
 			if (tabs.length === 0) {
 				throw new Error('no active tab in current window');

@@ -3,7 +3,7 @@ import { ICommand, COMMAND } from './../interfaces/ICommand';
 /**
  * Convert string to array of sliced substrings
  */
-const makeSlicedText = (text: string, index: number, length: number): string[] =>
+export const makeSlicedText = (text: string, index: number, length: number): string[] =>
 	[
 		text.slice(0, index),
 		text.slice(index, (index + length)),

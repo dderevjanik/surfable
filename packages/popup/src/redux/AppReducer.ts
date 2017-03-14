@@ -13,7 +13,7 @@ import { notFoundCommand } from './../utils/DummyCommands';
 export const appReducer = (state: IAppState = initState, action: ActionType | MessageType): IAppState => {
 	switch (action.type) {
 		case ACTION.PANEL_EXECUTE_COMMAND: {
-			sendAction(state.commands[state.offset].action);
+			sendAction(state.foundCommands[state.offset].action);
 			return {
 				...state,
 				opened: false
@@ -22,12 +22,12 @@ export const appReducer = (state: IAppState = initState, action: ActionType | Me
 		case ACTION.PANEL_UP: {
 			const nextOffset = (state.offset - 1);
 			return (nextOffset < 0)
-				? { ...state, offset: (state.commands.length - 1) }
+				? { ...state, offset: (state.foundCommands.length - 1) }
 				: { ...state, offset: nextOffset };
 		}
 		case ACTION.PANEL_DOWN: {
 			const nextOffset = (state.offset + 1);
-			return (nextOffset >= state.commands.length)
+			return (nextOffset >= state.foundCommands.length)
 				? { ...state, offset: 0 }
 				: { ...state, offset: nextOffset };
 		}
@@ -40,32 +40,58 @@ export const appReducer = (state: IAppState = initState, action: ActionType | Me
 		}
 		case ACTION.SEARCH_CHANGE: {
 			const searchValue = action.value.toLowerCase(); // Don't care about case
-			const commandsGroupsChars = Object.keys(state.commandsGroups); // @TODO don't calculate all object keys everytime
-			const commandsGroupExists = (commandsGroupsChars.indexOf(action.value[0]) > -1);
+			if (state.searchMode === 0) {
+				const commandsGroupsChars = Object.keys(state.commandsGroups); // @TODO don't calculate all object keys everytime
+				const commandsGroupExists = (commandsGroupsChars.indexOf(action.value[0]) > -1); // Check if search value is from commands groups
 
-			if (commandsGroupExists) {
-				const foundCommands = searchCommands(searchValue.slice(1, searchValue.length), state.commandsGroups[searchValue[0]]);
+				if (commandsGroupExists) {
+					const foundCommands = searchCommands(searchValue.slice(1, searchValue.length), state.commandsGroups[searchValue[0]]);
+					const hasFoundSomething = (foundCommands.length > 0);
+					return {
+						...state,
+						offset: 0,
+						inputVal: action.value,
+						foundCommands: hasFoundSomething ? foundCommands : [notFoundCommand]
+					};
+				}
+			} else {
+				const foundCommands = searchCommands(searchValue.slice(1, searchValue.length), state.commands);
 				const hasFoundSomething = (foundCommands.length > 0);
 				return {
 					...state,
 					offset: 0,
 					inputVal: action.value,
-					commands: hasFoundSomething ? foundCommands : [notFoundCommand]
+					foundCommands: hasFoundSomething ? foundCommands : [notFoundCommand]
 				};
 			}
 			return {
 				...state,
 				inputVal: action.value,
-				commands: [notFoundCommand]
+				foundCommands: [notFoundCommand]
+			};
+		}
+		case MESSAGE.TAB_HISTORY: {
+			// @TODO don't use Message type here, it should be action or custom type
+			chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+				console.log(tabs[0].id);
+			});
+			return {
+				...state,
+				offset: 0,
+				inputVal: '',
+				searchMode: 1,
+				commands: state.foundCommands,
+				foundCommands: state.foundCommands
 			};
 		}
 		case MESSAGE.SYNC_TABS: {
+			// @TODO dont create new tabs here, create them on 'background'
 			// @TODO Sort them by commands groups
 			const favoriteCommands: ICommand[] = action.tabs.favorites
 				.slice(0, 10)
 				.map(favorite => favoriteToCommand(favorite));
 			const openedTabCommands: ICommand[] = action.tabs.openedTabs
-				.map((tab, index) => tabToCommand(tab, index));
+				.map((tabHistory, index) => tabToCommand(tabHistory.history[0], index));
 			const closedTabCommands: ICommand[] = action.tabs.closedTabs
 				.map(tab => closedToCommand(tab));
 			const bookmarks: ICommand[] = action.tabs.bookmarks
