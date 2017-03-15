@@ -1,5 +1,6 @@
 import { ICommand } from './ICommand';
 import { ICommandsGroup } from './ICommandsGroup';
+import { IChromeState } from 'surfable-common/src/interfaces/IChromeState';
 
 const enum ESearchMode {
 	GROUPS = 0,
@@ -14,5 +15,5 @@ export interface IAppState {
 	readonly opened: boolean;
 	readonly offset: number;
 	readonly inputVal: string;
-	readonly tabHistory: { id: number, history: chrome.tabs.Tab[] }[];
+	readonly chromeState: IChromeState;
 };

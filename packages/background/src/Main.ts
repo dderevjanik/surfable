@@ -1,7 +1,7 @@
 import { messageReceiver } from './MessageReceiver';
 import { eventListener } from './EventListener';
-import { synchronizeTabs } from './Synchronize';
+import { synchronizeChromeState } from './Synchronize';
 
 eventListener();
 messageReceiver();
-synchronizeTabs();
+synchronizeChromeState();

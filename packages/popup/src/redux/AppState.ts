@@ -12,5 +12,13 @@ export const initState: IAppState = {
 	opened: false,
 	offset: 0,
 	inputVal: Group.COMMANDS,
-	tabHistory: []
+	chromeState: {
+		bookmarks: [],
+		closedTabs: [],
+		currentActiveTabId: -1,
+		currentActiveWindowId: -1,
+		favorites: [],
+		openedTabs: [],
+		recentUrls: []
+	}
 };

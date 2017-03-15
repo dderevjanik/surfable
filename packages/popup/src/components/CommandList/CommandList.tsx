@@ -7,7 +7,7 @@ import { DummyCommand } from './../Commands/DummyCommand';
 import { UrlCommand } from './../Commands/UrlCommand';
 import { QuickPanelCommand } from './../Commands/QuickPanelCommand';
 import { ICommand, COMMAND } from './../../interfaces/ICommand';
-import { isScrolledIntoView, scrollIntoElement } from './../../utils/PanelSideeffects';
+import { isScrolledIntoView, scrollIntoElement, EViewState } from './../../utils/PanelSideeffects';
 
 interface IProps {
 	readonly commands: ICommand[];
@@ -37,14 +37,15 @@ export class CommandList extends React.Component<IProps, IState> {
 	}
 
 	componentDidUpdate() {
+		// After render
 		if (this.state.activeChanged) {
-			// If we used arrows to navigate, check if it needs to scroll to command
+			// If we used arrows to navigate, check if scrollview needs to scroll to command
 			const commandlist = document.querySelector('.' + Style.ul) as HTMLElement;
 			const activeCommand = document.querySelector('.' + StyleCommand.commandHighlight) as HTMLElement;
-			const state = isScrolledIntoView(commandlist, activeCommand);
-			if (state !== 0) {
+			const viewPosition = isScrolledIntoView(commandlist, activeCommand);
+			if (viewPosition !== EViewState.INSIDE) {
 				// If command is out of view, scroll into it
-				scrollIntoElement(commandlist, activeCommand, state);
+				scrollIntoElement(commandlist, activeCommand, viewPosition);
 			}
 		}
 		this.state.activeChanged = false;

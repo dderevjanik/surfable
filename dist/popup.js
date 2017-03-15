@@ -61,7 +61,7 @@
 	KeyListener_1.keyListener();
 	MessageReceiver_1.messageReceiver();
 	// Synchronize current window's tabs with popup's state
-	Sender_1.sendToBackground({ type: Messages_1.MESSAGE.SYNC_TABS_REQUEST });
+	Sender_1.sendToBackground({ type: Messages_1.MESSAGE.SYNC_CHROME_REQUEST });
 
 
 /***/ },
@@ -333,8 +333,8 @@
 	    CAPTURE: 'CAPTURE',
 	    SHOW_FAVORITES: 'SHOW_FAVORITES',
 	    GET_FAVORITES: 'GET_FAVORITES',
-	    SYNC_TABS: 'SYNC_TABS',
-	    SYNC_TABS_REQUEST: 'SYNC_TABS_REQUEST',
+	    SYNC_CHROME_STATE: 'SYNC_CHROME_STATE',
+	    SYNC_CHROME_REQUEST: 'SYNC_CHROME_REQUEST',
 	    SHOW_TOAST: 'SHOW_TOAST',
 	    SEARCH_CHANGE: 'SEARCH_CHANGE'
 	};
@@ -23908,24 +23908,24 @@
 	        }
 	        case Messages_1.MESSAGE.TAB_HISTORY: {
 	            // @TODO don't use Message type here, it should be action or custom type
-	            chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
-	                console.log(tabs[0].id);
-	            });
-	            return __assign({}, state, { offset: 0, inputVal: '', searchMode: 1, commands: state.foundCommands, foundCommands: state.foundCommands });
+	            var activeTab = state.chromeState.openedTabs.filter(function (tab) { return tab.id === state.chromeState.currentActiveTabId; })[0];
+	            var historyCommands = activeTab.history.map(function (tab) { return CommandCreator_1.closedToCommand(tab); });
+	            return __assign({}, state, { offset: 0, inputVal: '', searchMode: 1, commands: historyCommands, foundCommands: historyCommands });
 	        }
-	        case Messages_1.MESSAGE.SYNC_TABS: {
+	        case Messages_1.MESSAGE.SYNC_CHROME_STATE: {
 	            // @TODO dont create new tabs here, create them on 'background'
 	            // @TODO Sort them by commands groups
-	            var favoriteCommands = action.tabs.favorites
+	            var favoriteCommands = action.chromeState.favorites
 	                .slice(0, 10)
 	                .map(function (favorite) { return CommandCreator_1.favoriteToCommand(favorite); });
-	            var openedTabCommands = action.tabs.openedTabs
+	            var openedTabCommands = action.chromeState.openedTabs
 	                .map(function (tabHistory, index) { return CommandCreator_1.tabToCommand(tabHistory.history[0], index); });
-	            var closedTabCommands = action.tabs.closedTabs
+	            var closedTabCommands = action.chromeState.closedTabs
 	                .map(function (tab) { return CommandCreator_1.closedToCommand(tab); });
-	            var bookmarks = action.tabs.bookmarks
+	            var bookmarks = action.chromeState.bookmarks
 	                .map(function (tab) { return CommandCreator_1.bookmarkToCommand(tab); });
-	            return __assign({}, state, { commandsGroups: __assign({}, state.commandsGroups, (_a = {}, _a[Group_1.Group.SWITCHTAB] = openedTabCommands, _a[Group_1.Group.BOOKMARKS] = bookmarks, _a)) });
+	            console.log(action.chromeState);
+	            return __assign({}, state, { commandsGroups: __assign({}, state.commandsGroups, (_a = {}, _a[Group_1.Group.SWITCHTAB] = openedTabCommands, _a[Group_1.Group.BOOKMARKS] = bookmarks, _a)), chromeState: action.chromeState });
 	        }
 	        default: {
 	            return state;
@@ -23979,7 +23979,15 @@
 	    opened: false,
 	    offset: 0,
 	    inputVal: Group_1.Group.COMMANDS,
-	    tabHistory: []
+	    chromeState: {
+	        bookmarks: [],
+	        closedTabs: [],
+	        currentActiveTabId: -1,
+	        currentActiveWindowId: -1,
+	        favorites: [],
+	        openedTabs: [],
+	        recentUrls: []
+	    }
 	};
 
 
@@ -25316,14 +25324,15 @@
 	        }
 	    };
 	    CommandList.prototype.componentDidUpdate = function () {
+	        // After render
 	        if (this.state.activeChanged) {
-	            // If we used arrows to navigate, check if it needs to scroll to command
+	            // If we used arrows to navigate, check if scrollview needs to scroll to command
 	            var commandlist = document.querySelector('.' + Style.ul);
 	            var activeCommand = document.querySelector('.' + StyleCommand.commandHighlight);
-	            var state = PanelSideeffects_1.isScrolledIntoView(commandlist, activeCommand);
-	            if (state !== 0) {
+	            var viewPosition = PanelSideeffects_1.isScrolledIntoView(commandlist, activeCommand);
+	            if (viewPosition !== 0 /* INSIDE */) {
 	                // If command is out of view, scroll into it
-	                PanelSideeffects_1.scrollIntoElement(commandlist, activeCommand, state);
+	                PanelSideeffects_1.scrollIntoElement(commandlist, activeCommand, viewPosition);
 	            }
 	        }
 	        this.state.activeChanged = false;
@@ -25696,7 +25705,7 @@
 	                case Messages_1.MESSAGE.SHOW_FAVORITES:
 	                    store_1.store.dispatch({ type: message.type, favorites: message.favorites });
 	                    break;
-	                case Messages_1.MESSAGE.SYNC_TABS:
+	                case Messages_1.MESSAGE.SYNC_CHROME_STATE:
 	                    store_1.store.dispatch(message);
 	                    break;
 	                case Messages_1.MESSAGE.SEARCH_CHANGE:

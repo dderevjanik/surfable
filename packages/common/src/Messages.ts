@@ -2,6 +2,7 @@ import { IMessage } from './interfaces/IAction';
 import { ELevel } from './enums/ELevel';
 import { EZoomType } from './enums/EZoomType';
 import { ITabs } from './interfaces/ITabs';
+import { IChromeState } from './interfaces/IChromeState';
 
 export const MESSAGE = {
 	NOTHING: 'NOTHING' as 'NOTHING',
@@ -19,8 +20,8 @@ export const MESSAGE = {
 	CAPTURE: 'CAPTURE' as 'CAPTURE',
 	SHOW_FAVORITES: 'SHOW_FAVORITES' as 'SHOW_FAVORITES',
 	GET_FAVORITES: 'GET_FAVORITES' as 'GET_FAVORITES',
-	SYNC_TABS: 'SYNC_TABS' as 'SYNC_TABS',
-	SYNC_TABS_REQUEST: 'SYNC_TABS_REQUEST' as 'SYNC_TABS_REQUEST',
+	SYNC_CHROME_STATE: 'SYNC_CHROME_STATE' as 'SYNC_CHROME_STATE',
+	SYNC_CHROME_REQUEST: 'SYNC_CHROME_REQUEST' as 'SYNC_CHROME_REQUEST',
 	SHOW_TOAST: 'SHOW_TOAST' as 'SHOW_TOAST',
 	SEARCH_CHANGE: 'SEARCH_CHANGE' as 'SEARCH_CHANGE'
 };
@@ -70,14 +71,14 @@ interface IGetFavorites extends IMessage
 interface IShowFavorites extends IMessage
 { readonly type: typeof MESSAGE.SHOW_FAVORITES; readonly favorites: chrome.topSites.MostVisitedURL[]; }
 
-interface ISyncTabs extends IMessage
-{ readonly type: typeof MESSAGE.SYNC_TABS; readonly tabs: ITabs; }
+interface ISyncChromeState extends IMessage
+{ readonly type: typeof MESSAGE.SYNC_CHROME_STATE; readonly chromeState: IChromeState; }
 
 interface IPrintPage extends IMessage
 { readonly type: typeof MESSAGE.PRINT_PAGE; }
 
-interface ISyncTabsRequest extends IMessage
-{ readonly type: typeof MESSAGE.SYNC_TABS_REQUEST; }
+interface ISyncChromeStateRequest extends IMessage
+{ readonly type: typeof MESSAGE.SYNC_CHROME_REQUEST; }
 
 interface IShowToast extends IMessage
 { readonly type: typeof MESSAGE.SHOW_TOAST; readonly title: string; readonly text: string; readonly level: ELevel; }
@@ -85,4 +86,4 @@ interface IShowToast extends IMessage
 interface ISearchChange extends IMessage
 { readonly type: typeof MESSAGE.SEARCH_CHANGE; readonly value: string; }
 
-export type MessageType = IBookmarkAdd | ITabNew | ITabClose | IZoom | ICapture | ITabReload | ITabDuplicate | IGetFavorites | IShowFavorites | IPrintPage | INothing | ITabSwitch | ITabCloseAll | IWindowClose | ISyncTabs | IShowToast | ISearchChange | ISyncTabsRequest | ITabHistory;
+export type MessageType = IBookmarkAdd | ITabNew | ITabClose | IZoom | ICapture | ITabReload | ITabDuplicate | IGetFavorites | IShowFavorites | IPrintPage | INothing | ITabSwitch | ITabCloseAll | IWindowClose | ISyncChromeState | IShowToast | ISearchChange | ISyncChromeStateRequest | ITabHistory;

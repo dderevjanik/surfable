@@ -73,8 +73,9 @@ export const messageReceiver = (): void => {
 					chrome.tabs.update(activeTab.id, { url: JAVASCRIPT_PRINT_PAGE });
 					break;
 				}
-				case MESSAGE.SYNC_TABS_REQUEST: {
-					sendToPopup({ type: MESSAGE.SYNC_TABS, tabs: store.getState() });
+				case MESSAGE.SYNC_CHROME_REQUEST: {
+					console.log(store.getState().chromeState);
+					sendToPopup({ type: MESSAGE.SYNC_CHROME_STATE, chromeState: store.getState().chromeState });
 					break;
 				}
 				case MESSAGE.TAB_SWITCH: {

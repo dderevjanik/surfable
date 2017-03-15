@@ -10,25 +10,43 @@ export const appReducer = (state: AppState = initState, action: ActionType): App
 			const tabHistory = { id: action.tab.id, history: [action.tab] };
 			return {
 				...state,
-				openedTabs: addItem(state.openedTabs, tabHistory)
+				chromeState: {
+					...state.chromeState,
+					openedTabs: addItem(state.chromeState.openedTabs, tabHistory)
+				}
 			};
 		}
 		case ACTION.TAB_UPDATED: {
-			const tabIndex = state.openedTabs.map(t => t.id).indexOf(action.tabId);
-			const tabHistory = state.openedTabs[tabIndex];
+			const tabIndex = state.chromeState.openedTabs.map(t => t.id).indexOf(action.tabId);
+			const tabHistory = state.chromeState.openedTabs[tabIndex];
 			const updatedHistory = { id: tabHistory.id, history: addToStack(tabHistory.history, action.tab, 10) };
 			return {
 				...state,
-				openedTabs: updateItem(state.openedTabs, updatedHistory, tabIndex)
+				chromeState: {
+					...state.chromeState,
+					openedTabs: updateItem(state.chromeState.openedTabs, updatedHistory, tabIndex)
+				}
 			};
 		}
 		case ACTION.TAB_REMOVED: {
-			const tabIndex = state.openedTabs.map(t => t.id).indexOf(action.tabId);
+			const tabIndex = state.chromeState.openedTabs.map(t => t.id).indexOf(action.tabId);
 			return {
 				...state,
-				openedTabs: removeItem(state.openedTabs, tabIndex),
-				closedTabs: addToStack(state.closedTabs, state.openedTabs[tabIndex].history[0], MAX_RECENT_TABS)
+				chromeState: {
+					...state.chromeState,
+					openedTabs: removeItem(state.chromeState.openedTabs, tabIndex),
+					closedTabs: addToStack(state.chromeState.closedTabs, state.chromeState.openedTabs[tabIndex].history[0], MAX_RECENT_TABS)
+				}
 			};
+		}
+		case ACTION.TAB_ACTIVE_CHANGED: {
+			return {
+				...state,
+				chromeState: {
+					...state.chromeState,
+					currentActiveTabId: action.activeTabId
+				}
+			}
 		}
 		case ACTION.BOOKMARKS_UPDATED: {
 			// TODO: Add bookmarks handler

@@ -53,11 +53,11 @@
 
 	"use strict";
 	const MessageReceiver_1 = __webpack_require__(2);
-	const EventListener_1 = __webpack_require__(37);
-	const Synchronize_1 = __webpack_require__(38);
+	const EventListener_1 = __webpack_require__(35);
+	const Synchronize_1 = __webpack_require__(36);
 	EventListener_1.eventListener();
 	MessageReceiver_1.messageReceiver();
-	Synchronize_1.synchronizeTabs();
+	Synchronize_1.synchronizeChromeState();
 
 
 /***/ },
@@ -75,7 +75,7 @@
 	};
 	const Messages_1 = __webpack_require__(3);
 	const Sender_1 = __webpack_require__(4);
-	const Constants_1 = __webpack_require__(36);
+	const Constants_1 = __webpack_require__(6);
 	const ChromeWrapper_1 = __webpack_require__(7);
 	const Store_1 = __webpack_require__(8);
 	/*
@@ -147,8 +147,9 @@
 	                        chrome.tabs.update(activeTab.id, { url: Constants_1.JAVASCRIPT_PRINT_PAGE });
 	                        break;
 	                    }
-	                    case Messages_1.MESSAGE.SYNC_TABS_REQUEST: {
-	                        Sender_1.sendToPopup({ type: Messages_1.MESSAGE.SYNC_TABS, tabs: Store_1.store.getState() });
+	                    case Messages_1.MESSAGE.SYNC_CHROME_REQUEST: {
+	                        console.log(Store_1.store.getState().chromeState);
+	                        Sender_1.sendToPopup({ type: Messages_1.MESSAGE.SYNC_CHROME_STATE, chromeState: Store_1.store.getState().chromeState });
 	                        break;
 	                    }
 	                    case Messages_1.MESSAGE.TAB_SWITCH: {
@@ -200,8 +201,8 @@
 	    CAPTURE: 'CAPTURE',
 	    SHOW_FAVORITES: 'SHOW_FAVORITES',
 	    GET_FAVORITES: 'GET_FAVORITES',
-	    SYNC_TABS: 'SYNC_TABS',
-	    SYNC_TABS_REQUEST: 'SYNC_TABS_REQUEST',
+	    SYNC_CHROME_STATE: 'SYNC_CHROME_STATE',
+	    SYNC_CHROME_REQUEST: 'SYNC_CHROME_REQUEST',
 	    SHOW_TOAST: 'SHOW_TOAST',
 	    SEARCH_CHANGE: 'SEARCH_CHANGE'
 	};
@@ -450,7 +451,18 @@
 
 
 /***/ },
-/* 6 */,
+/* 6 */
+/***/ function(module, exports) {
+
+	"use strict";
+	exports.MAX_RECENT_TABS = 10;
+	exports.MAX_TEXT_LENGTH = 90; // @TODO refactor, if command doesn't have icon, it should be longer
+	exports.MAX_TEXT_LENGTH_ICON = 90;
+	exports.ZOOM_MULTIPLIER = 0.2;
+	exports.JAVASCRIPT_PRINT_PAGE = 'javascript:window.print();';
+
+
+/***/ },
 /* 7 */
 /***/ function(module, exports) {
 
@@ -1556,23 +1568,26 @@
 	};
 	const AppState_1 = __webpack_require__(31);
 	const Actions_1 = __webpack_require__(33);
-	const Immutable_1 = __webpack_require__(35);
-	const Constants_1 = __webpack_require__(36);
+	const Immutable_1 = __webpack_require__(34);
+	const Constants_1 = __webpack_require__(6);
 	exports.appReducer = (state = AppState_1.initState, action) => {
 	    switch (action.type) {
 	        case Actions_1.ACTION.TAB_CREATED: {
 	            const tabHistory = { id: action.tab.id, history: [action.tab] };
-	            return __assign({}, state, { openedTabs: Immutable_1.addItem(state.openedTabs, tabHistory) });
+	            return __assign({}, state, { chromeState: __assign({}, state.chromeState, { openedTabs: Immutable_1.addItem(state.chromeState.openedTabs, tabHistory) }) });
 	        }
 	        case Actions_1.ACTION.TAB_UPDATED: {
-	            const tabIndex = state.openedTabs.map(t => t.id).indexOf(action.tabId);
-	            const tabHistory = state.openedTabs[tabIndex];
+	            const tabIndex = state.chromeState.openedTabs.map(t => t.id).indexOf(action.tabId);
+	            const tabHistory = state.chromeState.openedTabs[tabIndex];
 	            const updatedHistory = { id: tabHistory.id, history: Immutable_1.addToStack(tabHistory.history, action.tab, 10) };
-	            return __assign({}, state, { openedTabs: Immutable_1.updateItem(state.openedTabs, updatedHistory, tabIndex) });
+	            return __assign({}, state, { chromeState: __assign({}, state.chromeState, { openedTabs: Immutable_1.updateItem(state.chromeState.openedTabs, updatedHistory, tabIndex) }) });
 	        }
 	        case Actions_1.ACTION.TAB_REMOVED: {
-	            const tabIndex = state.openedTabs.map(t => t.id).indexOf(action.tabId);
-	            return __assign({}, state, { openedTabs: Immutable_1.removeItem(state.openedTabs, tabIndex), closedTabs: Immutable_1.addToStack(state.closedTabs, state.openedTabs[tabIndex].history[0], Constants_1.MAX_RECENT_TABS) });
+	            const tabIndex = state.chromeState.openedTabs.map(t => t.id).indexOf(action.tabId);
+	            return __assign({}, state, { chromeState: __assign({}, state.chromeState, { openedTabs: Immutable_1.removeItem(state.chromeState.openedTabs, tabIndex), closedTabs: Immutable_1.addToStack(state.chromeState.closedTabs, state.chromeState.openedTabs[tabIndex].history[0], Constants_1.MAX_RECENT_TABS) }) });
+	        }
+	        case Actions_1.ACTION.TAB_ACTIVE_CHANGED: {
+	            return __assign({}, state, { chromeState: __assign({}, state.chromeState, { currentActiveTabId: action.activeTabId }) });
 	        }
 	        case Actions_1.ACTION.BOOKMARKS_UPDATED: {
 	            // TODO: Add bookmarks handler
@@ -1592,21 +1607,29 @@
 	"use strict";
 	const Bookmarks_1 = __webpack_require__(32);
 	exports.initState = {
-	    openedTabs: [],
-	    closedTabs: [],
-	    favorites: [],
-	    bookmarks: []
+	    chromeState: {
+	        currentActiveTabId: -1,
+	        currentActiveWindowId: -1,
+	        openedTabs: [],
+	        closedTabs: [],
+	        favorites: [],
+	        bookmarks: [],
+	        recentUrls: []
+	    }
 	};
-	// Fill store
+	// Fill store on start of the App
 	chrome.tabs.query({ currentWindow: true }, tabs => {
-	    exports.initState.openedTabs = tabs.map(t => ({ id: t.id, history: [t] }));
+	    exports.initState.chromeState.openedTabs = tabs.map(t => ({ id: t.id, history: [t] }));
+	});
+	chrome.tabs.query({ currentWindow: true, active: true }, tab => {
+	    exports.initState.chromeState.currentActiveTabId = tab[0].id;
 	});
 	chrome.topSites.get(mostVisited => {
-	    exports.initState.favorites = mostVisited;
+	    exports.initState.chromeState.favorites = mostVisited;
 	});
 	chrome.bookmarks.getTree(bookmarkTree => {
 	    const bookmarks = Bookmarks_1.getBookmarks(bookmarkTree);
-	    exports.initState.bookmarks = bookmarks;
+	    exports.initState.chromeState.bookmarks = bookmarks;
 	});
 
 
@@ -1633,13 +1656,13 @@
 	    TAB_CREATED: 'TAB_CREATED',
 	    TAB_REMOVED: 'TAB_REMOVED',
 	    TAB_UPDATED: 'TAB_UPDATED',
-	    BOOKMARKS_UPDATED: 'BOOKMARKS_UPDATED'
+	    BOOKMARKS_UPDATED: 'BOOKMARKS_UPDATED',
+	    TAB_ACTIVE_CHANGED: 'TAB_ACTIVE_CHANGED'
 	};
 
 
 /***/ },
-/* 34 */,
-/* 35 */
+/* 34 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1685,19 +1708,7 @@
 
 
 /***/ },
-/* 36 */
-/***/ function(module, exports) {
-
-	"use strict";
-	exports.MAX_RECENT_TABS = 10;
-	exports.MAX_TEXT_LENGTH = 90; // @TODO refactor, if command doesn't have icon, it should be longer
-	exports.MAX_TEXT_LENGTH_ICON = 90;
-	exports.ZOOM_MULTIPLIER = 0.2;
-	exports.JAVASCRIPT_PRINT_PAGE = 'javascript:window.print();';
-
-
-/***/ },
-/* 37 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1707,6 +1718,9 @@
 	 * Will listen on events incoming from chrome
 	 */
 	exports.eventListener = () => {
+	    chrome.tabs.onActivated.addListener(activeTabInfo => {
+	        Store_1.store.dispatch({ type: Actions_1.ACTION.TAB_ACTIVE_CHANGED, activeTabId: activeTabInfo.tabId });
+	    });
 	    chrome.tabs.onCreated.addListener((tab) => {
 	        Store_1.store.dispatch({ type: Actions_1.ACTION.TAB_CREATED, tab: tab });
 	    });
@@ -1729,7 +1743,7 @@
 
 
 /***/ },
-/* 38 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1739,9 +1753,9 @@
 	/**
 	 * On every store change, it'll synchronize it with other parts
 	 */
-	exports.synchronizeTabs = () => {
+	exports.synchronizeChromeState = () => {
 	    Store_1.store.subscribe(() => {
-	        Sender_1.sendToPopup({ type: Messages_1.MESSAGE.SYNC_TABS, tabs: Store_1.store.getState() });
+	        Sender_1.sendToPopup({ type: Messages_1.MESSAGE.SYNC_CHROME_REQUEST, chromeState: Store_1.store.getState().chromeState });
 	    });
 	};
 

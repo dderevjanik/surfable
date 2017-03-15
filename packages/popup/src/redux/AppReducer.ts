@@ -72,37 +72,38 @@ export const appReducer = (state: IAppState = initState, action: ActionType | Me
 		}
 		case MESSAGE.TAB_HISTORY: {
 			// @TODO don't use Message type here, it should be action or custom type
-			chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-				console.log(tabs[0].id);
-			});
+			const activeTab = state.chromeState.openedTabs.filter(tab => tab.id === state.chromeState.currentActiveTabId)[0];
+			const historyCommands = activeTab.history.map(tab => closedToCommand(tab));
 			return {
 				...state,
 				offset: 0,
 				inputVal: '',
 				searchMode: 1,
-				commands: state.foundCommands,
-				foundCommands: state.foundCommands
+				commands: historyCommands,
+				foundCommands: historyCommands
 			};
 		}
-		case MESSAGE.SYNC_TABS: {
+		case MESSAGE.SYNC_CHROME_STATE: {
 			// @TODO dont create new tabs here, create them on 'background'
 			// @TODO Sort them by commands groups
-			const favoriteCommands: ICommand[] = action.tabs.favorites
+			const favoriteCommands: ICommand[] = action.chromeState.favorites
 				.slice(0, 10)
 				.map(favorite => favoriteToCommand(favorite));
-			const openedTabCommands: ICommand[] = action.tabs.openedTabs
+			const openedTabCommands: ICommand[] = action.chromeState.openedTabs
 				.map((tabHistory, index) => tabToCommand(tabHistory.history[0], index));
-			const closedTabCommands: ICommand[] = action.tabs.closedTabs
+			const closedTabCommands: ICommand[] = action.chromeState.closedTabs
 				.map(tab => closedToCommand(tab));
-			const bookmarks: ICommand[] = action.tabs.bookmarks
+			const bookmarks: ICommand[] = action.chromeState.bookmarks
 				.map(tab => bookmarkToCommand(tab));
+			console.log(action.chromeState);
 			return {
 				...state,
 				commandsGroups: {
 					...state.commandsGroups,
 					[Group.SWITCHTAB]: openedTabCommands,
 					[Group.BOOKMARKS]: bookmarks
-				}
+				},
+				chromeState: action.chromeState
 			};
 		}
 		default: {

@@ -15,7 +15,7 @@ export const messageReceiver = (): void => {
 					case MESSAGE.SHOW_FAVORITES:
 						store.dispatch({ type: message.type, favorites: message.favorites });
 						break;
-					case MESSAGE.SYNC_TABS:
+					case MESSAGE.SYNC_CHROME_STATE:
 						store.dispatch(message);
 						break;
 					case MESSAGE.SEARCH_CHANGE:
