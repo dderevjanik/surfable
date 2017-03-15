@@ -1578,12 +1578,25 @@
 	        }
 	        case Actions_1.ACTION.TAB_UPDATED: {
 	            const tabIndex = state.chromeState.openedTabs.map(t => t.id).indexOf(action.tabId);
+	            if (tabIndex === -1) {
+	                throw new Error(`Cannot update a tab width id '${action.tabId}', which doesn't exist`);
+	            }
+	            if (state.chromeState.openedTabs[tabIndex].history[0].url === action.tab.url) {
+	                // Url doesn't changed, don't add anything to history then
+	                return state;
+	            }
 	            const tabHistory = state.chromeState.openedTabs[tabIndex];
-	            const updatedHistory = { id: tabHistory.id, history: Immutable_1.addToStack(tabHistory.history, action.tab, 10) };
+	            const updatedHistory = {
+	                id: tabHistory.id,
+	                history: Immutable_1.addToStack(tabHistory.history, action.tab, 10)
+	            };
 	            return __assign({}, state, { chromeState: __assign({}, state.chromeState, { openedTabs: Immutable_1.updateItem(state.chromeState.openedTabs, updatedHistory, tabIndex) }) });
 	        }
 	        case Actions_1.ACTION.TAB_REMOVED: {
 	            const tabIndex = state.chromeState.openedTabs.map(t => t.id).indexOf(action.tabId);
+	            if (tabIndex === -1) {
+	                throw new Error(`Cannot remove a tab width id '${action.tabId}', which doesn't exist`);
+	            }
 	            return __assign({}, state, { chromeState: __assign({}, state.chromeState, { openedTabs: Immutable_1.removeItem(state.chromeState.openedTabs, tabIndex), closedTabs: Immutable_1.addToStack(state.chromeState.closedTabs, state.chromeState.openedTabs[tabIndex].history[0], Constants_1.MAX_RECENT_TABS) }) });
 	        }
 	        case Actions_1.ACTION.TAB_ACTIVE_CHANGED: {

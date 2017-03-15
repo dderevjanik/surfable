@@ -18,8 +18,18 @@ export const appReducer = (state: AppState = initState, action: ActionType): App
 		}
 		case ACTION.TAB_UPDATED: {
 			const tabIndex = state.chromeState.openedTabs.map(t => t.id).indexOf(action.tabId);
+			if (tabIndex === -1) {
+				throw new Error(`Cannot update a tab width id '${action.tabId}', which doesn't exist`);
+			}
+			if (state.chromeState.openedTabs[tabIndex].history[0].url === action.tab.url) {
+				// Url doesn't changed, don't add anything to history then
+				return state;
+			}
 			const tabHistory = state.chromeState.openedTabs[tabIndex];
-			const updatedHistory = { id: tabHistory.id, history: addToStack(tabHistory.history, action.tab, 10) };
+			const updatedHistory = {
+				id: tabHistory.id,
+				history: addToStack(tabHistory.history, action.tab, 10)
+			};
 			return {
 				...state,
 				chromeState: {
@@ -30,6 +40,9 @@ export const appReducer = (state: AppState = initState, action: ActionType): App
 		}
 		case ACTION.TAB_REMOVED: {
 			const tabIndex = state.chromeState.openedTabs.map(t => t.id).indexOf(action.tabId);
+			if (tabIndex === -1) {
+				throw new Error(`Cannot remove a tab width id '${action.tabId}', which doesn't exist`);
+			}
 			return {
 				...state,
 				chromeState: {
