@@ -46,7 +46,11 @@ export const searchCommands = (searchValue: string, commandsGroup: ICommand[]): 
 					const url = command.url.toLowerCase();
 					const urlFoundInd = url.indexOf(searchValue);
 					return ((textFoundInd >= 0) || (urlFoundInd >= 0))
-						? { ...command, pText: makeSlicedText(text, textFoundInd, valLen), pUrl: makeSlicedText(url, urlFoundInd, valLen) }
+						? {
+							...command,
+							pText: (textFoundInd >= 0) ? makeSlicedText(text, textFoundInd, valLen) : null,
+							pUrl: (urlFoundInd >= 0) ? makeSlicedText(url, urlFoundInd, valLen) : null
+						}
 						: null;
 				}
 				default: {

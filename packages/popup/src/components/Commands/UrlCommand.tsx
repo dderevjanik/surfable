@@ -16,16 +16,16 @@ interface IProps {
 
 export const UrlCommand = (props: IProps) => (
 	<li className={`${Style.command} + ${props.active ? Style.commandHighlight : ''}`} onClick={() => props.onCommandClick()}>
-		{((props.partialText) || (props.partialUrl))
-			? (<span className={Style.text}>
-				{props.imgUrl ? <img className={Style.icon} src={props.imgUrl} /> : null}
-				<Highlight partial={props.partialText} />
-				<span className={Style.textSmall}><Highlight partial={props.partialUrl} /></span>
-			</span>)
-			: <span className={Style.text}>
-				{props.imgUrl ? <img className={Style.icon} src={props.imgUrl} /> : null} {props.text}
-				<span className={Style.textSmall}>{props.url}</span>
-			</span>
-		}
+		{props.imgUrl ? <img className={Style.icon} src={props.imgUrl} /> : null}
+		<span className={Style.text}>
+			{(props.partialText)
+				? <Highlight partial={props.partialText} />
+				: <span>{props.text}</span>}
+			{(props.partialUrl)
+				? <span className={Style.textSmall}>
+					<Highlight partial={props.partialUrl} />
+				</span>
+				: <span className={Style.textSmall}>{props.url}</span>}
+		</span>
 	</li>
 );

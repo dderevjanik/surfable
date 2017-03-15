@@ -24345,7 +24345,7 @@
 	                var url = command.url.toLowerCase();
 	                var urlFoundInd = url.indexOf(searchValue);
 	                return ((textFoundInd >= 0) || (urlFoundInd >= 0))
-	                    ? __assign({}, command, { pText: exports.makeSlicedText(text, textFoundInd, valLen), pUrl: exports.makeSlicedText(url, urlFoundInd, valLen) }) : null;
+	                    ? __assign({}, command, { pText: (textFoundInd >= 0) ? exports.makeSlicedText(text, textFoundInd, valLen) : null, pUrl: (urlFoundInd >= 0) ? exports.makeSlicedText(url, urlFoundInd, valLen) : null }) : null;
 	            }
 	            default: {
 	                throw new Error("Undefined command type " + command + ". Make sure that search function is implemented for '" + command + "' type.");
@@ -25511,17 +25511,16 @@
 	var Style = __webpack_require__(245);
 	var Highlight_1 = __webpack_require__(247);
 	;
-	exports.UrlCommand = function (props) { return (React.createElement("li", { className: Style.command + " + " + (props.active ? Style.commandHighlight : ''), onClick: function () { return props.onCommandClick(); } }, ((props.partialText) || (props.partialUrl))
-	    ? (React.createElement("span", { className: Style.text },
-	        props.imgUrl ? React.createElement("img", { className: Style.icon, src: props.imgUrl }) : null,
-	        React.createElement(Highlight_1.Highlight, { partial: props.partialText }),
-	        React.createElement("span", { className: Style.textSmall },
-	            React.createElement(Highlight_1.Highlight, { partial: props.partialUrl }))))
-	    : React.createElement("span", { className: Style.text },
-	        props.imgUrl ? React.createElement("img", { className: Style.icon, src: props.imgUrl }) : null,
-	        " ",
-	        props.text,
-	        React.createElement("span", { className: Style.textSmall }, props.url)))); };
+	exports.UrlCommand = function (props) { return (React.createElement("li", { className: Style.command + " + " + (props.active ? Style.commandHighlight : ''), onClick: function () { return props.onCommandClick(); } },
+	    props.imgUrl ? React.createElement("img", { className: Style.icon, src: props.imgUrl }) : null,
+	    React.createElement("span", { className: Style.text },
+	        (props.partialText)
+	            ? React.createElement(Highlight_1.Highlight, { partial: props.partialText })
+	            : React.createElement("span", null, props.text),
+	        (props.partialUrl)
+	            ? React.createElement("span", { className: Style.textSmall },
+	                React.createElement(Highlight_1.Highlight, { partial: props.partialUrl }))
+	            : React.createElement("span", { className: Style.textSmall }, props.url)))); };
 
 
 /***/ },
