@@ -119,5 +119,5 @@ export const commands: ICommand[] = [
 		type: COMMAND.SIMPLE,
 		cat: CAT.BROWSER, text: 'Settings', desc: '',
 		action: { type: MESSAGE.TAB_NEW, url: CHROME_INTERNAL.SETTINGS, target: ETarget.BACKGROUND }
-	},
+	}
 ];

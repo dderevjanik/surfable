@@ -326,6 +326,7 @@
 	    TAB_CLOSE_ALL: 'TAB_CLOSE_ALL',
 	    TAB_SWITCH: 'TAB_SWITCH',
 	    TAB_HISTORY: 'TAB_HISTORY',
+	    TAB_CHANGE_URL: 'TAB_CHANGE_URL',
 	    PRINT_PAGE: 'PRINT_PAGE',
 	    WINDOW_CLOSE: 'WINDOW_CLOSE',
 	    BOOKMARK_ADD: 'BOOKMARKD_ADD',
@@ -23909,7 +23910,7 @@
 	        case Messages_1.MESSAGE.TAB_HISTORY: {
 	            // @TODO don't use Message type here, it should be action or custom type
 	            var activeTab = state.chromeState.openedTabs.filter(function (tab) { return tab.id === state.chromeState.currentActiveTabId; })[0];
-	            var historyCommands = activeTab.history.map(function (tab) { return CommandCreator_1.closedToCommand(tab); });
+	            var historyCommands = activeTab.history.map(function (tab) { return CommandCreator_1.changeUrlCommand(tab); });
 	            return __assign({}, state, { offset: 0, inputVal: '', searchMode: 1, commands: historyCommands, foundCommands: historyCommands });
 	        }
 	        case Messages_1.MESSAGE.SYNC_CHROME_STATE: {
@@ -23924,7 +23925,6 @@
 	                .map(function (tab) { return CommandCreator_1.closedToCommand(tab); });
 	            var bookmarks = action.chromeState.bookmarks
 	                .map(function (tab) { return CommandCreator_1.bookmarkToCommand(tab); });
-	            console.log(action.chromeState);
 	            return __assign({}, state, { commandsGroups: __assign({}, state.commandsGroups, (_a = {}, _a[Group_1.Group.SWITCHTAB] = openedTabCommands, _a[Group_1.Group.BOOKMARKS] = bookmarks, _a)), chromeState: action.chromeState });
 	        }
 	        default: {
@@ -24128,7 +24128,7 @@
 	        type: ICommand_1.COMMAND.SIMPLE,
 	        cat: Category_1.CAT.BROWSER, text: 'Settings', desc: '',
 	        action: { type: Messages_1.MESSAGE.TAB_NEW, url: Chrome_1.CHROME_INTERNAL.SETTINGS, target: 0 /* BACKGROUND */ }
-	    },
+	    }
 	];
 
 
@@ -24233,6 +24233,17 @@
 	    imgUrl: "https://www.google.com/s2/favicons?domain=" + bookmark.url,
 	    action: { type: Messages_1.MESSAGE.TAB_NEW, target: 0 /* BACKGROUND */, url: bookmark.url },
 	    text: CommandHelper_1.sliceOverflowTitle(bookmark.title)
+	}); };
+	/**
+	 * Command to change current URL
+	 */
+	exports.changeUrlCommand = function (tab) { return ({
+	    type: ICommand_1.COMMAND.URL_COMMAND,
+	    desc: '',
+	    url: CommandHelper_1.shortenUrl(tab.url),
+	    imgUrl: "https://www.google.com/s2/favicons?domain=" + tab.url,
+	    action: { type: Messages_1.MESSAGE.TAB_CHANGE_URL, target: 0 /* BACKGROUND */, newUrl: tab.url },
+	    text: CommandHelper_1.sliceOverflowTitle(tab.title)
 	}); };
 
 

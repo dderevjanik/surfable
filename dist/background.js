@@ -102,6 +102,12 @@
 	                        }
 	                        break;
 	                    }
+	                    case Messages_1.MESSAGE.TAB_CHANGE_URL: {
+	                        const activeTab = yield ChromeWrapper_1.getActiveTab();
+	                        chrome.tabs.update(activeTab.id, {
+	                            url: message.newUrl
+	                        });
+	                    }
 	                    case Messages_1.MESSAGE.BOOKMARK_ADD: {
 	                        const activeTab = yield ChromeWrapper_1.getActiveTab();
 	                        chrome.bookmarks.create({ title: activeTab.title, url: activeTab.url });
@@ -194,6 +200,7 @@
 	    TAB_CLOSE_ALL: 'TAB_CLOSE_ALL',
 	    TAB_SWITCH: 'TAB_SWITCH',
 	    TAB_HISTORY: 'TAB_HISTORY',
+	    TAB_CHANGE_URL: 'TAB_CHANGE_URL',
 	    PRINT_PAGE: 'PRINT_PAGE',
 	    WINDOW_CLOSE: 'WINDOW_CLOSE',
 	    BOOKMARK_ADD: 'BOOKMARKD_ADD',

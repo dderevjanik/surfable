@@ -5,10 +5,13 @@ import { CAT } from './../data/Category';
 import { BLANK_FAVICON, MAX_COMMAND_TEXT_LENGTH, CHROME_PROTOCOL } from './../data/Constants';
 import { sliceOverflowTitle, getFaviconUrl, shortenUrl } from './CommandHelper';
 
+type Tab = chrome.tabs.Tab;
+type Bookmark = chrome.bookmarks.BookmarkTreeNode;
+
 /**
  * Create simple command to switch to another tab
  */
-export const tabToCommand = (tab: chrome.tabs.Tab, index: number): ICommand => {
+export const tabToCommand = (tab: Tab, index: number): ICommand => {
 	// Show shortcut key only for first 10 tabs
 	const description = (index < 10) ? `Ctrl + ${index}` : '';
 	return {
@@ -24,7 +27,7 @@ export const tabToCommand = (tab: chrome.tabs.Tab, index: number): ICommand => {
 /**
  * Create simple command to open a new tab from recently closed tabs
  */
-export const closedToCommand = (closed: chrome.tabs.Tab): ICommand => ({
+export const closedToCommand = (closed: Tab): ICommand => ({
 	type: COMMAND.URL_COMMAND,
 	desc: '',
 	url: shortenUrl(closed.url),
@@ -47,11 +50,23 @@ export const favoriteToCommand = (favorite: chrome.topSites.MostVisitedURL): ICo
 /**
  * Create bookmark command to open a new tab
  */
-export const bookmarkToCommand = (bookmark: chrome.bookmarks.BookmarkTreeNode): ICommand => ({
+export const bookmarkToCommand = (bookmark: Bookmark): ICommand => ({
 	type: COMMAND.URL_COMMAND,
 	desc: '',
 	url: shortenUrl(bookmark.url),
 	imgUrl: `https://www.google.com/s2/favicons?domain=${bookmark.url}`,
 	action: { type: MESSAGE.TAB_NEW, target: ETarget.BACKGROUND, url: bookmark.url },
 	text: sliceOverflowTitle(bookmark.title)
+});
+
+/**
+ * Command to change current URL
+ */
+export const changeUrlCommand = (tab: Tab): ICommand => ({
+	type: COMMAND.URL_COMMAND,
+	desc: '',
+	url: shortenUrl(tab.url),
+	imgUrl: `https://www.google.com/s2/favicons?domain=${tab.url}`,
+	action: { type: MESSAGE.TAB_CHANGE_URL, target: ETarget.BACKGROUND, newUrl: tab.url },
+	text: sliceOverflowTitle(tab.title)
 });

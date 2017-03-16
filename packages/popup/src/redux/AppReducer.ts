@@ -6,7 +6,7 @@ import { IAppState } from './../interfaces/IAppState';
 import { ICommand, COMMAND } from './../interfaces/ICommand';
 import { ACTION, ActionType } from './Actions';
 import { initState } from './AppState';
-import { favoriteToCommand, tabToCommand, closedToCommand, bookmarkToCommand } from './../utils/CommandCreator';
+import { favoriteToCommand, tabToCommand, closedToCommand, bookmarkToCommand, changeUrlCommand } from './../utils/CommandCreator';
 import { searchCommands } from './../utils/Search';
 import { notFoundCommand } from './../utils/DummyCommands';
 
@@ -73,7 +73,7 @@ export const appReducer = (state: IAppState = initState, action: ActionType | Me
 		case MESSAGE.TAB_HISTORY: {
 			// @TODO don't use Message type here, it should be action or custom type
 			const activeTab = state.chromeState.openedTabs.filter(tab => tab.id === state.chromeState.currentActiveTabId)[0];
-			const historyCommands = activeTab.history.map(tab => closedToCommand(tab));
+			const historyCommands = activeTab.history.map(tab => changeUrlCommand(tab));
 			return {
 				...state,
 				offset: 0,
@@ -95,7 +95,6 @@ export const appReducer = (state: IAppState = initState, action: ActionType | Me
 				.map(tab => closedToCommand(tab));
 			const bookmarks: ICommand[] = action.chromeState.bookmarks
 				.map(tab => bookmarkToCommand(tab));
-			console.log(action.chromeState);
 			return {
 				...state,
 				commandsGroups: {

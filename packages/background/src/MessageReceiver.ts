@@ -28,6 +28,12 @@ export const messageReceiver = (): void => {
 					}
 					break;
 				}
+				case MESSAGE.TAB_CHANGE_URL: {
+					const activeTab = await getActiveTab();
+					chrome.tabs.update(activeTab.id, {
+						url: message.newUrl
+					});
+				}
 				case MESSAGE.BOOKMARK_ADD: {
 					const activeTab = await getActiveTab();
 					chrome.bookmarks.create({ title: activeTab.title, url: activeTab.url });

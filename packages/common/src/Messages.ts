@@ -13,6 +13,7 @@ export const MESSAGE = {
 	TAB_CLOSE_ALL: 'TAB_CLOSE_ALL' as 'TAB_CLOSE_ALL',
 	TAB_SWITCH: 'TAB_SWITCH' as 'TAB_SWITCH',
 	TAB_HISTORY: 'TAB_HISTORY' as 'TAB_HISTORY',
+	TAB_CHANGE_URL: 'TAB_CHANGE_URL' as 'TAB_CHANGE_URL',
 	PRINT_PAGE: 'PRINT_PAGE' as 'PRINT_PAGE',
 	WINDOW_CLOSE: 'WINDOW_CLOSE' as 'WINDOW_CLOSE',
 	BOOKMARK_ADD: 'BOOKMARKD_ADD' as 'BOOKMARK_ADD',
@@ -86,4 +87,7 @@ interface IShowToast extends IMessage
 interface ISearchChange extends IMessage
 { readonly type: typeof MESSAGE.SEARCH_CHANGE; readonly value: string; }
 
-export type MessageType = IBookmarkAdd | ITabNew | ITabClose | IZoom | ICapture | ITabReload | ITabDuplicate | IGetFavorites | IShowFavorites | IPrintPage | INothing | ITabSwitch | ITabCloseAll | IWindowClose | ISyncChromeState | IShowToast | ISearchChange | ISyncChromeStateRequest | ITabHistory;
+interface ITabChangeUrl extends IMessage
+{ readonly type: typeof MESSAGE.TAB_CHANGE_URL; readonly newUrl: string; }
+
+export type MessageType = IBookmarkAdd | ITabNew | ITabClose | IZoom | ICapture | ITabReload | ITabDuplicate | IGetFavorites | IShowFavorites | IPrintPage | INothing | ITabSwitch | ITabCloseAll | IWindowClose | ISyncChromeState | IShowToast | ISearchChange | ISyncChromeStateRequest | ITabHistory | ITabChangeUrl;
