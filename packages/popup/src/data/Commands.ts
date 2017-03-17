@@ -13,17 +13,17 @@ export const help: ICommand[] = [
 	{
 		type: COMMAND.QUICKPANEL_COMMAND,
 		group: 'DEAFULT', text: '>', desc: 'Show and run commands',
-		action: { type: MESSAGE.SEARCH_CHANGE, value: '>', target: ETarget.POPUP }
+		action: { type: ACTION.SEARCH_CHANGE, searchValue: '>', target: ETarget.POPUP }
 	},
 	{
 		type: COMMAND.QUICKPANEL_COMMAND,
 		group: 'DEFAULT', text: '@', desc: 'Go to tab',
-		action: { type: MESSAGE.SEARCH_CHANGE, value: '@', target: ETarget.POPUP }
+		action: { type: ACTION.SEARCH_CHANGE, searchValue: '@', target: ETarget.POPUP }
 	},
 	{
 		type: COMMAND.QUICKPANEL_COMMAND,
 		group: 'DEFAULT', text: '#', desc: 'Open a bookmark',
-		action: { type: MESSAGE.SEARCH_CHANGE, value: '#', target: ETarget.POPUP }
+		action: { type: ACTION.SEARCH_CHANGE, searchValue: '#', target: ETarget.POPUP }
 	}
 ];
 

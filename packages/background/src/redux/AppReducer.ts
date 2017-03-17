@@ -18,11 +18,12 @@ export const appReducer = (state: AppState = initState, action: ActionType): App
 		}
 		case ACTION.TAB_UPDATED: {
 			const tabIndex = state.chromeState.openedTabs.map(t => t.id).indexOf(action.tabId);
+			const openedTab = state.chromeState.openedTabs[tabIndex];
 			if (tabIndex === -1) {
 				throw new Error(`Cannot update a tab width id '${action.tabId}', which doesn't exist`);
 			}
-			if (state.chromeState.openedTabs[tabIndex].history[0].url === action.tab.url) {
-				// Url doesn't changed, don't add anything to history then
+			if ((openedTab.history[0].url === action.tab.url) || (action.tab.url === '') || (action.tab.url === 'chrome://newtab/')) {
+				// Url doesn't changed or it's empty, don't add anything to history then
 				return state;
 			}
 			const tabHistory = state.chromeState.openedTabs[tabIndex];

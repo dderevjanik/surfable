@@ -7,7 +7,8 @@ export const ACTION = {
 	TAB_REMOVED: 'TAB_REMOVED' as 'TAB_REMOVED',
 	TAB_UPDATED: 'TAB_UPDATED' as 'TAB_UPDATED',
 	BOOKMARKS_UPDATED: 'BOOKMARKS_UPDATED' as 'BOOKMARKS_UPDATED',
-	TAB_ACTIVE_CHANGED: 'TAB_ACTIVE_CHANGED' as 'TAB_ACTIVE_CHANGED'
+	TAB_ACTIVE_CHANGED: 'TAB_ACTIVE_CHANGED' as 'TAB_ACTIVE_CHANGED',
+	SEARCH_CHANGE: 'SEARCH_CHANGE' as 'SEARCH_CHANGE'
 };
 
 interface ITabCreated extends IAction
@@ -24,5 +25,8 @@ interface IBookmarksUpdated extends IAction
 
 interface ITabActiveChanged extends IAction
 { readonly type: typeof ACTION.TAB_ACTIVE_CHANGED; readonly activeTabId: number; }
+
+interface ISearchChange extends IAction
+{ readonly type: typeof ACTION.SEARCH_CHANGE; readonly value: string; }
 
 export type ActionType = ITabCreated | ITabRemoved | ITabUpdated | IBookmarksUpdated | ITabActiveChanged;

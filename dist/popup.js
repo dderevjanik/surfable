@@ -23857,7 +23857,6 @@
 	    }
 	    return t;
 	};
-	var Messages_1 = __webpack_require__(4);
 	var Group_1 = __webpack_require__(222);
 	var Sender_1 = __webpack_require__(2);
 	var Actions_1 = __webpack_require__(223);
@@ -23890,30 +23889,31 @@
 	            return __assign({}, state, { opened: false });
 	        }
 	        case Actions_1.ACTION.SEARCH_CHANGE: {
-	            var searchValue = action.value.toLowerCase(); // Don't care about case
+	            var searchValue = action.searchValue.toLowerCase(); // Don't care about case
 	            if (state.searchMode === 0) {
+	                // Searching default commands groups
 	                var commandsGroupsChars = Object.keys(state.commandsGroups); // @TODO don't calculate all object keys everytime
-	                var commandsGroupExists = (commandsGroupsChars.indexOf(action.value[0]) > -1); // Check if search value is from commands groups
+	                var commandsGroupExists = (commandsGroupsChars.indexOf(searchValue[0]) > -1); // Check if search value is from commands groups
 	                if (commandsGroupExists) {
 	                    var foundCommands = Search_1.searchCommands(searchValue.slice(1, searchValue.length), state.commandsGroups[searchValue[0]]);
 	                    var hasFoundSomething = (foundCommands.length > 0);
-	                    return __assign({}, state, { offset: 0, inputVal: action.value, foundCommands: hasFoundSomething ? foundCommands : [DummyCommands_1.notFoundCommand] });
+	                    return __assign({}, state, { offset: 0, inputVal: action.searchValue, foundCommands: hasFoundSomething ? foundCommands : [DummyCommands_1.notFoundCommand] });
 	                }
 	            }
 	            else {
+	                // Searching custom commands
 	                var foundCommands = Search_1.searchCommands(searchValue.slice(1, searchValue.length), state.commands);
 	                var hasFoundSomething = (foundCommands.length > 0);
-	                return __assign({}, state, { offset: 0, inputVal: action.value, foundCommands: hasFoundSomething ? foundCommands : [DummyCommands_1.notFoundCommand] });
+	                return __assign({}, state, { offset: 0, inputVal: action.searchValue, foundCommands: hasFoundSomething ? foundCommands : [DummyCommands_1.notFoundCommand] });
 	            }
-	            return __assign({}, state, { inputVal: action.value, foundCommands: [DummyCommands_1.notFoundCommand] });
+	            return __assign({}, state, { inputVal: action.searchValue, foundCommands: [DummyCommands_1.notFoundCommand] });
 	        }
-	        case Messages_1.MESSAGE.TAB_HISTORY: {
-	            // @TODO don't use Message type here, it should be action or custom type
+	        case Actions_1.ACTION.TAB_SHOW_HISTORY: {
 	            var activeTab = state.chromeState.openedTabs.filter(function (tab) { return tab.id === state.chromeState.currentActiveTabId; })[0];
 	            var historyCommands = activeTab.history.map(function (tab) { return CommandCreator_1.changeUrlCommand(tab); });
 	            return __assign({}, state, { offset: 0, inputVal: '', searchMode: 1, commands: historyCommands, foundCommands: historyCommands });
 	        }
-	        case Messages_1.MESSAGE.SYNC_CHROME_STATE: {
+	        case Actions_1.ACTION.SYNC_CHROME_STATE: {
 	            // @TODO dont create new tabs here, create them on 'background'
 	            // @TODO Sort them by commands groups
 	            var favoriteCommands = action.chromeState.favorites
@@ -23960,7 +23960,9 @@
 	    PANEL_UP: 'PANEL_UP',
 	    PANEL_DOWN: 'PANEL_DOWN',
 	    SEARCH_CHANGE: 'SEARCH_CHANGE',
-	    PANEL_EXECUTE_COMMAND: 'PANEL_EXECUTE_COMMAND'
+	    PANEL_EXECUTE_COMMAND: 'PANEL_EXECUTE_COMMAND',
+	    TAB_SHOW_HISTORY: 'TAB_SHOW_HISTORY',
+	    SYNC_CHROME_STATE: 'SYNC_CHROME_STATE'
 	};
 
 
@@ -24016,6 +24018,7 @@
 	var Chrome_1 = __webpack_require__(228);
 	var ICommand_1 = __webpack_require__(229);
 	var Messages_1 = __webpack_require__(4);
+	var Actions_1 = __webpack_require__(223);
 	/**
 	 * Help commands are showed, when '?' is presented in search input
 	 */
@@ -24023,17 +24026,17 @@
 	    {
 	        type: ICommand_1.COMMAND.QUICKPANEL_COMMAND,
 	        group: 'DEAFULT', text: '>', desc: 'Show and run commands',
-	        action: { type: Messages_1.MESSAGE.SEARCH_CHANGE, value: '>', target: 2 /* POPUP */ }
+	        action: { type: Actions_1.ACTION.SEARCH_CHANGE, searchValue: '>', target: 2 /* POPUP */ }
 	    },
 	    {
 	        type: ICommand_1.COMMAND.QUICKPANEL_COMMAND,
 	        group: 'DEFAULT', text: '@', desc: 'Go to tab',
-	        action: { type: Messages_1.MESSAGE.SEARCH_CHANGE, value: '@', target: 2 /* POPUP */ }
+	        action: { type: Actions_1.ACTION.SEARCH_CHANGE, searchValue: '@', target: 2 /* POPUP */ }
 	    },
 	    {
 	        type: ICommand_1.COMMAND.QUICKPANEL_COMMAND,
 	        group: 'DEFAULT', text: '#', desc: 'Open a bookmark',
-	        action: { type: Messages_1.MESSAGE.SEARCH_CHANGE, value: '#', target: 2 /* POPUP */ }
+	        action: { type: Actions_1.ACTION.SEARCH_CHANGE, searchValue: '#', target: 2 /* POPUP */ }
 	    }
 	];
 	/**
@@ -24405,7 +24408,7 @@
 	    inputVal: state.inputVal,
 	    opened: state.opened
 	}); }, function (dispatch) { return ({
-	    onSearchChange: function (value) { return dispatch({ type: Actions_1.ACTION.SEARCH_CHANGE, value: value }); }
+	    onSearchChange: function (value) { return dispatch({ type: Actions_1.ACTION.SEARCH_CHANGE, searchValue: value }); }
 	}); })(exports.QuickPanelComponent);
 
 
@@ -25703,6 +25706,7 @@
 
 	"use strict";
 	var Messages_1 = __webpack_require__(4);
+	var Actions_1 = __webpack_require__(223);
 	var store_1 = __webpack_require__(220);
 	/**
 	 * Will listen on events/messages incoming from other parts of extension
@@ -25711,18 +25715,17 @@
 	    chrome.runtime.onMessage.addListener(function (message) {
 	        if (message.target === 2 /* POPUP */) {
 	            console.debug("Message '" + message.type + "' received");
+	            // Try to avoid dispatching a message to popup store
+	            // It'll be less confusing and also 'safer'
 	            switch (message.type) {
 	                case Messages_1.MESSAGE.SHOW_FAVORITES:
 	                    store_1.store.dispatch({ type: message.type, favorites: message.favorites });
 	                    break;
 	                case Messages_1.MESSAGE.SYNC_CHROME_STATE:
-	                    store_1.store.dispatch(message);
-	                    break;
-	                case Messages_1.MESSAGE.SEARCH_CHANGE:
-	                    store_1.store.dispatch(message);
+	                    store_1.store.dispatch({ type: Actions_1.ACTION.SYNC_CHROME_STATE, chromeState: message.chromeState });
 	                    break;
 	                case Messages_1.MESSAGE.TAB_HISTORY:
-	                    store_1.store.dispatch(message);
+	                    store_1.store.dispatch({ type: Actions_1.ACTION.TAB_SHOW_HISTORY });
 	                    break;
 	                default: {
 	                    throw new Error("Unknown message type: " + message.type + ". Make sure that proper handler exists in message receiver");

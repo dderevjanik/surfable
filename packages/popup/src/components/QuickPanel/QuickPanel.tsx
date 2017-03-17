@@ -34,6 +34,6 @@ export const QuickPanel = connect(
 		opened: state.opened
 	}),
 	dispatch => ({
-		onSearchChange: (value: string) => dispatch({ type: ACTION.SEARCH_CHANGE, value: value })
+		onSearchChange: (value: string) => dispatch({ type: ACTION.SEARCH_CHANGE, searchValue: value })
 	})
 )(QuickPanelComponent);

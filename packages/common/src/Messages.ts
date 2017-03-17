@@ -85,7 +85,7 @@ interface IShowToast extends IMessage
 { readonly type: typeof MESSAGE.SHOW_TOAST; readonly title: string; readonly text: string; readonly level: ELevel; }
 
 interface ISearchChange extends IMessage
-{ readonly type: typeof MESSAGE.SEARCH_CHANGE; readonly value: string; }
+{ readonly type: typeof MESSAGE.SEARCH_CHANGE; readonly searchValue: string; }
 
 interface ITabChangeUrl extends IMessage
 { readonly type: typeof MESSAGE.TAB_CHANGE_URL; readonly newUrl: string; }

@@ -1,4 +1,3 @@
-import { MESSAGE, MessageType } from 'surfable-common/src/Messages';
 import { ETarget } from 'surfable-common/src/enums/ETarget';
 import { Group } from './../data/Group';
 import { sendAction } from 'surfable-common/src/Sender';
@@ -10,7 +9,7 @@ import { favoriteToCommand, tabToCommand, closedToCommand, bookmarkToCommand, ch
 import { searchCommands } from './../utils/Search';
 import { notFoundCommand } from './../utils/DummyCommands';
 
-export const appReducer = (state: IAppState = initState, action: ActionType | MessageType): IAppState => {
+export const appReducer = (state: IAppState = initState, action: ActionType): IAppState => {
 	switch (action.type) {
 		case ACTION.PANEL_EXECUTE_COMMAND: {
 			sendAction(state.foundCommands[state.offset].action);
@@ -39,10 +38,11 @@ export const appReducer = (state: IAppState = initState, action: ActionType | Me
 			return { ...state, opened: false };
 		}
 		case ACTION.SEARCH_CHANGE: {
-			const searchValue = action.value.toLowerCase(); // Don't care about case
+			const searchValue = action.searchValue.toLowerCase(); // Don't care about case
 			if (state.searchMode === 0) {
+				// Searching default commands groups
 				const commandsGroupsChars = Object.keys(state.commandsGroups); // @TODO don't calculate all object keys everytime
-				const commandsGroupExists = (commandsGroupsChars.indexOf(action.value[0]) > -1); // Check if search value is from commands groups
+				const commandsGroupExists = (commandsGroupsChars.indexOf(searchValue[0]) > -1); // Check if search value is from commands groups
 
 				if (commandsGroupExists) {
 					const foundCommands = searchCommands(searchValue.slice(1, searchValue.length), state.commandsGroups[searchValue[0]]);
@@ -50,28 +50,28 @@ export const appReducer = (state: IAppState = initState, action: ActionType | Me
 					return {
 						...state,
 						offset: 0,
-						inputVal: action.value,
+						inputVal: action.searchValue,
 						foundCommands: hasFoundSomething ? foundCommands : [notFoundCommand]
 					};
 				}
 			} else {
+				// Searching custom commands
 				const foundCommands = searchCommands(searchValue.slice(1, searchValue.length), state.commands);
 				const hasFoundSomething = (foundCommands.length > 0);
 				return {
 					...state,
 					offset: 0,
-					inputVal: action.value,
+					inputVal: action.searchValue,
 					foundCommands: hasFoundSomething ? foundCommands : [notFoundCommand]
 				};
 			}
 			return {
 				...state,
-				inputVal: action.value,
+				inputVal: action.searchValue,
 				foundCommands: [notFoundCommand]
 			};
 		}
-		case MESSAGE.TAB_HISTORY: {
-			// @TODO don't use Message type here, it should be action or custom type
+		case ACTION.TAB_SHOW_HISTORY: {
 			const activeTab = state.chromeState.openedTabs.filter(tab => tab.id === state.chromeState.currentActiveTabId)[0];
 			const historyCommands = activeTab.history.map(tab => changeUrlCommand(tab));
 			return {
@@ -83,7 +83,7 @@ export const appReducer = (state: IAppState = initState, action: ActionType | Me
 				foundCommands: historyCommands
 			};
 		}
-		case MESSAGE.SYNC_CHROME_STATE: {
+		case ACTION.SYNC_CHROME_STATE: {
 			// @TODO dont create new tabs here, create them on 'background'
 			// @TODO Sort them by commands groups
 			const favoriteCommands: ICommand[] = action.chromeState.favorites
