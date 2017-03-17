@@ -7,6 +7,7 @@ import { sliceOverflowTitle, getFaviconUrl, shortenUrl } from './CommandHelper';
 
 type Tab = chrome.tabs.Tab;
 type Bookmark = chrome.bookmarks.BookmarkTreeNode;
+type TopSite = chrome.topSites.MostVisitedURL;
 
 /**
  * Create simple command to switch to another tab
@@ -39,7 +40,7 @@ export const closedToCommand = (closed: Tab): ICommand => ({
 /**
  * Create simple command to open a new tab from favorite
  */
-export const favoriteToCommand = (favorite: chrome.topSites.MostVisitedURL): ICommand => ({
+export const favoriteToCommand = (favorite: TopSite): ICommand => ({
 	type: COMMAND.URL_COMMAND,
 	desc: '',
 	url: shortenUrl(favorite.url),
