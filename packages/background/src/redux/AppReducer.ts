@@ -22,12 +22,16 @@ export const appReducer = (state: AppState = initState, action: ActionType): App
 			if (tabIndex === -1) {
 				throw new Error(`Cannot update a tab width id '${action.tabId}', which doesn't exist`);
 			}
-			if ((openedTab.history[0].url === action.tab.url) || (action.tab.url === '') || (action.tab.url === 'chrome://newtab/')) {
-				// Url doesn't changed or it's empty, don't add anything to history then
+
+			const sameUrl = (openedTab.history[0].url === action.tab.url);
+			const emptyUrl = (action.tab.url === '');
+			const newTab = (action.tab.url === 'chrome://newtab/');
+			if (sameUrl || emptyUrl || newTab) {
 				return state;
 			}
+
 			const tabHistory = state.chromeState.openedTabs[tabIndex];
-			const updatedHistory = {
+			const updatedTabHistory = {
 				id: tabHistory.id,
 				history: addToStack(tabHistory.history, action.tab, 10)
 			};
@@ -35,7 +39,7 @@ export const appReducer = (state: AppState = initState, action: ActionType): App
 				...state,
 				chromeState: {
 					...state.chromeState,
-					openedTabs: updateItem(state.chromeState.openedTabs, updatedHistory, tabIndex)
+					openedTabs: updateItem(state.chromeState.openedTabs, updatedTabHistory, tabIndex)
 				}
 			};
 		}
@@ -44,12 +48,13 @@ export const appReducer = (state: AppState = initState, action: ActionType): App
 			if (tabIndex === -1) {
 				throw new Error(`Cannot remove a tab width id '${action.tabId}', which doesn't exist`);
 			}
+			const closedTab = state.chromeState.openedTabs[tabIndex].history[0];
 			return {
 				...state,
 				chromeState: {
 					...state.chromeState,
 					openedTabs: removeItem(state.chromeState.openedTabs, tabIndex),
-					closedTabs: addToStack(state.chromeState.closedTabs, state.chromeState.openedTabs[tabIndex].history[0], MAX_RECENT_TABS)
+					closedTabs: addToStack(state.chromeState.closedTabs, closedTab, MAX_RECENT_TABS)
 				}
 			};
 		}
@@ -63,7 +68,7 @@ export const appReducer = (state: AppState = initState, action: ActionType): App
 			}
 		}
 		case ACTION.BOOKMARKS_UPDATED: {
-			// TODO: Add bookmarks handler
+			// @TODO: finish updating bookmarks
 			return { ...state };
 		}
 		default: {

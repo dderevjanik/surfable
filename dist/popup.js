@@ -23857,8 +23857,8 @@
 	    }
 	    return t;
 	};
-	var Group_1 = __webpack_require__(222);
 	var Sender_1 = __webpack_require__(2);
+	var Group_1 = __webpack_require__(222);
 	var Actions_1 = __webpack_require__(223);
 	var AppState_1 = __webpack_require__(224);
 	var CommandCreator_1 = __webpack_require__(230);
@@ -23890,7 +23890,7 @@
 	        }
 	        case Actions_1.ACTION.SEARCH_CHANGE: {
 	            var searchValue = action.searchValue.toLowerCase(); // Don't care about case
-	            if (state.searchMode === 0) {
+	            if (state.searchMode === 0 /* GROUPS */) {
 	                // Searching default commands groups
 	                var commandsGroupsChars = Object.keys(state.commandsGroups); // @TODO don't calculate all object keys everytime
 	                var commandsGroupExists = (commandsGroupsChars.indexOf(searchValue[0]) > -1); // Check if search value is from commands groups
@@ -23911,7 +23911,7 @@
 	        case Actions_1.ACTION.TAB_SHOW_HISTORY: {
 	            var activeTab = state.chromeState.openedTabs.filter(function (tab) { return tab.id === state.chromeState.currentActiveTabId; })[0];
 	            var historyCommands = activeTab.history.map(function (tab) { return CommandCreator_1.changeUrlCommand(tab); });
-	            return __assign({}, state, { offset: 0, inputVal: '', searchMode: 1, commands: historyCommands, foundCommands: historyCommands });
+	            return __assign({}, state, { offset: 0, inputVal: '', searchMode: 1 /* COMMANDS */, commands: historyCommands, foundCommands: historyCommands });
 	        }
 	        case Actions_1.ACTION.SYNC_CHROME_STATE: {
 	            // @TODO dont create new tabs here, create them on 'background'
@@ -23974,7 +23974,7 @@
 	var CommandsGroups_1 = __webpack_require__(225);
 	var Group_1 = __webpack_require__(222);
 	exports.initState = {
-	    searchMode: 0,
+	    searchMode: 0 /* GROUPS */,
 	    commandsGroups: CommandsGroups_1.commandsGroups,
 	    commands: CommandsGroups_1.commandsGroups[Group_1.Group.COMMANDS],
 	    foundCommands: CommandsGroups_1.commandsGroups[Group_1.Group.COMMANDS],

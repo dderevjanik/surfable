@@ -1,8 +1,9 @@
 import { ETarget } from 'surfable-common/src/enums/ETarget';
-import { Group } from './../data/Group';
 import { sendAction } from 'surfable-common/src/Sender';
 import { IAppState } from './../interfaces/IAppState';
 import { ICommand, COMMAND } from './../interfaces/ICommand';
+import { Group } from './../data/Group';
+import { ESearchMode } from './../enums/ESearchMode';
 import { ACTION, ActionType } from './Actions';
 import { initState } from './AppState';
 import { favoriteToCommand, tabToCommand, closedToCommand, bookmarkToCommand, changeUrlCommand } from './../utils/CommandCreator';
@@ -39,7 +40,7 @@ export const appReducer = (state: IAppState = initState, action: ActionType): IA
 		}
 		case ACTION.SEARCH_CHANGE: {
 			const searchValue = action.searchValue.toLowerCase(); // Don't care about case
-			if (state.searchMode === 0) {
+			if (state.searchMode === ESearchMode.GROUPS) {
 				// Searching default commands groups
 				const commandsGroupsChars = Object.keys(state.commandsGroups); // @TODO don't calculate all object keys everytime
 				const commandsGroupExists = (commandsGroupsChars.indexOf(searchValue[0]) > -1); // Check if search value is from commands groups
@@ -78,7 +79,7 @@ export const appReducer = (state: IAppState = initState, action: ActionType): IA
 				...state,
 				offset: 0,
 				inputVal: '',
-				searchMode: 1,
+				searchMode: ESearchMode.COMMANDS,
 				commands: historyCommands,
 				foundCommands: historyCommands
 			};

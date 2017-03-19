@@ -1,11 +1,12 @@
 import { IAppState } from './../interfaces/IAppState';
-import { commands } from './../data/Commands';
 import { ICommand } from './../interfaces/ICommand';
+import { ESearchMode } from './../enums/ESearchMode';
+import { commands } from './../data/Commands';
 import { commandsGroups } from './../data/CommandsGroups';
 import { Group } from './../data/Group';
 
 export const initState: IAppState = {
-	searchMode: 0,
+	searchMode: ESearchMode.GROUPS,
 	commandsGroups: commandsGroups,
 	commands: commandsGroups[Group.COMMANDS],
 	foundCommands: commandsGroups[Group.COMMANDS],

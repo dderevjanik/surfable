@@ -1,11 +1,7 @@
 import { ICommand } from './ICommand';
 import { ICommandsGroup } from './ICommandsGroup';
 import { IChromeState } from 'surfable-common/src/interfaces/IChromeState';
-
-const enum ESearchMode {
-	GROUPS = 0,
-	COMMANDS = 1
-}
+import { ESearchMode } from './../enums/ESearchMode';
 
 export interface IAppState {
 	readonly searchMode: ESearchMode;

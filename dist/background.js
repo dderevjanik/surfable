@@ -1589,29 +1589,32 @@
 	            if (tabIndex === -1) {
 	                throw new Error(`Cannot update a tab width id '${action.tabId}', which doesn't exist`);
 	            }
-	            if ((openedTab.history[0].url === action.tab.url) || (action.tab.url === '') || (action.tab.url === 'chrome://newtab/')) {
-	                // Url doesn't changed or it's empty, don't add anything to history then
+	            const sameUrl = (openedTab.history[0].url === action.tab.url);
+	            const emptyUrl = (action.tab.url === '');
+	            const newTab = (action.tab.url === 'chrome://newtab/');
+	            if (sameUrl || emptyUrl || newTab) {
 	                return state;
 	            }
 	            const tabHistory = state.chromeState.openedTabs[tabIndex];
-	            const updatedHistory = {
+	            const updatedTabHistory = {
 	                id: tabHistory.id,
 	                history: Immutable_1.addToStack(tabHistory.history, action.tab, 10)
 	            };
-	            return __assign({}, state, { chromeState: __assign({}, state.chromeState, { openedTabs: Immutable_1.updateItem(state.chromeState.openedTabs, updatedHistory, tabIndex) }) });
+	            return __assign({}, state, { chromeState: __assign({}, state.chromeState, { openedTabs: Immutable_1.updateItem(state.chromeState.openedTabs, updatedTabHistory, tabIndex) }) });
 	        }
 	        case Actions_1.ACTION.TAB_REMOVED: {
 	            const tabIndex = state.chromeState.openedTabs.map(t => t.id).indexOf(action.tabId);
 	            if (tabIndex === -1) {
 	                throw new Error(`Cannot remove a tab width id '${action.tabId}', which doesn't exist`);
 	            }
-	            return __assign({}, state, { chromeState: __assign({}, state.chromeState, { openedTabs: Immutable_1.removeItem(state.chromeState.openedTabs, tabIndex), closedTabs: Immutable_1.addToStack(state.chromeState.closedTabs, state.chromeState.openedTabs[tabIndex].history[0], Constants_1.MAX_RECENT_TABS) }) });
+	            const closedTab = state.chromeState.openedTabs[tabIndex].history[0];
+	            return __assign({}, state, { chromeState: __assign({}, state.chromeState, { openedTabs: Immutable_1.removeItem(state.chromeState.openedTabs, tabIndex), closedTabs: Immutable_1.addToStack(state.chromeState.closedTabs, closedTab, Constants_1.MAX_RECENT_TABS) }) });
 	        }
 	        case Actions_1.ACTION.TAB_ACTIVE_CHANGED: {
 	            return __assign({}, state, { chromeState: __assign({}, state.chromeState, { currentActiveTabId: action.activeTabId }) });
 	        }
 	        case Actions_1.ACTION.BOOKMARKS_UPDATED: {
-	            // TODO: Add bookmarks handler
+	            // @TODO: finish updating bookmarks
 	            return __assign({}, state);
 	        }
 	        default: {
