@@ -1,14 +1,48 @@
 {
   "name": "surfable",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "author": "Daniel Derevjanik",
+  "main": "src/actions/all",
   "scripts": {
-    "background": "cd packages/background && npm run dev",
-    "popup": "cd packages/popup && npm run dev",
-    "content": "cd packages/content && npm run dev"
+    "test": "jest --watch",
+    "popup-dev": "webpack --config webpack.popup.config.js --colors --watch",
+    "background-dev": "webpack --config webpack.background.config.js --colors --watch",
+    "content-dev": "webpack --config webpack.content.config.js --colors --watch"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "fusebox": "^1.3.123",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-redux": "^5.0.3",
+    "redux": "^3.6.0",
+    "typestyle": "^1.0.0"
   },
   "devDependencies": {
-    "lerna": "2.0.0-beta.34"
+    "@types/chrome": "0.0.42",
+    "@types/jest": "^19.2.2",
+    "@types/react": "^15.0.17",
+    "@types/react-dom": "^0.14.23",
+    "@types/react-redux": "^4.4.37",
+    "@types/redux": "^3.6.0",
+    "jest": "^19.0.2",
+    "ts-jest": "^19.0.2",
+    "ts-loader": "^2.0.2",
+    "tslint": "^4.5.1",
+    "typescript": "^2.2.1",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.4.2"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ]
   }
 }
