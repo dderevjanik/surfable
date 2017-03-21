@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    entry: './src/Popup/Main.ts',
+    entry: './src/popup/Main.ts',
     output: {
         filename: 'popup.js',
         path: './dist'

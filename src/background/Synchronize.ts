@@ -1,4 +1,4 @@
-import { store } from './redux/Store';
+import { store } from './redux/BackgroundStore';
 import { MESSAGE } from '../Messages';
 import { sendToPopup } from '../Sender';
 

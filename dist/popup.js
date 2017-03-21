@@ -7117,9 +7117,9 @@ exports.Group = {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const redux_1 = __webpack_require__(100);
-const AppReducer_1 = __webpack_require__(246);
-const AppState_1 = __webpack_require__(103);
-exports.store = redux_1.createStore(AppReducer_1.appReducer, AppState_1.initState);
+const PopupReducer_1 = __webpack_require__(246);
+const PopupState_1 = __webpack_require__(103);
+exports.store = redux_1.createStore(PopupReducer_1.appReducer, PopupState_1.initState);
 
 
 /***/ }),
@@ -11246,10 +11246,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(9);
 const ReactDOM = __webpack_require__(132);
 const react_redux_1 = __webpack_require__(92);
-const store_1 = __webpack_require__(62);
+const PopupStore_1 = __webpack_require__(62);
 const QuickPanel_1 = __webpack_require__(237);
 exports.render = () => {
-    ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store_1.store },
+    ReactDOM.render(React.createElement(react_redux_1.Provider, { store: PopupStore_1.store },
         React.createElement(QuickPanel_1.QuickPanel, null)), document.getElementById('app'));
 };
 
@@ -11261,25 +11261,25 @@ exports.render = () => {
 Object.defineProperty(exports, "__esModule", { value: true });
 const KeyMap_1 = __webpack_require__(245);
 const Actions_1 = __webpack_require__(28);
-const store_1 = __webpack_require__(62);
+const PopupStore_1 = __webpack_require__(62);
 /**
  * Send key's belonging action to redux store
  */
 const processKeyEvent = (event) => {
     switch (event.keyCode) {
         case KeyMap_1.keyMap.esc:
-            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_CLOSE });
+            PopupStore_1.store.dispatch({ type: Actions_1.ACTION.PANEL_CLOSE });
             break;
         case KeyMap_1.keyMap.up:
             event.preventDefault(); // Prevent from moving input's cursor
-            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_UP });
+            PopupStore_1.store.dispatch({ type: Actions_1.ACTION.PANEL_UP });
             break;
         case KeyMap_1.keyMap.down:
             event.preventDefault(); // Prevent from moving input's cursor
-            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_DOWN });
+            PopupStore_1.store.dispatch({ type: Actions_1.ACTION.PANEL_DOWN });
             break;
         case KeyMap_1.keyMap.enter:
-            store_1.store.dispatch({ type: Actions_1.ACTION.PANEL_EXECUTE_COMMAND });
+            PopupStore_1.store.dispatch({ type: Actions_1.ACTION.PANEL_EXECUTE_COMMAND });
             break;
         default: {
             // Do nothing
@@ -11306,7 +11306,7 @@ exports.keyListener = () => {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Messages_1 = __webpack_require__(29);
 const Actions_1 = __webpack_require__(28);
-const store_1 = __webpack_require__(62);
+const PopupStore_1 = __webpack_require__(62);
 /**
  * Will listen on events/messages incoming from other parts of extension
  */
@@ -11318,13 +11318,13 @@ exports.messageReceiver = () => {
             // It'll be less confusing and also 'safer'
             switch (message.type) {
                 case Messages_1.MESSAGE.SHOW_FAVORITES:
-                    store_1.store.dispatch({ type: message.type, favorites: message.favorites });
+                    PopupStore_1.store.dispatch({ type: message.type, favorites: message.favorites });
                     break;
                 case Messages_1.MESSAGE.SYNC_CHROME_STATE:
-                    store_1.store.dispatch({ type: Actions_1.ACTION.SYNC_CHROME_STATE, chromeState: message.chromeState });
+                    PopupStore_1.store.dispatch({ type: Actions_1.ACTION.SYNC_CHROME_STATE, chromeState: message.chromeState });
                     break;
                 case Messages_1.MESSAGE.TAB_HISTORY:
-                    store_1.store.dispatch({ type: Actions_1.ACTION.TAB_SHOW_HISTORY });
+                    PopupStore_1.store.dispatch({ type: Actions_1.ACTION.TAB_SHOW_HISTORY });
                     break;
                 default: {
                     throw new Error(`Unknown message type: ${message.type}. Make sure that proper handler exists in message receiver`);
@@ -25240,6 +25240,13 @@ exports.commandsGroups = {
 /***/ (function(module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
+// Background
+exports.MAX_RECENT_TABS = 10;
+exports.MAX_TEXT_LENGTH = 90; // @TODO refactor, if command doesn't have icon, it should be longer
+exports.MAX_TEXT_LENGTH_ICON = 90;
+exports.ZOOM_MULTIPLIER = 0.2;
+exports.JAVASCRIPT_PRINT_PAGE = 'javascript:window.print();';
+// Popup
 exports.BLANK_FAVICON = 'https://image.flaticon.com/icons/png/128/12/12195.png';
 exports.MAX_COMMAND_TEXT_LENGTH = 50;
 exports.CHROME_PROTOCOL = 'chrome://';
@@ -25277,11 +25284,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Sender_1 = __webpack_require__(37);
 const Group_1 = __webpack_require__(61);
 const Actions_1 = __webpack_require__(28);
-const AppState_1 = __webpack_require__(103);
+const PopupState_1 = __webpack_require__(103);
 const CommandCreator_1 = __webpack_require__(247);
 const Search_1 = __webpack_require__(251);
 const DummyCommands_1 = __webpack_require__(249);
-exports.appReducer = (state = AppState_1.initState, action) => {
+exports.appReducer = (state = PopupState_1.initState, action) => {
     switch (action.type) {
         case Actions_1.ACTION.PANEL_EXECUTE_COMMAND: {
             Sender_1.sendAction(state.foundCommands[state.offset].action);

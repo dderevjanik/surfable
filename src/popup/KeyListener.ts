@@ -1,6 +1,6 @@
-import { keyMap } from './data/KeyMap';
+import { keyMap } from '../data/KeyMap';
 import { ACTION } from './redux/Actions';
-import { store } from './redux/store';
+import { store } from './redux/PopupStore';
 
 /**
  * Send key's belonging action to redux store

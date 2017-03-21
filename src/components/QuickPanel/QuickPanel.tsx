@@ -5,7 +5,7 @@ import { CommandList } from './../CommandList/CommandList';
 import { SearchInput } from './../SearchInput/SearchInput';
 import { IAppState } from './../../interfaces/IAppState';
 import { ICommand } from './../../interfaces/ICommand';
-import { ACTION } from './../../redux/Actions';
+import { ACTION } from '../../popup/redux/Actions';
 
 interface IProps {
 	readonly activeInd: number;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as Style from './CommandList.style';
 import * as StyleCommand from './../Commands/Command.style';
-import { sendAction } from '../../../Sender';
+import { sendAction } from '../../Sender';
 import { SimpleCommand } from './../Commands/SimpleCommand';
 import { DummyCommand } from './../Commands/DummyCommand';
 import { UrlCommand } from './../Commands/UrlCommand';
@@ -48,7 +48,7 @@ export class CommandList extends React.Component<IProps, IState> {
 				scrollIntoElement(commandlist, activeCommand, viewPosition);
 			}
 		}
-		this.state = {activeChanged: false}
+		this.state = { activeChanged: false }
 	}
 
 	render() {

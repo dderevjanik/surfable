@@ -1,6 +1,6 @@
 import { ICommand } from './ICommand';
 import { ICommandsGroup } from './ICommandsGroup';
-import { IChromeState } from '../../interfaces/IChromeState';
+import { IChromeState } from '../interfaces/IChromeState';
 import { ESearchMode } from './../enums/ESearchMode';
 
 export interface IAppState {

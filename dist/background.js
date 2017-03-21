@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 36);
+/******/ 	return __webpack_require__(__webpack_require__.s = 32);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -257,10 +257,10 @@ process.umask = function() { return 0; };
 /***/ (function(module, exports, __webpack_require__) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const redux_1 = __webpack_require__(27);
-const AppReducer_1 = __webpack_require__(33);
-const AppState_1 = __webpack_require__(11);
-exports.store = redux_1.createStore(AppReducer_1.appReducer, AppState_1.initState);
+const redux_1 = __webpack_require__(24);
+const BackgroundReducer_1 = __webpack_require__(34);
+const BackgroundState_1 = __webpack_require__(35);
+exports.store = redux_1.createStore(BackgroundReducer_1.appReducer, BackgroundState_1.initState);
 
 
 /***/ }),
@@ -268,7 +268,7 @@ exports.store = redux_1.createStore(AppReducer_1.appReducer, AppState_1.initStat
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__root_js__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__root_js__ = __webpack_require__(19);
 
 
 /** Built-in value references. */
@@ -282,9 +282,9 @@ var Symbol = __WEBPACK_IMPORTED_MODULE_0__root_js__["a" /* default */].Symbol;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseGetTag_js__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__getPrototype_js__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__isObjectLike_js__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseGetTag_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__getPrototype_js__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__isObjectLike_js__ = __webpack_require__(20);
 
 
 
@@ -396,7 +396,7 @@ function compose() {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_es_isPlainObject__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_symbol_observable__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_symbol_observable__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_symbol_observable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_symbol_observable__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return ActionTypes; });
 /* harmony export (immutable) */ __webpack_exports__["a"] = createStore;
@@ -758,66 +758,6 @@ exports.sendAction = (message) => {
 /* 9 */
 /***/ (function(module, exports) {
 
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.MAX_RECENT_TABS = 10;
-exports.MAX_TEXT_LENGTH = 90; // @TODO refactor, if command doesn't have icon, it should be longer
-exports.MAX_TEXT_LENGTH_ICON = 90;
-exports.ZOOM_MULTIPLIER = 0.2;
-exports.JAVASCRIPT_PRINT_PAGE = 'javascript:window.print();';
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports) {
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ACTION = {
-    TAB_CREATED: 'TAB_CREATED',
-    TAB_REMOVED: 'TAB_REMOVED',
-    TAB_UPDATED: 'TAB_UPDATED',
-    BOOKMARKS_UPDATED: 'BOOKMARKS_UPDATED',
-    TAB_ACTIVE_CHANGED: 'TAB_ACTIVE_CHANGED',
-    SEARCH_CHANGE: 'SEARCH_CHANGE'
-};
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const Bookmarks_1 = __webpack_require__(31);
-exports.initState = {
-    chromeState: {
-        currentActiveTabId: -1,
-        currentActiveWindowId: -1,
-        openedTabs: [],
-        closedTabs: [],
-        favorites: [],
-        bookmarks: [],
-        recentUrls: []
-    }
-};
-// Fill store on start of the App
-chrome.tabs.query({ currentWindow: true }, tabs => {
-    exports.initState.chromeState.openedTabs = tabs.map(t => ({ id: t.id, history: [t] }));
-});
-chrome.tabs.query({ currentWindow: true, active: true }, tab => {
-    exports.initState.chromeState.currentActiveTabId = tab[0].id;
-});
-chrome.topSites.get(mostVisited => {
-    exports.initState.chromeState.favorites = mostVisited;
-});
-chrome.bookmarks.getTree(bookmarkTree => {
-    const bookmarks = Bookmarks_1.getBookmarks(bookmarkTree);
-    exports.initState.chromeState.bookmarks = bookmarks;
-});
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
 var g;
 
 // This works in non-strict mode
@@ -842,42 +782,42 @@ module.exports = g;
 
 
 /***/ }),
-/* 13 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const Store_1 = __webpack_require__(1);
-const Actions_1 = __webpack_require__(10);
+const BackgroundStore_1 = __webpack_require__(1);
+const Actions_1 = __webpack_require__(29);
 /**
  * Will listen on events incoming from chrome
  */
 exports.eventListener = () => {
     chrome.tabs.onActivated.addListener(activeTabInfo => {
-        Store_1.store.dispatch({ type: Actions_1.ACTION.TAB_ACTIVE_CHANGED, activeTabId: activeTabInfo.tabId });
+        BackgroundStore_1.store.dispatch({ type: Actions_1.ACTION.TAB_ACTIVE_CHANGED, activeTabId: activeTabInfo.tabId });
     });
     chrome.tabs.onCreated.addListener((tab) => {
-        Store_1.store.dispatch({ type: Actions_1.ACTION.TAB_CREATED, tab: tab });
+        BackgroundStore_1.store.dispatch({ type: Actions_1.ACTION.TAB_CREATED, tab: tab });
     });
     chrome.tabs.onRemoved.addListener((tabId) => {
-        Store_1.store.dispatch({ type: Actions_1.ACTION.TAB_REMOVED, tabId: tabId });
+        BackgroundStore_1.store.dispatch({ type: Actions_1.ACTION.TAB_REMOVED, tabId: tabId });
     });
     chrome.tabs.onUpdated.addListener((tabId, _info, tab) => {
-        Store_1.store.dispatch({ type: Actions_1.ACTION.TAB_UPDATED, tabId: tabId, tab: tab });
+        BackgroundStore_1.store.dispatch({ type: Actions_1.ACTION.TAB_UPDATED, tabId: tabId, tab: tab });
     });
     chrome.bookmarks.onCreated.addListener(() => {
-        Store_1.store.dispatch({ type: Actions_1.ACTION.BOOKMARKS_UPDATED });
+        BackgroundStore_1.store.dispatch({ type: Actions_1.ACTION.BOOKMARKS_UPDATED });
     });
     chrome.bookmarks.onChanged.addListener(() => {
-        Store_1.store.dispatch({ type: Actions_1.ACTION.BOOKMARKS_UPDATED });
+        BackgroundStore_1.store.dispatch({ type: Actions_1.ACTION.BOOKMARKS_UPDATED });
     });
     chrome.bookmarks.onRemoved.addListener(() => {
-        Store_1.store.dispatch({ type: Actions_1.ACTION.BOOKMARKS_UPDATED });
+        BackgroundStore_1.store.dispatch({ type: Actions_1.ACTION.BOOKMARKS_UPDATED });
     });
 };
 
 
 /***/ }),
-/* 14 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -891,9 +831,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const Messages_1 = __webpack_require__(7);
 const Sender_1 = __webpack_require__(8);
-const Constants_1 = __webpack_require__(9);
-const ChromeWrapper_1 = __webpack_require__(32);
-const Store_1 = __webpack_require__(1);
+const Constants_1 = __webpack_require__(30);
+const ChromeWrapper_1 = __webpack_require__(28);
+const BackgroundStore_1 = __webpack_require__(1);
 /*
  * Will listen on events/messages incoming from other parts of extension
  */
@@ -970,8 +910,8 @@ exports.messageReceiver = () => {
                         break;
                     }
                     case Messages_1.MESSAGE.SYNC_CHROME_REQUEST: {
-                        console.log(Store_1.store.getState().chromeState);
-                        Sender_1.sendToPopup({ type: Messages_1.MESSAGE.SYNC_CHROME_STATE, chromeState: Store_1.store.getState().chromeState });
+                        console.log(BackgroundStore_1.store.getState().chromeState);
+                        Sender_1.sendToPopup({ type: Messages_1.MESSAGE.SYNC_CHROME_STATE, chromeState: BackgroundStore_1.store.getState().chromeState });
                         break;
                     }
                     case Messages_1.MESSAGE.TAB_SWITCH: {
@@ -1004,31 +944,31 @@ exports.messageReceiver = () => {
 
 
 /***/ }),
-/* 15 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const Store_1 = __webpack_require__(1);
+const BackgroundStore_1 = __webpack_require__(1);
 const Messages_1 = __webpack_require__(7);
 const Sender_1 = __webpack_require__(8);
 /**
  * On every store change, it'll synchronize it with other parts
  */
 exports.synchronizeChromeState = () => {
-    Store_1.store.subscribe(() => {
-        Sender_1.sendToPopup({ type: Messages_1.MESSAGE.SYNC_CHROME_REQUEST, chromeState: Store_1.store.getState().chromeState });
+    BackgroundStore_1.store.subscribe(() => {
+        Sender_1.sendToPopup({ type: Messages_1.MESSAGE.SYNC_CHROME_REQUEST, chromeState: BackgroundStore_1.store.getState().chromeState });
     });
 };
 
 
 /***/ }),
-/* 16 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__getRawTag_js__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__objectToString_js__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__getRawTag_js__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__objectToString_js__ = __webpack_require__(17);
 
 
 
@@ -1060,7 +1000,7 @@ function baseGetTag(value) {
 
 
 /***/ }),
-/* 17 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1069,14 +1009,14 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 
 /* harmony default export */ __webpack_exports__["a"] = freeGlobal;
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(12)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(9)))
 
 /***/ }),
-/* 18 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__overArg_js__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__overArg_js__ = __webpack_require__(18);
 
 
 /** Built-in value references. */
@@ -1086,7 +1026,7 @@ var getPrototype = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__overArg_js
 
 
 /***/ }),
-/* 19 */
+/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1140,7 +1080,7 @@ function getRawTag(value) {
 
 
 /***/ }),
-/* 20 */
+/* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1169,7 +1109,7 @@ function objectToString(value) {
 
 
 /***/ }),
-/* 21 */
+/* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1191,11 +1131,11 @@ function overArg(func, transform) {
 
 
 /***/ }),
-/* 22 */
+/* 19 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__freeGlobal_js__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__freeGlobal_js__ = __webpack_require__(14);
 
 
 /** Detect free variable `self`. */
@@ -1208,7 +1148,7 @@ var root = __WEBPACK_IMPORTED_MODULE_0__freeGlobal_js__["a" /* default */] || fr
 
 
 /***/ }),
-/* 23 */
+/* 20 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1244,7 +1184,7 @@ function isObjectLike(value) {
 
 
 /***/ }),
-/* 24 */
+/* 21 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1300,7 +1240,7 @@ function applyMiddleware() {
 }
 
 /***/ }),
-/* 25 */
+/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1354,7 +1294,7 @@ function bindActionCreators(actionCreators, dispatch) {
 }
 
 /***/ }),
-/* 26 */
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1494,15 +1434,15 @@ function combineReducers(reducers) {
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ }),
-/* 27 */
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__combineReducers__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__combineReducers__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__ = __webpack_require__(21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__compose__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_warning__ = __webpack_require__(6);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createStore", function() { return __WEBPACK_IMPORTED_MODULE_0__createStore__["a"]; });
@@ -1531,14 +1471,14 @@ if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' 
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ }),
-/* 28 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(29);
+module.exports = __webpack_require__(26);
 
 
 /***/ }),
-/* 29 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1548,7 +1488,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _ponyfill = __webpack_require__(30);
+var _ponyfill = __webpack_require__(27);
 
 var _ponyfill2 = _interopRequireDefault(_ponyfill);
 
@@ -1571,10 +1511,10 @@ if (typeof self !== 'undefined') {
 
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12), __webpack_require__(35)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(31)(module)))
 
 /***/ }),
-/* 30 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1603,21 +1543,7 @@ function symbolObservablePonyfill(root) {
 };
 
 /***/ }),
-/* 31 */
-/***/ (function(module, exports) {
-
-Object.defineProperty(exports, "__esModule", { value: true });
-// @TODO reduce can lead to performance issues here, maybe muttability will help to boost performance
-const extractBookmarks = (bookmarkNode) => bookmarkNode.children.reduce((acc, node) => node.url ? [...acc, node] : acc.concat(extractBookmarks(node)), []);
-/**
- * Get array of all bookmarks available
- * @TODO remove duplicates
- */
-exports.getBookmarks = (bookmarkTree) => bookmarkTree.reduce((acc, node) => node.url ? [...acc, node] : acc.concat(extractBookmarks(node)), []);
-
-
-/***/ }),
-/* 32 */
+/* 28 */
 /***/ (function(module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -1665,15 +1591,102 @@ exports.getTabZoomFactor = getTabZoomFactor;
 
 
 /***/ }),
-/* 33 */
+/* 29 */
+/***/ (function(module, exports) {
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ACTION = {
+    TAB_CREATED: 'TAB_CREATED',
+    TAB_REMOVED: 'TAB_REMOVED',
+    TAB_UPDATED: 'TAB_UPDATED',
+    BOOKMARKS_UPDATED: 'BOOKMARKS_UPDATED',
+    TAB_ACTIVE_CHANGED: 'TAB_ACTIVE_CHANGED',
+    SEARCH_CHANGE: 'SEARCH_CHANGE'
+};
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports) {
+
+Object.defineProperty(exports, "__esModule", { value: true });
+// Background
+exports.MAX_RECENT_TABS = 10;
+exports.MAX_TEXT_LENGTH = 90; // @TODO refactor, if command doesn't have icon, it should be longer
+exports.MAX_TEXT_LENGTH_ICON = 90;
+exports.ZOOM_MULTIPLIER = 0.2;
+exports.JAVASCRIPT_PRINT_PAGE = 'javascript:window.print();';
+// Popup
+exports.BLANK_FAVICON = 'https://image.flaticon.com/icons/png/128/12/12195.png';
+exports.MAX_COMMAND_TEXT_LENGTH = 50;
+exports.CHROME_PROTOCOL = 'chrome://';
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const AppState_1 = __webpack_require__(11);
-const Actions_1 = __webpack_require__(10);
-const Immutable_1 = __webpack_require__(34);
-const Constants_1 = __webpack_require__(9);
-exports.appReducer = (state = AppState_1.initState, action) => {
+const MessageReceiver_1 = __webpack_require__(11);
+const EventListener_1 = __webpack_require__(10);
+const Synchronize_1 = __webpack_require__(12);
+EventListener_1.eventListener();
+MessageReceiver_1.messageReceiver();
+Synchronize_1.synchronizeChromeState();
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports) {
+
+Object.defineProperty(exports, "__esModule", { value: true });
+// @TODO reduce can lead to performance issues here, maybe muttability will help to boost performance
+const extractBookmarks = (bookmarkNode) => bookmarkNode.children.reduce((acc, node) => node.url ? [...acc, node] : acc.concat(extractBookmarks(node)), []);
+/**
+ * Get array of all bookmarks available
+ * @TODO remove duplicates
+ */
+exports.getBookmarks = (bookmarkTree) => bookmarkTree.reduce((acc, node) => node.url ? [...acc, node] : acc.concat(extractBookmarks(node)), []);
+
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const BackgroundState_1 = __webpack_require__(35);
+const Actions_1 = __webpack_require__(29);
+const Immutable_1 = __webpack_require__(36);
+const Constants_1 = __webpack_require__(30);
+exports.appReducer = (state = BackgroundState_1.initState, action) => {
     switch (action.type) {
         case Actions_1.ACTION.TAB_CREATED: {
             const tabHistory = { id: action.tab.id, history: [action.tab] };
@@ -1721,7 +1734,40 @@ exports.appReducer = (state = AppState_1.initState, action) => {
 
 
 /***/ }),
-/* 34 */
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const Bookmarks_1 = __webpack_require__(33);
+exports.initState = {
+    chromeState: {
+        currentActiveTabId: -1,
+        currentActiveWindowId: -1,
+        openedTabs: [],
+        closedTabs: [],
+        favorites: [],
+        bookmarks: [],
+        recentUrls: []
+    }
+};
+// Fill store on start of the App
+chrome.tabs.query({ currentWindow: true }, tabs => {
+    exports.initState.chromeState.openedTabs = tabs.map(t => ({ id: t.id, history: [t] }));
+});
+chrome.tabs.query({ currentWindow: true, active: true }, tab => {
+    exports.initState.chromeState.currentActiveTabId = tab[0].id;
+});
+chrome.topSites.get(mostVisited => {
+    exports.initState.chromeState.favorites = mostVisited;
+});
+chrome.bookmarks.getTree(bookmarkTree => {
+    const bookmarks = Bookmarks_1.getBookmarks(bookmarkTree);
+    exports.initState.chromeState.bookmarks = bookmarks;
+});
+
+
+/***/ }),
+/* 36 */
 /***/ (function(module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -1764,47 +1810,6 @@ exports.updateItem = (array, item, index) => {
         ...array.slice(index + 1, array.length)
     ];
 };
-
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
-/* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const MessageReceiver_1 = __webpack_require__(14);
-const EventListener_1 = __webpack_require__(13);
-const Synchronize_1 = __webpack_require__(15);
-EventListener_1.eventListener();
-MessageReceiver_1.messageReceiver();
-Synchronize_1.synchronizeChromeState();
 
 
 /***/ })

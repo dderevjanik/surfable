@@ -2,7 +2,7 @@ import { MESSAGE } from '../Messages';
 import { ACTION } from './redux/Actions';
 import { ETarget } from '../enums/ETarget';
 import { MessageType } from '../Messages';
-import { store } from './redux/store';
+import { store } from './redux/PopupStore';
 
 /**
  * Will listen on events/messages incoming from other parts of extension

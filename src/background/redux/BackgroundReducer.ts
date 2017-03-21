@@ -1,7 +1,7 @@
-import { AppState, initState } from './AppState';
+import { AppState, initState } from './BackgroundState';
 import { ACTION, ActionType } from './Actions';
 import { addToStack, addItem, removeItem, updateItem } from '../../utils/Immutable';
-import { MAX_RECENT_TABS } from './../data/Constants';
+import { MAX_RECENT_TABS } from './../../data/Constants';
 
 export const appReducer = (state: AppState = initState, action: ActionType): AppState => {
 	switch (action.type) {

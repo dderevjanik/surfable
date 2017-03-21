@@ -1,5 +1,5 @@
 import { createStore } from 'redux';
-import { appReducer } from './AppReducer';
-import { initState } from './AppState';
+import { appReducer } from './PopupReducer';
+import { initState } from './PopupState';
 
 export const store = createStore(appReducer, initState);

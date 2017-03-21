@@ -1,7 +1,7 @@
-import { IAppState } from './../interfaces/IAppState';
-import { ESearchMode } from './../enums/ESearchMode';
-import { commandsGroups } from './../data/CommandsGroups';
-import { Group } from './../data/Group';
+import { IAppState } from '../../interfaces/IAppState';
+import { ESearchMode } from '../../enums/ESearchMode';
+import { commandsGroups } from '../../data/CommandsGroups';
+import { Group } from '../../data/Group';
 
 export const initState: IAppState = {
 	language: 'en',

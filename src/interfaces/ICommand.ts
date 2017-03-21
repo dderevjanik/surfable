@@ -1,4 +1,4 @@
-import { MessageType } from '../../Messages';
+import { MessageType } from '../Messages';
 
 export const COMMAND = {
 	SIMPLE: 'SIMPLE' as 'SIMPLE',

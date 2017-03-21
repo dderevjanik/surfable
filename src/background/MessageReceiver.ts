@@ -2,9 +2,9 @@ import { EZoomType } from '../enums/EZoomType';
 import { ETarget } from '../enums/ETarget';
 import { MessageType, MESSAGE } from '../Messages';
 import { sendToPopup } from '../Sender';
-import { JAVASCRIPT_PRINT_PAGE, ZOOM_MULTIPLIER } from './data/Constants';
+import { JAVASCRIPT_PRINT_PAGE, ZOOM_MULTIPLIER } from '../data/Constants';
 import { getActiveTab, getTabZoomFactor, getCurrentWindowTabs, getCurrentWindow } from './ChromeWrapper';
-import { store } from './redux/Store';
+import { store } from './redux/BackgroundStore';
 
 /*
  * Will listen on events/messages incoming from other parts of extension

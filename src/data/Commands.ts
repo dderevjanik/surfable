@@ -1,10 +1,10 @@
 import { CAT } from './../data/Category';
 import { CHROME_INTERNAL } from './../data/Chrome';
 import { ICommand, COMMAND } from './../interfaces/ICommand';
-import { EZoomType } from '../../enums/EZoomType';
-import { ETarget } from '../../enums/ETarget';
-import { MESSAGE } from '../../Messages';
-import { ACTION } from './../redux/Actions';
+import { EZoomType } from '../enums/EZoomType';
+import { ETarget } from '../enums/ETarget';
+import { MESSAGE } from '../Messages';
+import { ACTION } from '../popup/redux/Actions';
 
 /**
  * Help commands are showed, when '?' is presented in search input

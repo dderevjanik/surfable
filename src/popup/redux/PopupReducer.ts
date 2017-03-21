@@ -1,13 +1,13 @@
 import { sendAction } from '../../Sender';
-import { IAppState } from './../interfaces/IAppState';
-import { ICommand } from './../interfaces/ICommand';
-import { Group } from './../data/Group';
-import { ESearchMode } from './../enums/ESearchMode';
+import { IAppState } from '../../interfaces/IAppState';
+import { ICommand } from '../../interfaces/ICommand';
+import { Group } from '../../data/Group';
+import { ESearchMode } from './../../enums/ESearchMode';
 import { ACTION, ActionType } from './Actions';
-import { initState } from './AppState';
-import { tabToCommand, bookmarkToCommand, changeUrlCommand } from './../utils/CommandCreator';
-import { searchCommands } from './../utils/Search';
-import { notFoundCommand } from './../utils/DummyCommands';
+import { initState } from './PopupState';
+import { tabToCommand, bookmarkToCommand, changeUrlCommand } from '../../utils/CommandCreator';
+import { searchCommands } from '../../utils/Search';
+import { notFoundCommand } from '../../utils/DummyCommands';
 
 export const appReducer = (state: IAppState = initState, action: ActionType): IAppState => {
 	switch (action.type) {

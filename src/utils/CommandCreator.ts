@@ -1,5 +1,5 @@
-import { ETarget } from '../../enums/ETarget';
-import { MESSAGE } from '../../Messages';
+import { ETarget } from '../enums/ETarget';
+import { MESSAGE } from '../Messages';
 import { ICommand, COMMAND } from './../interfaces/ICommand';
 import { sliceOverflowTitle, getFaviconUrl, shortenUrl } from './CommandHelper';
 
