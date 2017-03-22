@@ -1,4 +1,4 @@
-import { ELevel } from 'surfable-common/src/enums/ELevel';
+import { ELevel } from '../enums/ELevel';
 
 const style = (level: ELevel) => {
 	console.log('creting elvels');

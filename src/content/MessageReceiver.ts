@@ -1,8 +1,5 @@
-import { EZoomType } from 'surfable-common/src/enums/EZoomType';
-import { ETarget } from 'surfable-common/src/enums/ETarget';
-import { MessageType, MESSAGE } from 'surfable-common/src/Messages';
-import { sendToPopup } from 'surfable-common/src/Sender';
-import { ELevel } from 'surfable-common/src/enums/ELevel';
+import { ETarget } from '../enums/ETarget';
+import { MessageType, MESSAGE } from '../Messages';
 import { Toast } from './Toast';
 
 const body = document.getElementsByTagName('body')[0];
