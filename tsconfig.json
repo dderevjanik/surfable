@@ -14,7 +14,7 @@
         ],
         "jsx": "react"
     },
-    "files": [
-        "src/background/Main.ts"
+    "exclude": [
+        "*.test.ts"
     ]
 }
