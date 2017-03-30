@@ -1,6 +1,6 @@
 import { ILanguage } from './ILanguages';
 
-const commands: ILanguage = {
+export const commands: ILanguage = {
 	pageReload: {
 		en: 'Page reload'
 	},
@@ -66,7 +66,7 @@ const commands: ILanguage = {
 	}
 };
 
-const Messages: ILanguage = {
+export const Messages: ILanguage = {
 	noCommandsMatching: {
 		en: 'No commands matching'
 	},

@@ -2,8 +2,8 @@
  * Add item to limited stack
  */
 export const addToStack = <T>(stack: T[], item: T, stackSize: number): T[] =>
-	(stack.length > stackSize)
-		? [...stack.slice(1, stack.length), item]
+	(stack.length >= stackSize)
+		? [item, ...stack.slice(0, stack.length - 1)]
 		: [item, ...stack];
 
 /**

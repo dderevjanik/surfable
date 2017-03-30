@@ -23,6 +23,9 @@ export const isScrolledIntoView = (scrollWindow: HTMLElement, scrollItem: HTMLEl
 	return EViewState.INSIDE;
 };
 
+/**
+ * Scroll into item
+ */
 export const scrollIntoElement = (scrollWindow: HTMLElement, scrollItem: HTMLElement, activeState: EViewState): void => {
 	if (activeState === EViewState.ABOVE) {
 		scrollWindow.scrollTop = (scrollItem.offsetTop - scrollWindow.offsetTop);

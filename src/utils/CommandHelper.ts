@@ -22,7 +22,7 @@ export const getFaviconUrl = (faviconUrl: string): string =>
 
 /**
  * Shorten url, because most of time it's not necessery to see
- * http:// or https://.
+ * 'http://' or 'https://'.
  */
 export const shortenUrl = (url: string): string => {
 	if (url.indexOf('http://') === 0) {

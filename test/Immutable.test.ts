@@ -1,6 +1,5 @@
 import { addItem, addToStack, includes, removeItem, updateItem } from './../src/utils/Immutable';
 
-
 describe('addItem()', () => {
 
     test('should addItem to empty array', () => {

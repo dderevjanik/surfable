@@ -3552,6 +3552,9 @@ exports.ACTION = {
 /***/ (function(module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Messages shared between background, popup and content
+ */
 exports.MESSAGE = {
     NOTHING: 'NOTHING',
     TAB_NEW: 'TAB_NEW',

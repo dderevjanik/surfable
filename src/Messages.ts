@@ -3,6 +3,9 @@ import { ELevel } from './enums/ELevel';
 import { EZoomType } from './enums/EZoomType';
 import { IChromeState } from './interfaces/IChromeState';
 
+/**
+ * Messages shared between background, popup and content
+ */
 export const MESSAGE = {
 	NOTHING: 'NOTHING' as 'NOTHING',
 	TAB_NEW: 'TAB_NEW' as 'TAB_NEW',

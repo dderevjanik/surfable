@@ -12,7 +12,7 @@ module.exports = {
             {
                 test: /\.tsx?$/,
                 loader: 'ts-loader?configFileName=tsconfig.json',
-                exclude: /node_modules/,
+                exclude: [/node_modules/, /test/, /dist/],
             }
         ]
     },
